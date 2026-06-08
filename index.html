@@ -1106,20 +1106,18 @@ async function loadData() {
   document.getElementById('loadingMsg').textContent = 'Leyendo tareas de Notion...';
 
   try {
-    const [tasksRes, goalsRes] = await Promise.all([
-      fetchNotion(`databases/${TASKS_DB}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
-      fetchNotion(`databases/${GOALS_DB}/query`, { page_size: 100 })
-    ]);
-
-    if (tasksRes && tasksRes.results) allTasks = tasksRes.results;
+    const goalsRes = await fetchNotion(`databases/${GOALS_DB}/query`, { page_size: 100 });
     if (goalsRes && goalsRes.results) allGoals = goalsRes.results;
+  } catch (e) { console.log("Error objetivos:", e); }
 
-    document.getElementById('greetingSub').textContent = `${allTasks.length} tareas activas cargadas desde Notion`;
+  try {
+    const tasksRes = await fetchNotion(`databases/${TASKS_DB}/query`, { page_size: 100, filter: { property: "Estado", select: { does_not_equal: "Completada" } } });
+    if (tasksRes && tasksRes.results) allTasks = tasksRes.results;
+  } catch (e) { console.log("Error tareas:", e); }
 
-  } catch (e) {
-    document.getElementById('greetingSub').textContent = 'Error conectando con Notion — mostrando datos de ejemplo';
-    loadSampleData();
-  }
+  const loaded = (allGoals.length > 0 ? `${allGoals.length} objetivos cargados` : "0 objetivos") +
+    (allTasks.length > 0 ? ` · ${allTasks.length} tareas` : " · sin tareas Maitinada");
+  document.getElementById("greetingSub").textContent = loaded;
 
   renderGeneral();
   renderMyPanel();
