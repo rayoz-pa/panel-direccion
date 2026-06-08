@@ -941,7 +941,7 @@ setTimeout(loadData, 100);
 <script>
 const THEMES = {
   warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
-  dark: { bg:'#141210', surface:'#1C1A16', surface2:'#242118', text:'#F0EDE6', text2:'#9B9484', text3:'#6B6458', border:'rgba(255,255,255,0.08)' }
+  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' }
 };
 const ACCENTS = {
   'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
@@ -989,7 +989,7 @@ function applyTheme() {
 function updateThemeUI() {
   document.querySelectorAll('.theme-mode-btn').forEach(b => {
     b.style.background = b.dataset.mode === currentTheme ? 'var(--purple)' : 'transparent';
-    b.style.color = b.dataset.mode === currentTheme ? (currentTheme === 'dark' ? '#141210' : 'white') : 'var(--text2)';
+    b.style.color = b.dataset.mode === currentTheme ? (currentTheme === 'dark' ? '#F0E8DC' : '#2A1F14') : 'var(--text2)';
   });
   document.querySelectorAll('.theme-accent-dot').forEach(d => {
     d.style.outline = d.dataset.accent === currentAccent ? '2px solid var(--text)' : 'none';
