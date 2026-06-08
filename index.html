@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
+  --font-title: 'DM Serif Display', serif;
+  --font-body: 'DM Sans', sans-serif;
   --bg: #FAF7F2;
   --surface: #FFFDF9;
   --surface2: #F5F1EA;
@@ -29,7 +31,8 @@
   --rsm: 8px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+.greeting h1, .logo, .wb-value, .p-num-big { font-family: var(--font-title) !important; }
+body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
 /* HEADER */
 .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
@@ -247,6 +250,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       </div>
     </div>
     <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Labels / subtítulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="text3ColorPicker" value="#A8978A" oninput="setText3Color(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="text3ColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#A8978A</span>
+      </div>
+    </div>
+    <div>
       <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Contenido</p>
       <div style="display:flex;align-items:center;gap:8px;">
         <input type="color" id="bodyColorPicker" value="#7A6A5A" oninput="setBodyColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
@@ -450,6 +460,32 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
           <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;"><span style="color:var(--text2);">Haz Eco</span><span class="badge badge-green">Estrategia</span></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- NUEVA IDEA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Agregar idea</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input type="text" id="ideaText" placeholder="Describe tu idea..." style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;width:100%;" />
+      <div style="display:flex;gap:8px;">
+        <select id="ideaProject" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;">
+          <option value="maitinada">Maitinada</option>
+          <option value="mara">Mara</option>
+          <option value="casalunae">Casa Lunae</option>
+          <option value="hazeco">Haz Eco</option>
+          <option value="personal">Personal</option>
+        </select>
+        <select id="ideaArea" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;">
+          <option value="">Sin área</option>
+          <option value="Estrategia">Estrategia</option>
+          <option value="Contenido">Contenido</option>
+          <option value="Diseño">Diseño</option>
+          <option value="Operación">Operación</option>
+        </select>
+        <button class="btn-sm" onclick="submitIdea()" id="ideaBtn">Agregar idea</button>
+      </div>
+      <div id="ideaStatus" style="font-size:12px;color:var(--text3);display:none;"></div>
     </div>
   </div>
 
@@ -673,10 +709,14 @@ function renderCriticalTasks() {
     const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Vence hoy';
     const cls = overdue ? 'red' : 'amber';
     const resp = getSelect(t, 'Responsable') || '';
-    return `<div class="critical-item ${cls}" onclick="window.open('${getUrl(t)}','_blank')">
-      <div class="critical-dot" style="background:${overdue ? 'var(--red)' : 'var(--amber)'};"></div>
-      <div><div class="critical-title ${cls}">${getTitle(t)}</div>
-      <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
+    const tid = t.id || '';
+    return `<div class="critical-item ${cls}" style="justify-content:space-between;">
+      <div style="display:flex;gap:10px;align-items:flex-start;flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+        <div class="critical-dot" style="background:${overdue ? 'var(--red)' : 'var(--amber)'};margin-top:4px;"></div>
+        <div><div class="critical-title ${cls}">${getTitle(t)}</div>
+        <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
+      </div>
+      <button onclick="completeTask('${tid}',this)" style="padding:4px 10px;border-radius:6px;border:1px solid currentColor;background:transparent;font-size:11px;cursor:pointer;color:${overdue?'var(--red)':'var(--amber)'};flex-shrink:0;font-family:inherit;" title="Marcar completada">✓</button>
     </div>`;
   }).join('');
   document.getElementById('criticalTasks').innerHTML = html;
@@ -797,7 +837,13 @@ function renderWorkCols(tasks) {
   const colorMap = { 'Decisión': 'var(--red-light)', 'Diseño': 'var(--pink-light)', 'Reunión': 'var(--green-light)' };
   const html = active.map(tipo => {
     const items = grouped[tipo];
-    const taskHtml = items.slice(0,3).map(t => `<div class="work-task" style="background:${colorMap[tipo]||'var(--surface)'};" onclick="window.open('${getUrl(t)}','_blank')">${getTitle(t)}</div>`).join('');
+    const taskHtml = items.slice(0,3).map(t => {
+      const tid = t.id || '';
+      return `<div class="work-task" style="background:${colorMap[tipo]||'var(--surface)'};display:flex;justify-content:space-between;align-items:center;">
+        <span onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;">${getTitle(t)}</span>
+        <button onclick="completeTask('${tid}',this)" style="border:none;background:transparent;cursor:pointer;font-size:12px;padding:0 2px;color:var(--text3);" title="Completar">✅</button>
+      </div>`;
+    }).join('');
     const extra = items.length > 3 ? `<div class="work-task" style="color:var(--text3);">+ ${items.length-3} más</div>` : '';
     return `<div class="work-col"><div class="work-col-title">${tipo}<span style="color:${items.length>2?'var(--red)':'var(--text3)'};">${items.length}</span></div>${taskHtml}${extra}</div>`;
   }).join('');
@@ -819,7 +865,11 @@ function renderProjCols(tasks) {
     const taskHtml = projTasks.slice(0,4).map(t => {
       const prio = getSelect(t,'Prioridad');
       const pc = PRIORITY_COLORS[prio] || '#9B9890';
-      return `<div class="proj-task" style="border-left-color:${pc};" onclick="window.open('${getUrl(t)}','_blank')">${getTitle(t)}</div>`;
+      const tid2 = t.id || '';
+      return `<div class="proj-task" style="border-left-color:${pc};display:flex;justify-content:space-between;align-items:center;">
+        <span onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;font-size:11px;">${getTitle(t)}</span>
+        <button onclick="completeTask('${tid2}',this)" style="border:none;background:transparent;cursor:pointer;font-size:11px;padding:0 2px;color:var(--text3);" title="Completar">✅</button>
+      </div>`;
     }).join('');
     const extra = projTasks.length > 4 ? `<div class="proj-task" style="color:var(--text3);">+ ${projTasks.length-4} más</div>` : '';
     const empty = projTasks.length === 0 ? `<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Sin tareas</div>` : '';
@@ -849,10 +899,14 @@ function renderNotifications(tasks) {
     const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
     const projName = PROJECT_NAMES[projKey] || '';
     const color = PROJECT_COLORS[projKey] || '#9B9890';
-    return `<div style="display:flex;gap:8px;padding:8px;background:var(--surface2);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
-      <span style="font-size:14px;flex-shrink:0;">🔔</span>
-      <div><p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
-      <p style="font-size:11px;color:var(--text3);margin-top:2px;"><span style="color:${color};font-weight:500;">${projName}</span></p></div>
+    const ntid = t.id || '';
+    return `<div style="display:flex;gap:8px;padding:8px;background:var(--surface2);border-radius:var(--rsm);margin-bottom:6px;align-items:center;">
+      <span style="font-size:14px;flex-shrink:0;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">🔔</span>
+      <div style="flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+        <p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
+        <p style="font-size:11px;color:var(--text3);margin-top:2px;"><span style="color:${color};font-weight:500;">${projName}</span></p>
+      </div>
+      <button onclick="completeTask('${ntid}',this)" style="border:none;background:transparent;cursor:pointer;font-size:12px;padding:0 2px;color:var(--text3);" title="Marcar leída">✅</button>
     </div>`;
   }).join('');
 }
@@ -1041,8 +1095,9 @@ function applyTheme() {
   r.style.setProperty('--purple', a.main);
   r.style.setProperty('--purple-light', a.light);
   r.style.setProperty('--purple-dark', a.dark);
+  r.style.setProperty('--font-title', f.title);
+  r.style.setProperty('--font-body', f.body);
   document.body.style.fontFamily = f.body;
-  document.querySelectorAll('.greeting h1, .logo').forEach(el => el.style.fontFamily = f.title);
   localStorage.setItem('pd_theme', currentTheme);
   localStorage.setItem('pd_accent', currentAccent);
   localStorage.setItem('pd_font', currentFont);
@@ -1367,4 +1422,142 @@ window.loadData = async function() {
 
 renderCalendar();
 setTimeout(initDragDrop, 500);
+</script>
+<script>
+// ── COMPLETAR TAREA ──
+async function completeTask(pageId, btn) {
+  if (!pageId) return;
+  const original = btn.textContent;
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${PROXY}/pages/${pageId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        properties: {
+          Estado: { select: { name: 'Completada' } }
+        }
+      })
+    });
+    const data = await res.json();
+    if (data.id) {
+      // Eliminar visualmente la tarjeta
+      const card = btn.closest('.task-item') || btn.closest('.critical-item');
+      if (card) {
+        card.style.transition = 'opacity 0.3s, height 0.3s';
+        card.style.opacity = '0';
+        setTimeout(() => { card.remove(); loadData(); }, 300);
+      }
+    } else {
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = original;
+    btn.disabled = false;
+  }
+}
+
+// ── AGREGAR IDEA ──
+const IDEA_DB_MAP = {
+  maitinada: 'd864d37740c440138705e0711696119c',
+  mara: 'cdd54ab81ff847c7a8bdf0b72d76e192',
+  casalunae: 'de9c4c6b36c84ffd838db4adf3e6e95b',
+  hazeco: '0fe981cee91d435e9cdb62780e946e32',
+  personal: '7a45a2551ccb473490d3a47c983ceb59'
+};
+
+async function submitIdea() {
+  const text = document.getElementById('ideaText').value.trim();
+  const project = document.getElementById('ideaProject').value;
+  const area = document.getElementById('ideaArea').value;
+  const status = document.getElementById('ideaStatus');
+  const btn = document.getElementById('ideaBtn');
+
+  if (!text) {
+    status.textContent = 'Escribe algo primero.';
+    status.style.display = 'block';
+    status.style.color = 'var(--red)';
+    return;
+  }
+
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+  status.style.display = 'none';
+
+  const dbId = IDEA_DB_MAP[project];
+  const properties = {
+    Tarea: { title: [{ text: { content: text } }] },
+    Tipo: { select: { name: 'Idea' } },
+    Estado: { select: { name: 'Pendiente' } },
+    Prioridad: { select: { name: '🟡 Bloque rápido' } },
+    Responsable: { select: { name: 'Rayo' } },
+    'Enviado por': { select: { name: 'Rayo' } }
+  };
+  if (area) properties['Área'] = { select: { name: area } };
+
+  try {
+    const res = await fetch(`${PROXY}/pages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        parent: { database_id: dbId },
+        properties
+      })
+    });
+    const data = await res.json();
+
+    if (data.id) {
+      document.getElementById('ideaText').value = '';
+      status.textContent = '✓ Idea guardada en Notion';
+      status.style.color = 'var(--green)';
+      status.style.display = 'block';
+      setTimeout(() => { status.style.display = 'none'; loadData(); }, 2000);
+    } else {
+      throw new Error('Error al guardar');
+    }
+  } catch(e) {
+    status.textContent = 'Error al guardar. Intenta de nuevo.';
+    status.style.color = 'var(--red)';
+    status.style.display = 'block';
+  }
+
+  btn.textContent = 'Agregar idea';
+  btn.disabled = false;
+}
+
+// Enter en campo de idea
+document.getElementById('ideaText') && document.getElementById('ideaText').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitIdea();
+});
+</script>
+<script>
+function setText3Color(hex) {
+  document.documentElement.style.setProperty('--text3', hex);
+  document.getElementById('text3ColorHex').textContent = hex;
+  localStorage.setItem('pd_text3_color', hex);
+}
+
+// Restaurar text3 color guardado
+const savedText3 = localStorage.getItem('pd_text3_color');
+if (savedText3) {
+  const el = document.getElementById('text3ColorPicker');
+  if (el) el.value = savedText3;
+  const hexEl = document.getElementById('text3ColorHex');
+  if (hexEl) hexEl.textContent = savedText3;
+  document.documentElement.style.setProperty('--text3', savedText3);
+}
+
+// Aplicar font guardada al cargar
+const savedFont = localStorage.getItem('pd_font') || 'spacemono';
+const fontMap = {
+  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif" },
+  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif" }
+};
+const fData = fontMap[savedFont] || fontMap.spacemono;
+document.documentElement.style.setProperty('--font-title', fData.title);
+document.documentElement.style.setProperty('--font-body', fData.body);
+document.body.style.fontFamily = fData.body;
 </script>
