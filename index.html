@@ -198,6 +198,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     <div class="tabs">
       <button class="tab active" onclick="switchTab('general',this)">Vista general</button>
       <button class="tab" onclick="switchTab('mipanel',this)">Mi panel</button>
+      <button class="tab" onclick="switchTab('calendario',this)">Calendario</button>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
@@ -208,7 +209,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </header>
 
 <div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 2rem;color:var(--text);">
-  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:auto auto auto auto 1fr;gap:24px;align-items:center;">
+  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:20px;align-items:start;">
     <div>
       <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
       <div style="display:flex;gap:6px;">
@@ -238,6 +239,27 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <span id="bgHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FAF7F2</span>
       </div>
     </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Títulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="titleColorPicker" value="#2A1F14" oninput="setTitleColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="titleColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#2A1F14</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Contenido</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="bodyColorPicker" value="#7A6A5A" oninput="setBodyColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="bodyColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#7A6A5A</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Módulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="cardColorPicker" value="#FFFDF9" oninput="setCardColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="cardColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FFFDF9</span>
+      </div>
+    </div>
     <div style="text-align:right;">
       <button onclick="resetTheme()" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:transparent;color:var(--text3);">Resetear</button>
     </div>
@@ -261,7 +283,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   </div>
 
   <!-- PROJECT METRICS TABLE -->
-  <div class="card">
+  <div class="card draggable" draggable="true" data-module="resumen">
     <div class="card-title card-title-main" style="margin-bottom:1rem;">Resumen por proyecto</div>
     <table class="project-table" id="projectTable">
       <thead>
@@ -280,7 +302,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </table>
   </div>
 
-  <div class="grid-2">
+  <div class="grid-2" id="drag-row-1">
     <!-- CARGA EQUIPO -->
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -301,7 +323,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
   </div>
 
-  <div class="grid-2">
+  <div class="grid-2" id="drag-row-2">
     <!-- BIENESTAR -->
     <div class="card">
       <div class="card-title card-title-main" style="margin-bottom:1rem;">Bienestar</div>
@@ -447,6 +469,45 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
   </div>
 </div>
+
+<!-- TAB CALENDARIO -->
+<div id="tab-calendario" class="tab-content">
+  <div class="greeting">
+    <h1 style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;">Calendario</h1>
+    <p style="font-size:12px;color:var(--text3);margin-top:2px;">Todos tus eventos y reuniones</p>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="prevMonth()" style="padding:6px 12px;border:1px solid var(--border);border-radius:var(--rsm);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;">‹</button>
+      <h2 id="calMonthTitle" style="font-size:16px;font-weight:500;min-width:160px;text-align:center;"></h2>
+      <button onclick="nextMonth()" style="padding:6px 12px;border:1px solid var(--border);border-radius:var(--rsm);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;">›</button>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="period-btn active" onclick="setCalView('month',this)">Mes</button>
+      <button class="period-btn" onclick="setCalView('week',this)">Semana</button>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:hidden;">
+    <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--border);">
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Lun</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Mar</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Mié</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Jue</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Vie</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Sáb</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Dom</div>
+    </div>
+    <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));"></div>
+  </div>
+
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Próximos eventos</div>
+    <div id="upcomingEvents"><div class="empty">Sin eventos próximos</div></div>
+  </div>
+</div>
+
 
 </main>
 
@@ -1055,4 +1116,255 @@ const savedAccent = localStorage.getItem('pd_accent_custom');
 const savedBg = localStorage.getItem('pd_bg_custom');
 if (savedAccent) { document.getElementById('accentPicker').value = savedAccent; setCustomAccent(savedAccent); }
 if (savedBg) { document.getElementById('bgPicker').value = savedBg; setCustomBg(savedBg); }
+</script>
+<script>
+// ── DRAG AND DROP ──
+let dragSrc = null;
+
+function initDragDrop() {
+  document.querySelectorAll('.card[draggable="true"]').forEach(card => {
+    card.style.cursor = 'grab';
+    card.addEventListener('dragstart', e => {
+      dragSrc = card;
+      setTimeout(() => card.style.opacity = '0.4', 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.style.opacity = '1';
+      document.querySelectorAll('.card').forEach(c => c.style.outline = '');
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (card !== dragSrc) card.style.outline = '2px dashed var(--purple)';
+    });
+    card.addEventListener('dragleave', () => card.style.outline = '');
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      card.style.outline = '';
+      if (!dragSrc || dragSrc === card) return;
+      const parent = card.parentNode;
+      const srcParent = dragSrc.parentNode;
+      if (parent === srcParent) {
+        const cards = [...parent.children];
+        const si = cards.indexOf(dragSrc), ti = cards.indexOf(card);
+        if (si < ti) parent.insertBefore(dragSrc, card.nextSibling);
+        else parent.insertBefore(dragSrc, card);
+      }
+    });
+  });
+}
+
+// ── CALENDARIO ──
+let calDate = new Date();
+let calView = 'month';
+
+const PROJECT_COLORS_CAL = {
+  maitinada: '#C47A20', mara: '#639922', casalunae: '#C44880',
+  hazeco: '#2D9B6F', personal: '#6B6860'
+};
+
+function setCalView(view, btn) {
+  calView = view;
+  document.querySelectorAll('#tab-calendario .period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function prevMonth() {
+  calDate = new Date(calDate.getFullYear(), calDate.getMonth() - 1, 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  calDate = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 1);
+  renderCalendar();
+}
+
+function getTasksWithDates() {
+  const result = [];
+  Object.entries(allTasks).forEach(([key, tasks]) => {
+    tasks.forEach(t => {
+      const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
+      if (d) result.push({ task: t, date: d, project: key });
+    });
+  });
+  return result;
+}
+
+function renderCalendar() {
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('calMonthTitle').textContent = `${months[calDate.getMonth()]} ${calDate.getFullYear()}`;
+
+  if (calView === 'month') renderMonthView();
+  else renderWeekView();
+  renderUpcoming();
+}
+
+function renderMonthView() {
+  const grid = document.getElementById('calGrid');
+  const year = calDate.getFullYear(), month = calDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDow = (firstDay.getDay() + 6) % 7; // lunes = 0
+  const today = new Date().toISOString().split('T')[0];
+  const tasksWithDates = getTasksWithDates();
+
+  let html = '';
+  // empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;opacity:0.3;"></div>`;
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === today;
+    const dayTasks = tasksWithDates.filter(t => t.date.startsWith(dateStr));
+    const taskDots = dayTasks.slice(0,3).map(t => {
+      const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+      const title = getTitle(t.task);
+      return `<div onclick="window.open('${getUrl(t.task)}','_blank')" title="${title}" style="font-size:10px;padding:1px 5px;border-radius:3px;background:${color}22;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;margin-bottom:2px;border-left:2px solid ${color};">${title}</div>`;
+    }).join('');
+    const extra = dayTasks.length > 3 ? `<div style="font-size:10px;color:var(--text3);">+${dayTasks.length-3} más</div>` : '';
+
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;${isToday ? 'background:var(--purple-light);' : ''}">
+      <div style="font-size:12px;font-weight:${isToday?'500':'400'};color:${isToday?'var(--purple)':'var(--text2)'};margin-bottom:4px;">${d}</div>
+      ${taskDots}${extra}
+    </div>`;
+  }
+
+  // fill remaining cells
+  const totalCells = startDow + lastDay.getDate();
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 0; i < remaining; i++) {
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;opacity:0.3;"></div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderWeekView() {
+  const grid = document.getElementById('calGrid');
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+  const tasksWithDates = getTasksWithDates();
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = d.toISOString().split('T')[0];
+    const isToday = dateStr === today.toISOString().split('T')[0];
+    const dayTasks = tasksWithDates.filter(t => t.date.startsWith(dateStr));
+    const taskList = dayTasks.map(t => {
+      const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+      const title = getTitle(t.task);
+      const tipo = getSelect(t.task, 'Tipo');
+      const modalidad = getSelect(t.task, 'Modalidad');
+      const isReunion = tipo === 'Reunión' || tipo === 'Evento';
+      const modalBadge = isReunion && modalidad ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${modalidad==='Online'?'#378ADD22':modalidad==='Presencial'?'#2D9B6F22':'#5B4FE822'};color:${modalidad==='Online'?'#378ADD':modalidad==='Presencial'?'#2D9B6F':'var(--purple)'};margin-left:4px;">${modalidad}</span>` : '';
+      return `<div onclick="window.open('${getUrl(t.task)}','_blank')" style="font-size:11px;padding:4px 7px;border-radius:4px;background:${color}22;color:${color};margin-bottom:3px;cursor:pointer;border-left:2px solid ${color};line-height:1.4;">${title}${modalBadge}</div>`;
+    }).join('');
+    html += `<div style="min-height:200px;border-right:1px solid var(--border);padding:8px;${isToday ? 'background:var(--purple-light);' : ''}">
+      <div style="font-size:13px;font-weight:${isToday?'500':'400'};color:${isToday?'var(--purple)':'var(--text2)'};margin-bottom:8px;">${d.getDate()}</div>
+      ${taskList || '<div style="font-size:11px;color:var(--text3);">—</div>'}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderUpcoming() {
+  const today = new Date().toISOString().split('T')[0];
+  const tasksWithDates = getTasksWithDates()
+    .filter(t => t.date >= today)
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .slice(0, 8);
+
+  if (!tasksWithDates.length) {
+    document.getElementById('upcomingEvents').innerHTML = '<div class="empty">Sin eventos próximos con fecha</div>';
+    return;
+  }
+
+  const html = tasksWithDates.map(t => {
+    const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+    const projName = PROJECT_NAMES[t.project] || '';
+    const d = new Date(t.date + 'T12:00:00');
+    const dateLabel = d.toLocaleDateString('es-CL', { weekday:'short', day:'numeric', month:'short' });
+    const tipo = getSelect(t.task, 'Tipo');
+    const modalidad = getSelect(t.task, 'Modalidad');
+    const participantes = t.task.properties?.Participantes?.rich_text?.map(r => r.plain_text).join('') || '';
+    const contenido = t.task.properties?.Contenido?.rich_text?.map(r => r.plain_text).join('') || '';
+    const isReunion = tipo === 'Reunión' || tipo === 'Evento';
+    const modalColor = modalidad==='Online'?'#378ADD':modalidad==='Presencial'?'#2D9B6F':'var(--purple)';
+    const modalBg = modalidad==='Online'?'#378ADD22':modalidad==='Presencial'?'#2D9B6F22':'var(--purple-light)';
+    return `<div onclick="window.open('${getUrl(t.task)}','_blank')" style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+      <div style="width:3px;min-height:36px;border-radius:2px;background:${color};flex-shrink:0;margin-top:2px;"></div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <p style="font-size:13px;color:var(--text);margin:0;">${getTitle(t.task)}</p>
+          ${modalidad && isReunion ? `<span style="font-size:10px;padding:2px 7px;border-radius:12px;background:${modalBg};color:${modalColor};">${modalidad}</span>` : ''}
+        </div>
+        <p style="font-size:11px;color:var(--text3);margin:3px 0 0;">${projName} · ${dateLabel}</p>
+        ${participantes ? `<p style="font-size:11px;color:var(--text2);margin:3px 0 0;">👥 ${participantes}</p>` : ''}
+        ${contenido ? `<p style="font-size:11px;color:var(--text2);margin:3px 0 0;font-style:italic;">${contenido.slice(0,80)}${contenido.length>80?'...':''}"></p>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('upcomingEvents').innerHTML = html;
+}
+
+// ── SELECTORES DE COLOR EXTENDIDOS ──
+function setTitleColor(hex) {
+  document.documentElement.style.setProperty('--text', hex);
+  document.getElementById('titleColorHex').textContent = hex;
+  localStorage.setItem('pd_title_color', hex);
+}
+
+function setBodyColor(hex) {
+  document.documentElement.style.setProperty('--text2', hex);
+  document.getElementById('bodyColorHex').textContent = hex;
+  localStorage.setItem('pd_body_color', hex);
+}
+
+function setCardColor(hex) {
+  document.documentElement.style.setProperty('--surface', hex);
+  document.getElementById('cardColorHex').textContent = hex;
+  localStorage.setItem('pd_card_color', hex);
+}
+
+// Restaurar colores guardados
+['pd_title_color','pd_body_color','pd_card_color'].forEach((key, i) => {
+  const val = localStorage.getItem(key);
+  if (!val) return;
+  const ids = ['titleColorPicker','bodyColorPicker','cardColorPicker'];
+  const hexIds = ['titleColorHex','bodyColorHex','cardColorHex'];
+  const el = document.getElementById(ids[i]);
+  const hexEl = document.getElementById(hexIds[i]);
+  if (el) el.value = val;
+  if (hexEl) hexEl.textContent = val;
+  if (i === 0) document.documentElement.style.setProperty('--text', val);
+  if (i === 1) document.documentElement.style.setProperty('--text2', val);
+  if (i === 2) document.documentElement.style.setProperty('--surface', val);
+});
+
+// Extender resetTheme para incluir colores de texto
+const _origReset = window.resetTheme;
+window.resetTheme = function() {
+  _origReset && _origReset();
+  ['pd_title_color','pd_body_color','pd_card_color'].forEach(k => localStorage.removeItem(k));
+  document.getElementById('titleColorPicker') && (document.getElementById('titleColorPicker').value = '#2A1F14');
+  document.getElementById('bodyColorPicker') && (document.getElementById('bodyColorPicker').value = '#7A6A5A');
+  document.getElementById('cardColorPicker') && (document.getElementById('cardColorPicker').value = '#FFFDF9');
+};
+
+// Inicializar después de cargar datos
+const _origLoad = window.loadData;
+window.loadData = async function() {
+  await _origLoad();
+  renderCalendar();
+  setTimeout(initDragDrop, 300);
+};
+
+renderCalendar();
+setTimeout(initDragDrop, 500);
 </script>
