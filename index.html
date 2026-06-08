@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Dirección — Rayo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #F7F5F0;
-  --surface: #FFFFFF;
-  --surface2: #F0EDE6;
-  --border: rgba(0,0,0,0.07);
-  --text: #1A1814;
-  --text2: #6B6860;
-  --text3: #9B9890;
-  --purple: #5B4FE8;
-  --purple-light: #EAE8FC;
-  --purple-dark: #3B31C4;
+  --bg: #FAF7F2;
+  --surface: #FFFDF9;
+  --surface2: #F5F1EA;
+  --border: rgba(90,60,30,0.08);
+  --text: #2A1F14;
+  --text2: #7A6A5A;
+  --text3: #A8978A;
+  --purple: #639922;
+  --purple-light: #EAF3DE;
+  --purple-dark: #3B6D11;
   --green: #2D9B6F;
   --green-light: #E3F5EC;
   --red: #D94040;
@@ -202,9 +202,45 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="date-label" id="dateLabel"></span>
+    <button onclick="toggleThemePanel()" style="padding:6px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--rsm);font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;">🎨</button>
     <button class="btn-refresh" onclick="loadData()">↻ Actualizar</button>
   </div>
 </header>
+
+<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 2rem;">
+  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:auto auto 1fr;gap:24px;align-items:start;">
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
+      <div style="display:flex;gap:6px;">
+        <button class="theme-mode-btn" data-mode="warm" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Cálido</button>
+        <button class="theme-mode-btn" data-mode="dark" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Oscuro</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tipografía</p>
+      <div style="display:flex;gap:6px;">
+        <button class="theme-font-btn" data-font="spacemono" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Space Mono</button>
+        <button class="theme-font-btn" data-font="dm" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">DM Serif</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Acento — Damascos · Mentas · Mocca</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <div class="theme-accent-dot" data-accent="ffc297" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#ffc297;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="ffd897" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#ffd897;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="efb9c8" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#efb9c8;cursor:pointer;"></div>
+        <div style="width:1px;background:var(--border);margin:0 2px;"></div>
+        <div class="theme-accent-dot" data-accent="bbcaa1" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#bbcaa1;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="a1cabe" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#a1cabe;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="9ecab1" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#9ecab1;cursor:pointer;"></div>
+        <div style="width:1px;background:var(--border);margin:0 2px;"></div>
+        <div class="theme-accent-dot" data-accent="d8bda7" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#d8bda7;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="e6b791" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#e6b791;cursor:pointer;"></div>
+        <div class="theme-accent-dot" data-accent="d8b79b" onclick="currentAccent=this.dataset.accent;applyTheme();" style="width:24px;height:24px;border-radius:50%;background:#d8b79b;cursor:pointer;"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main class="main">
 
@@ -902,3 +938,73 @@ setTimeout(loadData, 100);
 </script>
 </body>
 </html>
+<script>
+const THEMES = {
+  warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
+  dark: { bg:'#141210', surface:'#1C1A16', surface2:'#242118', text:'#F0EDE6', text2:'#9B9484', text3:'#6B6458', border:'rgba(255,255,255,0.08)' }
+};
+const ACCENTS = {
+  'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
+  'ffd897': { main:'#ffd897', dark:'#8A6200', light:'rgba(255,216,151,0.2)', name:'Damasco oro' },
+  'efb9c8': { main:'#efb9c8', dark:'#8A2A4A', light:'rgba(239,185,200,0.2)', name:'Damasco rosa' },
+  'bbcaa1': { main:'#bbcaa1', dark:'#3B5A20', light:'rgba(187,202,161,0.2)', name:'Menta suave' },
+  'a1cabe': { main:'#a1cabe', dark:'#1A5A52', light:'rgba(161,202,190,0.2)', name:'Menta agua' },
+  '9ecab1': { main:'#9ecab1', dark:'#1A5A3A', light:'rgba(158,202,177,0.2)', name:'Menta verde' },
+  'd8bda7': { main:'#d8bda7', dark:'#6A3A1A', light:'rgba(216,189,167,0.2)', name:'Mocca' },
+  'e6b791': { main:'#e6b791', dark:'#7A4A10', light:'rgba(230,183,145,0.2)', name:'Mocca dorado' },
+  'd8b79b': { main:'#d8b79b', dark:'#6A3A18', light:'rgba(216,183,155,0.2)', name:'Mocca terracota' }
+};
+const FONTS = {
+  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif", name:'Space Mono' },
+  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif", name:'DM Serif' }
+};
+
+let currentTheme = localStorage.getItem('pd_theme') || 'warm';
+let currentAccent = localStorage.getItem('pd_accent') || 'ffc297';
+let currentFont = localStorage.getItem('pd_font') || 'spacemono';
+
+function applyTheme() {
+  const t = THEMES[currentTheme];
+  const a = ACCENTS[currentAccent];
+  const f = FONTS[currentFont];
+  const r = document.documentElement;
+  r.style.setProperty('--bg', t.bg);
+  r.style.setProperty('--surface', t.surface);
+  r.style.setProperty('--surface2', t.surface2);
+  r.style.setProperty('--text', t.text);
+  r.style.setProperty('--text2', t.text2);
+  r.style.setProperty('--text3', t.text3);
+  r.style.setProperty('--border', t.border);
+  r.style.setProperty('--purple', a.main);
+  r.style.setProperty('--purple-light', a.light);
+  r.style.setProperty('--purple-dark', a.dark);
+  document.body.style.fontFamily = f.body;
+  document.querySelectorAll('.greeting h1, .logo').forEach(el => el.style.fontFamily = f.title);
+  localStorage.setItem('pd_theme', currentTheme);
+  localStorage.setItem('pd_accent', currentAccent);
+  localStorage.setItem('pd_font', currentFont);
+  updateThemeUI();
+}
+
+function updateThemeUI() {
+  document.querySelectorAll('.theme-mode-btn').forEach(b => {
+    b.style.background = b.dataset.mode === currentTheme ? 'var(--purple)' : 'transparent';
+    b.style.color = b.dataset.mode === currentTheme ? (currentTheme === 'dark' ? '#141210' : 'white') : 'var(--text2)';
+  });
+  document.querySelectorAll('.theme-accent-dot').forEach(d => {
+    d.style.outline = d.dataset.accent === currentAccent ? '2px solid var(--text)' : 'none';
+    d.style.outlineOffset = '2px';
+  });
+  document.querySelectorAll('.theme-font-btn').forEach(b => {
+    b.style.background = b.dataset.font === currentFont ? 'var(--surface2)' : 'transparent';
+    b.style.fontWeight = b.dataset.font === currentFont ? '500' : '400';
+  });
+}
+
+function toggleThemePanel() {
+  const panel = document.getElementById('themePanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+applyTheme();
+</script>
