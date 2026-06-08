@@ -4,1063 +4,441 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Dirección — Rayo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F7F5F0;
-    --surface: #FFFFFF;
-    --surface2: #F0EDE6;
-    --border: rgba(0,0,0,0.08);
-    --text: #1A1814;
-    --text2: #6B6860;
-    --text3: #9B9890;
-    --purple: #5B4FE8;
-    --purple-light: #EAE8FC;
-    --purple-dark: #3B31C4;
-    --green: #2D9B6F;
-    --green-light: #E3F5EC;
-    --red: #D94040;
-    --red-light: #FCEAEA;
-    --amber: #C47A20;
-    --amber-light: #FDF0DC;
-    --pink: #C44880;
-    --pink-light: #FCE8F1;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* HEADER */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .logo span { color: var(--purple); }
-
-  .tabs {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-  }
-
-  .tab {
-    padding: 6px 16px;
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text2);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .tab.active {
-    background: var(--purple);
-    color: white;
-    font-weight: 500;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .date-label {
-    font-size: 12px;
-    color: var(--text3);
-  }
-
-  .btn-refresh {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: var(--purple);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .btn-refresh:hover { background: var(--purple-dark); }
-  .btn-refresh.loading { opacity: 0.7; cursor: wait; }
-
-  /* LOADING */
-  .loading-screen {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    gap: 16px;
-  }
-
-  .loading-screen.hidden { display: none; }
-
-  .loading-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 24px;
-    color: var(--text);
-  }
-
-  .loading-sub {
-    font-size: 13px;
-    color: var(--text3);
-  }
-
-  .spinner {
-    width: 32px; height: 32px;
-    border: 2px solid var(--border);
-    border-top-color: var(--purple);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* MAIN */
-  .main {
-    padding: 1.5rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* GREETING */
-  .greeting {
-    margin-bottom: 1.5rem;
-  }
-
-  .greeting h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .greeting p {
-    font-size: 13px;
-    color: var(--text3);
-    margin-top: 2px;
-  }
-
-  /* METRICS ROW */
-  .metrics-row {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0,1fr));
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
-
-  .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-  }
-
-  .metric-label {
-    font-size: 11px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-
-  .metric-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    color: var(--text);
-    line-height: 1;
-  }
-
-  .metric-value.danger { color: var(--red); }
-  .metric-value.success { color: var(--green); }
-  .metric-value.warning { color: var(--amber); }
-  .metric-value.purple { color: var(--purple); }
-
-  .metric-sub {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 4px;
-  }
-
-  /* PERIOD SELECTOR */
-  .period-selector {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 1.25rem;
-    align-items: center;
-  }
-
-  .period-label {
-    font-size: 12px;
-    color: var(--text3);
-    margin-right: 4px;
-  }
-
-  .period-btn {
-    padding: 4px 12px;
-    font-size: 12px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text2);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
-  }
-
-  .period-btn.active {
-    background: var(--text);
-    color: white;
-    border-color: var(--text);
-  }
-
-  /* GRID LAYOUTS */
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0,1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .col-span-2 { grid-column: span 2; }
-
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .card-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-title-main {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  /* BADGES */
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-    letter-spacing: 0.2px;
-  }
-
-  .badge-green { background: var(--green-light); color: var(--green); }
-  .badge-red { background: var(--red-light); color: var(--red); }
-  .badge-amber { background: var(--amber-light); color: var(--amber); }
-  .badge-purple { background: var(--purple-light); color: var(--purple); }
-  .badge-pink { background: var(--pink-light); color: var(--pink); }
-  .badge-gray { background: var(--surface2); color: var(--text2); }
-
-  /* PROJECT CARDS */
-  .project-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 10px;
-  }
-
-  .project-card {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 1rem;
-  }
-
-  .project-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .project-name {
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .progress-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text2);
-    margin-bottom: 3px;
-    margin-top: 6px;
-  }
-
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.6s ease;
-  }
-
-  /* OBJECTIVES */
-  .obj-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .obj-item:last-child { border-bottom: none; }
-
-  .obj-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 4px;
-  }
-
-  .obj-text { flex: 1; }
-  .obj-title { font-size: 13px; color: var(--text); }
-  .obj-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-  /* TASK CARDS */
-  .task-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    margin-bottom: 6px;
-  }
-
-  .task-priority {
-    width: 3px;
-    align-self: stretch;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  .task-content { flex: 1; }
-  .task-title { font-size: 13px; color: var(--text); font-weight: 400; }
-  .task-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
-
-  /* CRITICAL ITEMS */
-  .critical-item {
-    display: flex;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 6px;
-  }
-
-  .critical-item.red { background: var(--red-light); }
-  .critical-item.amber { background: var(--amber-light); }
-
-  .critical-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 5px;
-  }
-
-  .critical-title { font-size: 12px; font-weight: 500; }
-  .critical-title.red { color: #7A1A1A; }
-  .critical-title.amber { color: #5A3A10; }
-  .critical-meta { font-size: 11px; margin-top: 2px; }
-  .critical-meta.red { color: var(--red); }
-  .critical-meta.amber { color: var(--amber); }
-
-  /* WELLBEING */
-  .wellbeing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .wellbeing-item {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    text-align: center;
-  }
-
-  .wellbeing-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--text);
-  }
-
-  .wellbeing-label {
-    font-size: 10px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-top: 3px;
-  }
-
-  .cycle-bar {
-    background: var(--purple-light);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cycle-info p:first-child { font-size: 11px; color: var(--text3); }
-  .cycle-info p:last-child { font-size: 13px; font-weight: 500; color: var(--purple); margin-top: 1px; }
-
-  /* BITACORA */
-  .bitacora-entry {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    margin-bottom: 8px;
-  }
-
-  .bitacora-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .bitacora-date { font-size: 11px; font-weight: 500; color: var(--text2); }
-  .bitacora-text { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .bitacora-learning {
-    font-size: 12px;
-    color: var(--purple);
-    margin-top: 6px;
-    padding-top: 6px;
-    border-top: 1px solid var(--border);
-  }
-
-  .bitacora-input-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .bitacora-input-row input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    background: var(--surface2);
-    color: var(--text);
-    outline: none;
-  }
-
-  .bitacora-input-row input:focus {
-    border-color: var(--purple);
-  }
-
-  .btn-sm {
-    padding: 8px 14px;
-    background: var(--purple);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  /* BOOKMARKS */
-  .bookmark-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 8px;
-  }
-
-  .bookmark-item {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-
-  .bookmark-item:hover { background: var(--border); }
-
-  .bookmark-icon {
-    width: 28px; height: 28px;
-    background: var(--purple-light);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .bookmark-name { font-size: 12px; font-weight: 500; color: var(--text); }
-  .bookmark-tag { font-size: 10px; color: var(--text3); margin-top: 1px; }
-
-  /* AI ANALYSIS */
-  .ai-block {
-    border-left: 2px solid var(--purple);
-    padding-left: 12px;
-    margin-bottom: 12px;
-  }
-
-  .ai-project { font-size: 11px; font-weight: 500; color: var(--purple); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-  .ai-text { font-size: 13px; color: var(--text); line-height: 1.6; }
-
-  .ai-loading {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text3);
-    font-size: 13px;
-  }
-
-  .btn-full {
-    width: 100%;
-    padding: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 10px;
-  }
-
-  .btn-full:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
-
-  /* BUBBLE CHART */
-  #bubbleCanvas { width: 100%; height: 160px; }
-
-  /* SPARKLINE */
-  #sparkCanvas { width: 100%; height: 60px; }
-
-  /* TIMELINE */
-  .timeline-item {
-    display: flex;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .timeline-item:last-child { border-bottom: none; }
-  .timeline-time { font-size: 11px; color: var(--text3); width: 44px; flex-shrink: 0; padding-top: 2px; }
-  .timeline-content { flex: 1; }
-  .timeline-title { font-size: 13px; color: var(--text); }
-  .timeline-tags { margin-top: 4px; display: flex; gap: 4px; }
-
-  /* WORK TYPE COLUMNS */
-  .work-cols {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0,1fr));
-    gap: 8px;
-  }
-
-  .work-col {
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-  }
-
-  .work-col-title {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .work-task {
-    background: var(--surface);
-    border-radius: 6px;
-    padding: 7px 9px;
-    font-size: 11px;
-    color: var(--text);
-    margin-bottom: 5px;
-    line-height: 1.4;
-  }
-
-  /* SKILLS */
-  .skill-bar-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .skill-name { font-size: 12px; color: var(--text2); width: 100px; flex-shrink: 0; }
-  .skill-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .skill-fill { height: 100%; border-radius: 3px; }
-  .skill-count { font-size: 11px; color: var(--text3); width: 24px; text-align: right; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text3);
-    font-size: 13px;
-  }
-
-  /* DRAG */
-  .draggable { cursor: grab; }
-  .draggable:active { cursor: grabbing; }
-  .drag-over { outline: 2px dashed var(--purple); outline-offset: 2px; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F0EDE6;
+  --border: rgba(0,0,0,0.07);
+  --text: #1A1814;
+  --text2: #6B6860;
+  --text3: #9B9890;
+  --purple: #5B4FE8;
+  --purple-light: #EAE8FC;
+  --purple-dark: #3B31C4;
+  --green: #2D9B6F;
+  --green-light: #E3F5EC;
+  --red: #D94040;
+  --red-light: #FCEAEA;
+  --amber: #C47A20;
+  --amber-light: #FDF0DC;
+  --pink: #C44880;
+  --pink-light: #FCE8F1;
+  --r: 12px;
+  --rsm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+/* HEADER */
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+.logo span { color: var(--purple); }
+.tabs { display: flex; border: 1px solid var(--border); border-radius: var(--rsm); overflow: hidden; }
+.tab { padding: 5px 16px; font-size: 13px; color: var(--text2); background: transparent; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.tab.active { background: var(--purple); color: white; font-weight: 500; }
+.btn-refresh { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--purple); color: white; border: none; border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-refresh:hover { background: var(--purple-dark); }
+.date-label { font-size: 12px; color: var(--text3); }
+
+/* LOADING */
+.loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 12px; }
+.loading-screen.hidden { display: none; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MAIN */
+.main { padding: 1.5rem 2rem; max-width: 1280px; margin: 0 auto; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* GREETING */
+.greeting { margin-bottom: 1.25rem; }
+.greeting h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; letter-spacing: -0.3px; }
+.greeting p { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+/* PERIOD SELECTOR */
+.period-row { display: flex; align-items: center; gap: 6px; margin-bottom: 1.25rem; }
+.period-label { font-size: 12px; color: var(--text3); }
+.period-btn { padding: 4px 12px; font-size: 12px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.period-btn.active { background: var(--text); color: white; border-color: var(--text); }
+
+/* PROJECT METRICS TABLE */
+.project-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); margin-bottom: 1rem; }
+.project-table th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; background: var(--surface2); }
+.project-table td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.project-table tr:last-child td { border-bottom: none; }
+.project-table tr:hover td { background: var(--surface2); }
+.project-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.mini-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; width: 80px; display: inline-block; vertical-align: middle; }
+.mini-fill { height: 100%; border-radius: 2px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+.card-title-main { font-size: 14px; font-weight: 500; color: var(--text); text-transform: none; letter-spacing: 0; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+/* BADGES */
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-purple { background: var(--purple-light); color: var(--purple); }
+.badge-pink { background: var(--pink-light); color: var(--pink); }
+.badge-gray { background: var(--surface2); color: var(--text2); }
+
+/* CRITICAL ITEMS */
+.critical-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--rsm); margin-bottom: 6px; cursor: pointer; transition: opacity 0.15s; }
+.critical-item:hover { opacity: 0.8; }
+.critical-item.red { background: var(--red-light); }
+.critical-item.amber { background: var(--amber-light); }
+.critical-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.critical-title { font-size: 12px; font-weight: 500; }
+.critical-title.red { color: #7A1A1A; }
+.critical-title.amber { color: #5A3A10; }
+.critical-meta { font-size: 11px; margin-top: 2px; }
+.critical-meta.red { color: var(--red); }
+.critical-meta.amber { color: var(--amber); }
+
+/* SKILL BARS */
+.skill-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.skill-name { font-size: 12px; color: var(--text2); width: 90px; flex-shrink: 0; }
+.skill-bar { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.skill-fill { height: 100%; border-radius: 3px; }
+.skill-count { font-size: 11px; color: var(--text3); width: 24px; text-align: right; }
+
+/* WELLBEING */
+.wb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.wb-item { background: var(--surface2); border-radius: var(--rsm); padding: 10px; text-align: center; }
+.wb-value { font-family: 'DM Serif Display', serif; font-size: 20px; }
+.wb-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+.cycle-bar { background: var(--purple-light); border-radius: var(--rsm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cycle-info p:first-child { font-size: 11px; color: var(--text3); }
+.cycle-info p:last-child { font-size: 13px; font-weight: 500; color: var(--purple); margin-top: 1px; }
+
+/* BITACORA */
+.bitacora-entry { background: var(--surface2); border-radius: var(--rsm); padding: 12px; margin-bottom: 8px; }
+.bitacora-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.bitacora-date { font-size: 11px; font-weight: 500; color: var(--text2); }
+.bitacora-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+.bitacora-row { display: flex; gap: 8px; margin-top: 10px; }
+.bitacora-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--rsm); font-size: 13px; font-family: 'DM Sans', sans-serif; background: var(--surface2); color: var(--text); outline: none; }
+.bitacora-row input:focus { border-color: var(--purple); }
+.bitacora-row select { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; background: var(--surface2); color: var(--text); outline: none; }
+
+/* BOOKMARKS */
+.bookmark-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bookmark-item { background: var(--surface2); border-radius: var(--rsm); padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: background 0.15s; }
+.bookmark-item:hover { background: var(--border); }
+.bookmark-icon { width: 28px; height: 28px; background: var(--purple-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.bookmark-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.bookmark-tag { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+/* AI BLOCK */
+.ai-block { border-left: 2px solid var(--purple); padding-left: 12px; margin-bottom: 12px; }
+.ai-project { font-size: 11px; font-weight: 500; color: var(--purple); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.ai-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+.ai-loading { text-align: center; padding: 2rem; color: var(--text3); font-size: 13px; }
+
+/* BTN */
+.btn-full { width: 100%; padding: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--rsm); font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text2); cursor: pointer; transition: all 0.15s; margin-top: 10px; }
+.btn-full:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+.btn-sm { padding: 8px 14px; background: var(--purple); color: white; border: none; border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
+
+/* TASK CARDS */
+.task-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: var(--surface2); border-radius: var(--rsm); margin-bottom: 6px; cursor: pointer; transition: opacity 0.15s; }
+.task-item:hover { opacity: 0.8; }
+.task-priority { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
+.task-title { font-size: 13px; color: var(--text); }
+.task-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+
+/* PROJECT COLUMNS */
+.proj-cols { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+.proj-col { background: var(--surface2); border-radius: var(--rsm); padding: 10px; }
+.proj-col-title { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.proj-task { background: var(--surface); border-radius: 6px; padding: 7px 9px; font-size: 11px; color: var(--text); margin-bottom: 5px; line-height: 1.4; cursor: pointer; border-left: 2px solid transparent; }
+.proj-task:hover { opacity: 0.8; }
+
+/* WORK TYPE COLS */
+.work-cols { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+.work-col { background: var(--surface2); border-radius: var(--rsm); padding: 10px; }
+.work-col-title { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.work-task { background: var(--surface); border-radius: 6px; padding: 7px 9px; font-size: 11px; color: var(--text); margin-bottom: 5px; line-height: 1.4; cursor: pointer; }
+
+/* TIMELINE */
+.timeline-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-time { font-size: 11px; color: var(--text3); width: 44px; flex-shrink: 0; padding-top: 2px; }
+
+/* CHART SELECTOR */
+.chart-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+.chart-btn { padding: 3px 10px; font-size: 11px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--text3); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.chart-btn.active { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+
+/* EMPTY */
+.empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: 13px; }
 </style>
 </head>
 <body>
 
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner"></div>
-  <p class="loading-title">Panel Dirección</p>
-  <p class="loading-sub" id="loadingMsg">Conectando con Notion...</p>
+  <p style="font-family:'DM Serif Display',serif;font-size:20px;">Panel Dirección</p>
+  <p style="font-size:12px;color:var(--text3);" id="loadingMsg">Conectando con Notion...</p>
 </div>
 
 <header class="header">
-  <div class="header-left">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
     <div class="logo">Panel <span>Dirección</span></div>
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('general', this)">Vista general</button>
-      <button class="tab" onclick="switchTab('mipanel', this)">Mi panel</button>
+      <button class="tab active" onclick="switchTab('general',this)">Vista general</button>
+      <button class="tab" onclick="switchTab('mipanel',this)">Mi panel</button>
     </div>
   </div>
-  <div class="header-right">
+  <div style="display:flex;align-items:center;gap:12px;">
     <span class="date-label" id="dateLabel"></span>
-    <button class="btn-refresh" id="btnRefresh" onclick="loadData()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-      Actualizar
-    </button>
+    <button class="btn-refresh" onclick="loadData()">↻ Actualizar</button>
   </div>
 </header>
 
 <main class="main">
 
-  <!-- TAB GENERAL -->
-  <div id="tab-general" class="tab-content active">
-
-    <div class="greeting">
-      <h1 id="greetingText">Hola, Rayo</h1>
-      <p id="greetingSub">Cargando tu resumen...</p>
-    </div>
-
-    <!-- PERIOD SELECTOR -->
-    <div class="period-selector">
-      <span class="period-label">Ver:</span>
-      <button class="period-btn active" onclick="setPeriod('day', this)">Hoy</button>
-      <button class="period-btn" onclick="setPeriod('week', this)">Esta semana</button>
-      <button class="period-btn" onclick="setPeriod('month', this)">Este mes</button>
-    </div>
-
-    <!-- METRICS -->
-    <div class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-label">Tareas activas</div>
-        <div class="metric-value" id="m-total">—</div>
-        <div class="metric-sub" id="m-period">cargando...</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Críticas / atrasadas</div>
-        <div class="metric-value danger" id="m-critical">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Objetivos logrados</div>
-        <div class="metric-value success" id="m-objectives">—</div>
-        <div class="metric-sub" id="m-obj-sub">de total</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Horas liberadas</div>
-        <div class="metric-value purple" id="m-hours">6.5h</div>
-        <div class="metric-sub">por automatización</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Puntos críticos</div>
-        <div class="metric-value warning" id="m-alerts">—</div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <!-- METAS POR PROYECTO -->
-      <div class="card">
-        <div class="card-title">
-          <span class="card-title-main">Estado de metas</span>
-        </div>
-        <div class="project-grid" id="projectGoals">
-          <div class="empty-state">Cargando...</div>
-        </div>
-      </div>
-
-      <!-- TAREAS POR TIPO -->
-      <div class="card">
-        <div class="card-title">
-          <span class="card-title-main">Tareas por tipo</span>
-        </div>
-        <div id="tasksByType">
-          <div class="empty-state">Cargando...</div>
-        </div>
-        <canvas id="sparkCanvas" style="margin-top:12px;"></canvas>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;">
-          <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <!-- CARGA EQUIPO -->
-      <div class="card">
-        <div class="card-title"><span class="card-title-main">Carga del equipo — Maitinada</span></div>
-        <canvas id="bubbleCanvas" style="width:100%;height:160px;"></canvas>
-        <p style="font-size:10px;color:var(--text3);margin-top:8px;text-align:center;">Tamaño de burbuja = cantidad de tareas activas</p>
-      </div>
-
-      <!-- CRÍTICAS Y ATRASADAS -->
-      <div class="card">
-        <div class="card-title"><span class="card-title-main">Críticas y atrasadas</span></div>
-        <div id="criticalTasks">
-          <div class="empty-state">Cargando...</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <!-- BIENESTAR -->
-      <div class="card">
-        <div class="card-title"><span class="card-title-main">Bienestar</span></div>
-        <div class="wellbeing-grid" id="wellbeingGrid">
-          <div class="wellbeing-item">
-            <div class="wellbeing-value" id="wb-sleep">—</div>
-            <div class="wellbeing-label">Sueño</div>
-          </div>
-          <div class="wellbeing-item">
-            <div class="wellbeing-value" id="wb-work">—</div>
-            <div class="wellbeing-label">Trabajo</div>
-          </div>
-          <div class="wellbeing-item">
-            <div class="wellbeing-value" id="wb-energy">—</div>
-            <div class="wellbeing-label">Energía</div>
-          </div>
-        </div>
-        <div class="cycle-bar">
-          <div class="cycle-info">
-            <p>Fase del ciclo</p>
-            <p id="wb-cycle">Sin registrar</p>
-          </div>
-          <span style="font-size:20px;">🌒</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:8px 0;border-top:1px solid var(--border);">
-          <span style="font-size:12px;color:var(--text2);">Vitaminas</span>
-          <span style="font-size:12px;font-weight:500;color:var(--green);" id="wb-vitamins">—</span>
-        </div>
-      </div>
-
-      <!-- HORAS LIBERADAS -->
-      <div class="card">
-        <div class="card-title"><span class="card-title-main">Horas liberadas esta semana</span></div>
-        <div style="text-align:center;padding:1rem 0;">
-          <div style="font-family:'DM Serif Display',serif;font-size:48px;color:var(--purple);line-height:1;">6.5</div>
-          <p style="font-size:12px;color:var(--text3);margin-top:4px;">horas recuperadas por automatización</p>
-        </div>
-        <canvas id="hoursCanvas" style="width:100%;height:50px;"></canvas>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;">
-          <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- PUNTOS CRÍTICOS -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Puntos críticos</span></div>
-      <div id="criticalPoints">
-        <div class="empty-state">Cargando análisis...</div>
-      </div>
-    </div>
-
-    <!-- BITÁCORA -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Bitácora de la semana</span></div>
-      <div id="bitacoraEntries"></div>
-      <div class="bitacora-input-row">
-        <input type="text" id="bitacoraInput" placeholder="Agregar entrada de hoy — desafío, aprendizaje, observación..." />
-        <select id="bitacoraProject" style="padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);outline:none;">
-          <option>Mara</option>
-          <option>Casa Lunae</option>
-          <option>Haz Eco</option>
-          <option>Personal</option>
-          <option>Transversal</option>
-        </select>
-        <button class="btn-sm" onclick="addBitacora()">Agregar</button>
-      </div>
-    </div>
-
-    <!-- MARCADORES -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Marcadores</span></div>
-      <div class="bookmark-grid">
-        <div class="bookmark-item" onclick="openLink('https://notion.so')">
-          <div class="bookmark-icon">📋</div>
-          <div><div class="bookmark-name">Tareas Maitinada</div><div class="bookmark-tag">Notion</div></div>
-        </div>
-        <div class="bookmark-item" onclick="openLink('https://notion.so')">
-          <div class="bookmark-icon">🎯</div>
-          <div><div class="bookmark-name">Objetivos</div><div class="bookmark-tag">Panel Dirección</div></div>
-        </div>
-        <div class="bookmark-item" onclick="openLink('https://instagram.com')">
-          <div class="bookmark-icon">📸</div>
-          <div><div class="bookmark-name">Instagram Mara</div><div class="bookmark-tag">Redes</div></div>
-        </div>
-        <div class="bookmark-item" onclick="openLink('https://instagram.com')">
-          <div class="bookmark-icon">🌙</div>
-          <div><div class="bookmark-name">Casa Lunae IG</div><div class="bookmark-tag">Redes</div></div>
-        </div>
-        <div class="bookmark-item" onclick="openLink('https://make.com')">
-          <div class="bookmark-icon">⚡</div>
-          <div><div class="bookmark-name">Make.com</div><div class="bookmark-tag">Automatización</div></div>
-        </div>
-        <div class="bookmark-item" id="addBookmark" onclick="addBookmarkPrompt()">
-          <div class="bookmark-icon" style="background:var(--surface2);">+</div>
-          <div><div class="bookmark-name" style="color:var(--text3);">Agregar marcador</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ANÁLISIS IA -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Análisis IA — esta semana</span></div>
-      <div id="aiAnalysis">
-        <div class="ai-loading">Presiona "Generar análisis" para obtener tu revisión semanal con IA</div>
-      </div>
-      <button class="btn-full" id="btnAnalysis" onclick="generateAnalysis()">Generar análisis semanal →</button>
-    </div>
-
+<!-- TAB GENERAL -->
+<div id="tab-general" class="tab-content active">
+  <div class="greeting">
+    <h1 id="greetingText">Hola, Rayo</h1>
+    <p id="greetingSub">Cargando...</p>
   </div>
 
-  <!-- TAB MI PANEL -->
-  <div id="tab-mipanel" class="tab-content">
-
-    <div class="greeting">
-      <h1 style="font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;">Mi panel de responsabilidades</h1>
-      <p style="font-size:13px;color:var(--text3);margin-top:2px;">Solo lo que te compete a ti</p>
-    </div>
-
-    <!-- PERIOD SELECTOR -->
-    <div class="period-selector">
-      <span class="period-label">Ver:</span>
-      <button class="period-btn active" onclick="setPeriod2('day', this)">Hoy</button>
-      <button class="period-btn" onclick="setPeriod2('week', this)">Esta semana</button>
-    </div>
-
-    <!-- METRICS -->
-    <div class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-label">Mis tareas</div>
-        <div class="metric-value" id="p-total">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Reuniones</div>
-        <div class="metric-value" id="p-meetings">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Decisiones</div>
-        <div class="metric-value danger" id="p-decisions">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Ideas activas</div>
-        <div class="metric-value purple" id="p-ideas">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Completadas</div>
-        <div class="metric-value success" id="p-done">—</div>
-      </div>
-    </div>
-
-    <!-- TRABAJO POR TIPO -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Trabajo por tipo</span></div>
-      <div class="work-cols" id="workCols">
-        <div class="empty-state" style="grid-column:span 4;">Cargando...</div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <!-- MIS TAREAS POR PRIORIDAD -->
-      <div class="card">
-        <div class="card-title"><span class="card-title-main">Mis tareas — por prioridad</span></div>
-        <div id="myTasks">
-          <div class="empty-state">Cargando...</div>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:1rem;">
-        <!-- AGENDA -->
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-title"><span class="card-title-main">Agenda de hoy</span></div>
-          <div id="myAgenda">
-            <div class="empty-state">Sin eventos registrados</div>
-          </div>
-        </div>
-
-        <!-- NOTIFICACIONES E IDEAS -->
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-title"><span class="card-title-main">Notificaciones e ideas</span></div>
-          <div id="myNotifications">
-            <div class="empty-state">Sin notificaciones</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ANÁLISIS DE SKILLS -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-main">Análisis de perfil — tendencias de habilidades</span></div>
-      <div class="grid-2" style="margin-bottom:0;">
-        <div>
-          <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Carga por tipo de trabajo</p>
-          <div id="skillBars">
-            <div class="empty-state">Cargando...</div>
-          </div>
-        </div>
-        <div>
-          <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Análisis IA de tu perfil</p>
-          <div id="skillAnalysis">
-            <div class="ai-loading" style="padding:1rem 0;">Presiona para analizar tus patrones de trabajo</div>
-          </div>
-          <button class="btn-full" onclick="generateSkillAnalysis()">Analizar mi perfil →</button>
-        </div>
-      </div>
-    </div>
-
+  <div class="period-row">
+    <span class="period-label">Ver:</span>
+    <button class="period-btn active" onclick="setPeriod('day',this)">Hoy</button>
+    <button class="period-btn" onclick="setPeriod('week',this)">Esta semana</button>
+    <button class="period-btn" onclick="setPeriod('month',this)">Este mes</button>
   </div>
+
+  <!-- PROJECT METRICS TABLE -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Resumen por proyecto</div>
+    <table class="project-table" id="projectTable">
+      <thead>
+        <tr>
+          <th>Proyecto</th>
+          <th>Tareas activas</th>
+          <th>Críticas</th>
+          <th>Objetivos</th>
+          <th>Progreso</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="projectTableBody">
+        <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:1.5rem;">Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <!-- CARGA EQUIPO -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title card-title-main">Carga del equipo</div>
+        <div class="chart-selector">
+          <button class="chart-btn active" onclick="setChartType('bubble',this)">Burbujas</button>
+          <button class="chart-btn" onclick="setChartType('bar',this)">Barras</button>
+        </div>
+      </div>
+      <canvas id="teamChart" style="width:100%;height:180px;"></canvas>
+      <p style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center;">Tamaño / largo = cantidad de tareas activas</p>
+    </div>
+
+    <!-- CRITICAS Y ATRASADAS -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Críticas y atrasadas</div>
+      <div id="criticalTasks"><div class="empty">Cargando...</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- BIENESTAR -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Bienestar</div>
+      <div class="wb-grid">
+        <div class="wb-item"><div class="wb-value" id="wb-sleep">—</div><div class="wb-label">Sueño</div></div>
+        <div class="wb-item"><div class="wb-value" id="wb-work">—</div><div class="wb-label">Trabajo</div></div>
+        <div class="wb-item"><div class="wb-value" id="wb-energy">—</div><div class="wb-label">Energía</div></div>
+      </div>
+      <div class="cycle-bar">
+        <div class="cycle-info"><p>Fase del ciclo</p><p id="wb-cycle">Registra por Telegram</p></div>
+        <span style="font-size:20px;">🌒</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Vitaminas</span>
+        <span style="font-size:12px;font-weight:500;color:var(--green);" id="wb-vitamins">—</span>
+      </div>
+      <div style="margin-top:8px;padding:8px 0;border-top:1px solid var(--border);">
+        <p style="font-size:11px;color:var(--text3);">Horas liberadas por automatización esta semana</p>
+        <p style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--purple);margin-top:4px;">6.5h</p>
+      </div>
+    </div>
+
+    <!-- PUNTOS CRITICOS -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Puntos críticos</div>
+      <div id="criticalPoints"><div class="empty">Cargando...</div></div>
+    </div>
+  </div>
+
+  <!-- BITACORA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Bitácora de la semana</div>
+    <div id="bitacoraEntries"></div>
+    <div class="bitacora-row">
+      <input type="text" id="bitacoraInput" placeholder="Agregar entrada — desafío, aprendizaje, observación..." />
+      <select id="bitacoraProject">
+        <option>Maitinada</option><option>Mara</option><option>Casa Lunae</option><option>Haz Eco</option><option>Personal</option><option>Transversal</option>
+      </select>
+      <button class="btn-sm" onclick="addBitacora()">Agregar</button>
+    </div>
+  </div>
+
+  <!-- MARCADORES -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Marcadores</div>
+    <div class="bookmark-grid">
+      <div class="bookmark-item" onclick="window.open('https://app.notion.com/p/d864d37740c440138705e0711696119c','_blank')"><div class="bookmark-icon">📋</div><div><div class="bookmark-name">Tareas Maitinada</div><div class="bookmark-tag">Notion</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://app.notion.com/p/566e9a9c617b4367b9f1e5842fdb35e3','_blank')"><div class="bookmark-icon">🎯</div><div><div class="bookmark-name">Objetivos</div><div class="bookmark-tag">Panel Automatización</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://instagram.com','_blank')"><div class="bookmark-icon">📸</div><div><div class="bookmark-name">Instagram Mara</div><div class="bookmark-tag">Redes</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://instagram.com','_blank')"><div class="bookmark-icon">🌙</div><div><div class="bookmark-name">Casa Lunae IG</div><div class="bookmark-tag">Redes</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://make.com','_blank')"><div class="bookmark-icon">⚡</div><div><div class="bookmark-name">Make.com</div><div class="bookmark-tag">Automatización</div></div></div>
+      <div class="bookmark-item" onclick="addBookmark()"><div class="bookmark-icon" style="background:var(--surface2);">+</div><div><div class="bookmark-name" style="color:var(--text3);">Agregar marcador</div></div></div>
+    </div>
+  </div>
+
+  <!-- ANALISIS IA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Análisis IA — esta semana</div>
+    <div id="aiAnalysis"><div class="ai-loading">Presiona "Generar análisis" para obtener tu revisión semanal con IA</div></div>
+    <button class="btn-full" id="btnAnalysis" onclick="generateAnalysis()">Generar análisis semanal →</button>
+  </div>
+</div>
+
+<!-- TAB MI PANEL -->
+<div id="tab-mipanel" class="tab-content">
+  <div class="greeting">
+    <h1 style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;">Mi panel de responsabilidades</h1>
+    <p style="font-size:12px;color:var(--text3);margin-top:2px;">Solo lo que te compete a ti</p>
+  </div>
+
+  <div class="period-row">
+    <span class="period-label">Ver:</span>
+    <button class="period-btn active" onclick="setPeriod2('day',this)">Hoy</button>
+    <button class="period-btn" onclick="setPeriod2('week',this)">Esta semana</button>
+  </div>
+
+  <!-- METRICS -->
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:1rem;">
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Mis tareas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;" id="p-total">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Reuniones</p><p style="font-family:'DM Serif Display',serif;font-size:28px;" id="p-meetings">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Decisiones</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--red);" id="p-decisions">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Ideas activas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--purple);" id="p-ideas">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Completadas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--green);" id="p-done">—</p></div>
+  </div>
+
+  <!-- TRABAJO POR TIPO -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Trabajo por tipo</div>
+    <div class="work-cols" id="workCols"><div class="empty" style="grid-column:span 4;">Cargando...</div></div>
+  </div>
+
+  <!-- MIS TAREAS POR PROYECTO -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Mis tareas — por proyecto y prioridad</div>
+    <div class="proj-cols" id="projCols"><div class="empty" style="grid-column:span 5;">Cargando...</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- AGENDA + NOTIFICACIONES -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Agenda de hoy</div>
+        <div id="myAgenda"><div class="empty">Sin eventos con fecha registrada</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Notificaciones</div>
+        <div id="myNotifications"><div class="empty">Sin notificaciones</div></div>
+      </div>
+    </div>
+
+    <!-- IDEAS + PERFIL -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Ideas a evaluar</div>
+        <div id="myIdeas"><div class="empty">Sin ideas registradas</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:6px;">Mi perfil actual</div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">Directora estratégica · 4 proyectos activos · Perfil expansivo y creativo</p>
+        <div id="profileRoles">
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Maitinada</span><span class="badge badge-purple">Dirección</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Mara</span><span class="badge badge-pink">Rol único</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Casa Lunae</span><span class="badge badge-pink">Rol único</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;"><span style="color:var(--text2);">Haz Eco</span><span class="badge badge-green">Estrategia</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALISIS DE PERFIL -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Análisis de perfil — tendencias de habilidades</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Carga por tipo de trabajo</p>
+        <div id="skillBars"><div class="empty">Cargando...</div></div>
+      </div>
+      <div>
+        <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Análisis IA de tu perfil</p>
+        <div id="skillAnalysis"><div class="ai-loading" style="padding:1rem 0;">Presiona para analizar tus patrones de trabajo</div></div>
+        <button class="btn-full" onclick="generateSkillAnalysis()">Analizar mi perfil →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </main>
 
 <script>
-const NOTION_TOKEN = '%%NOTION_TOKEN%%';
-const TASKS_DB = 'd864d37740c440138705e0711696119c';
-const GOALS_DB = '566e9a9c617b4367b9f1e5842fdb35e3';
 const PROXY = 'https://notion-proxy.rayo-pizarroa.workers.dev';
+const DBS = {
+  maitinada: 'd864d37740c440138705e0711696119c',
+  mara: 'cdd54ab81ff847c7a8bdf0b72d76e192',
+  casalunae: 'de9c4c6b36c84ffd838db4adf3e6e95b',
+  hazeco: '0fe981cee91d435e9cdb62780e946e32',
+  personal: '7a45a2551ccb473490d3a47c983ceb59',
+  objetivos: '566e9a9c617b4367b9f1e5842fdb35e3'
+};
+const PROJECT_NAMES = { maitinada: 'Maitinada', mara: 'Mara', casalunae: 'Casa Lunae', hazeco: 'Haz Eco', personal: 'Personal' };
+const PROJECT_COLORS = { maitinada: '#C47A20', mara: '#5B4FE8', casalunae: '#C44880', hazeco: '#2D9B6F', personal: '#6B6860' };
+const PRIORITY_COLORS = { '🔴 Hacer hoy': '#D94040', '🟠 Para esta semana': '#C47A20', '🟠 Esta semana': '#C47A20', '🟡 Bloque rápido': '#2D9B6F' };
 
-let allTasks = [];
+let allTasks = {};
 let allGoals = [];
 let currentPeriod = 'week';
 let currentPeriod2 = 'week';
-
-const COLORS = {
-  'Mara': '#5B4FE8',
-  'Casa Lunae': '#C44880',
-  'Haz Eco': '#2D9B6F',
-  'Maitinada': '#C47A20',
-  'Personal': '#6B6860',
-  'Transversal': '#9B9890'
-};
-
-const PRIORITY_COLORS = {
-  '🔴 Hacer hoy': '#D94040',
-  '🟠 Esta semana': '#C47A20',
-  '🟠 Para esta semana': '#C47A20',
-  '🟡 Bloque rápido': '#2D9B6F'
-};
+let currentChartType = 'bubble';
 
 function setDate() {
   const now = new Date();
   const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
   document.getElementById('dateLabel').textContent = now.toLocaleDateString('es-CL', opts);
-  const hour = now.getHours();
-  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
-  document.getElementById('greetingText').textContent = `${greeting}, Rayo`;
+  const h = now.getHours();
+  const g = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('greetingText').textContent = `${g}, Rayo`;
 }
 
 function switchTab(tab, btn) {
@@ -1072,17 +450,23 @@ function switchTab(tab, btn) {
 
 function setPeriod(p, btn) {
   currentPeriod = p;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#tab-general .period-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderGeneral();
 }
 
 function setPeriod2(p, btn) {
   currentPeriod2 = p;
-  const btns = document.querySelectorAll('#tab-mipanel .period-btn');
-  btns.forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#tab-mipanel .period-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderMyPanel();
+}
+
+function setChartType(type, btn) {
+  currentChartType = type;
+  document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  drawTeamChart();
 }
 
 async function fetchNotion(endpoint, body) {
@@ -1093,85 +477,43 @@ async function fetchNotion(endpoint, body) {
       body: JSON.stringify(body)
     });
     return await res.json();
-  } catch (e) {
-    console.error('Notion fetch error:', e);
-    return null;
-  }
+  } catch(e) { return null; }
 }
 
 async function loadData() {
-  const btn = document.getElementById('btnRefresh');
-  btn.classList.add('loading');
-  btn.textContent = 'Actualizando...';
-  document.getElementById('loadingMsg').textContent = 'Leyendo tareas de Notion...';
+  document.getElementById('btnAnalysis') && (document.getElementById('btnAnalysis').textContent = 'Generar análisis semanal →');
+  document.getElementById('greetingSub').textContent = 'Actualizando...';
 
-  try {
-    const goalsRes = await fetchNotion(`databases/${GOALS_DB}/query`, { page_size: 100 });
-    if (goalsRes && goalsRes.results) allGoals = goalsRes.results;
-  } catch (e) { console.log("Error objetivos:", e); }
+  const results = await Promise.allSettled([
+    fetchNotion(`databases/${DBS.maitinada}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.mara}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.casalunae}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.hazeco}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.personal}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.objetivos}/query`, { page_size: 100 })
+  ]);
 
-  try {
-    const tasksRes = await fetchNotion(`databases/${TASKS_DB}/query`, { page_size: 100, filter: { property: "Estado", select: { does_not_equal: "Completada" } } });
-    if (tasksRes && tasksRes.results) allTasks = tasksRes.results;
-  } catch (e) { console.log("Error tareas:", e); }
+  const keys = ['maitinada','mara','casalunae','hazeco','personal'];
+  keys.forEach((k, i) => {
+    const r = results[i];
+    allTasks[k] = (r.status === 'fulfilled' && r.value?.results) ? r.value.results : [];
+  });
+  const gr = results[5];
+  allGoals = (gr.status === 'fulfilled' && gr.value?.results) ? gr.value.results : [];
 
-  const loaded = (allGoals.length > 0 ? `${allGoals.length} objetivos cargados` : "0 objetivos") +
-    (allTasks.length > 0 ? ` · ${allTasks.length} tareas` : " · sin tareas Maitinada");
-  document.getElementById("greetingSub").textContent = loaded;
+  const total = Object.values(allTasks).reduce((a,b) => a + b.length, 0);
+  document.getElementById('greetingSub').textContent = `${allGoals.length} objetivos · ${total} tareas activas`;
 
   renderGeneral();
   renderMyPanel();
-  drawBubbles();
-  drawSparkline();
-  drawHoursLine();
-
+  drawTeamChart();
   document.getElementById('loadingScreen').classList.add('hidden');
-  btn.classList.remove('loading');
-  btn.textContent = 'Actualizar';
 }
 
-function loadSampleData() {
-  allTasks = [
-    { properties: { Tarea: { title: [{ plain_text: 'Revisar propuesta cliente Mara' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🔴 Hacer hoy' } }, Tipo: { select: { name: 'Decisión' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: { start: new Date(Date.now()-2*86400000).toISOString().split('T')[0] } } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Informe Q2 Haz Eco' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🔴 Hacer hoy' } }, Tipo: { select: { name: 'Revisión' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: { start: new Date().toISOString().split('T')[0] } } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Activar redes sociales Mara' }] }, Estado: { select: { name: 'En proceso' } }, Prioridad: { select: { name: '🟠 Esta semana' } }, Tipo: { select: { name: 'Activación' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: { start: new Date(Date.now()+86400000).toISOString().split('T')[0] } } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Guía de marca Casa Lunae v2' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🟠 Esta semana' } }, Tipo: { select: { name: 'Diseño' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: null } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Redistribuir carga equipo Mari' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🟠 Esta semana' } }, Tipo: { select: { name: 'Optimización' } }, Responsable: { select: { name: 'Mari' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: null } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Planificación financiera julio' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🟡 Bloque rápido' } }, Tipo: { select: { name: 'Revisión' } }, Responsable: { select: { name: 'Gery' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: null } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Reunión equipo Maitinada' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🔴 Hacer hoy' } }, Tipo: { select: { name: 'Reunión' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: null } } },
-    { properties: { Tarea: { title: [{ plain_text: 'Estudiar tendencias branding' }] }, Estado: { select: { name: 'Pendiente' } }, Prioridad: { select: { name: '🟡 Bloque rápido' } }, Tipo: { select: { name: 'Estudio' } }, Responsable: { select: { name: 'Rayo' } }, 'Enviado por': { select: { name: 'Rayo' } }, 'Fecha Límite': { date: null } } },
-  ];
-
-  allGoals = [
-    { properties: { Objetivo: { title: [{ plain_text: 'Página web Mara lanzada' }] }, Proyecto: { select: { name: 'Mara' } }, Estado: { select: { name: 'En proceso' } }, Nivel: { select: { name: 'Anual' } }, Trimestre: { select: { name: 'Q3' } } } },
-    { properties: { Objetivo: { title: [{ plain_text: 'Redes sociales Mara activas' }] }, Proyecto: { select: { name: 'Mara' } }, Estado: { select: { name: 'Por iniciar' } }, Nivel: { select: { name: 'Anual' } }, Trimestre: { select: { name: 'Q3' } } } },
-    { properties: { Objetivo: { title: [{ plain_text: 'Activar venta online Casa Lunae' }] }, Proyecto: { select: { name: 'Casa Lunae' } }, Estado: { select: { name: 'Por iniciar' } }, Nivel: { select: { name: 'Anual' } }, Trimestre: { select: { name: 'Q3' } } } },
-    { properties: { Objetivo: { title: [{ plain_text: 'Taller presencial Mujeres que corren' }] }, Proyecto: { select: { name: 'Casa Lunae' } }, Estado: { select: { name: 'Por iniciar' } }, Nivel: { select: { name: 'Anual' } }, Trimestre: { select: { name: 'Q4' } } } },
-    { properties: { Objetivo: { title: [{ plain_text: 'Sistema gestión personal funcionando' }] }, Proyecto: { select: { name: 'Personal' } }, Estado: { select: { name: 'En proceso' } }, Nivel: { select: { name: 'Trimestral' } }, Trimestre: { select: { name: 'Q3' } } } },
-  ];
-}
-
-function getProp(task, prop) {
-  try { return task.properties[prop]; } catch { return null; }
-}
-
-function getTitle(task) {
-  try { return task.properties.Tarea.title[0].plain_text; } catch { return 'Sin título'; }
-}
-
-function getSelect(task, prop) {
-  try { return task.properties[prop].select.name; } catch { return null; }
-}
-
-function getDate(task, prop) {
-  try { return task.properties[prop].date.start; } catch { return null; }
-}
-
-function isOverdue(task) {
-  const d = getDate(task, 'Fecha Límite');
-  if (!d) return false;
-  return new Date(d) < new Date(new Date().toDateString());
-}
+function getTitle(task) { try { return task.properties.Tarea.title[0].plain_text; } catch { return 'Sin título'; } }
+function getSelect(task, prop) { try { return task.properties[prop].select?.name || null; } catch { return null; } }
+function getDate(task, prop) { try { return task.properties[prop]?.date?.start || null; } catch { return null; } }
+function getUrl(task) { return task.url || '#'; }
 
 function isMyTask(task) {
   const resp = getSelect(task, 'Responsable');
@@ -1180,461 +522,383 @@ function isMyTask(task) {
   return resp === 'Rayo' || env === 'Rayo' || dest.includes('Rayo');
 }
 
+function isOverdue(task) {
+  const d = getDate(task, 'Fecha Límite') || getDate(task, 'Fecha limite');
+  if (!d) return false;
+  return new Date(d) < new Date(new Date().toDateString());
+}
+
+function getAllTasks() { return Object.values(allTasks).flat(); }
+
 function renderGeneral() {
-  const myTasks = allTasks.filter(isMyTask);
-  const critical = allTasks.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy');
-  const loggedGoals = allGoals.filter(g => getSelect(g, 'Estado') === 'Logrado');
-
-  document.getElementById('m-total').textContent = allTasks.length;
-  document.getElementById('m-period').textContent = currentPeriod === 'day' ? 'hoy' : currentPeriod === 'week' ? 'esta semana' : 'este mes';
-  document.getElementById('m-critical').textContent = critical.length;
-  document.getElementById('m-objectives').textContent = loggedGoals.length;
-  document.getElementById('m-obj-sub').textContent = `de ${allGoals.length} objetivos`;
-  document.getElementById('m-alerts').textContent = critical.length > 3 ? '2' : '1';
-
-  renderProjectGoals();
-  renderTasksByType();
+  renderProjectTable();
   renderCriticalTasks();
   renderCriticalPoints();
-  renderWellbeing();
 }
 
-function renderProjectGoals() {
-  const projects = ['Mara', 'Casa Lunae', 'Haz Eco', 'Personal'];
-  const statusMap = { 'Logrado': { color: '#2D9B6F', badge: 'badge-green', label: 'Logrado' }, 'En proceso': { color: '#5B4FE8', badge: 'badge-purple', label: 'En proceso' }, 'Por iniciar': { color: '#C47A20', badge: 'badge-amber', label: 'Por iniciar' }, 'En riesgo': { color: '#D94040', badge: 'badge-red', label: 'En riesgo' } };
-
-  const html = projects.map(proj => {
-    const goals = allGoals.filter(g => getSelect(g, 'Proyecto') === proj);
-    const total = goals.length;
+function renderProjectTable() {
+  const tbody = document.getElementById('projectTableBody');
+  const rows = Object.entries(PROJECT_NAMES).map(([key, name]) => {
+    const tasks = allTasks[key] || [];
+    const critical = tasks.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy').length;
+    const goals = allGoals.filter(g => getSelect(g, 'Proyecto') === name);
     const done = goals.filter(g => getSelect(g, 'Estado') === 'Logrado').length;
-    const inProgress = goals.filter(g => getSelect(g, 'Estado') === 'En proceso').length;
+    const total = goals.length;
+    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+    const color = PROJECT_COLORS[key];
+    const inProcess = goals.filter(g => getSelect(g, 'Estado') === 'En proceso').length;
     const atRisk = goals.filter(g => getSelect(g, 'Estado') === 'En riesgo').length;
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    const color = COLORS[proj] || '#6B6860';
-    const statusLabel = atRisk > 0 ? 'En riesgo' : inProgress > 0 ? 'En proceso' : done === total && total > 0 ? 'Logrado' : 'Por iniciar';
-    const s = statusMap[statusLabel] || statusMap['Por iniciar'];
+    const statusLabel = atRisk > 0 ? ['badge-red','En riesgo'] : inProcess > 0 ? ['badge-purple','En proceso'] : done === total && total > 0 ? ['badge-green','Logrado'] : ['badge-amber','Por iniciar'];
 
-    return `<div class="project-card">
-      <div class="project-header">
-        <span class="project-name">${proj}</span>
-        <span class="badge ${s.badge}">${s.label}</span>
-      </div>
-      <div class="progress-row"><span>Objetivos</span><span style="font-weight:500;">${done}/${total}</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color};"></div></div>
-      <div class="progress-row" style="margin-top:6px;"><span>En proceso</span><span>${inProgress}</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${total>0?Math.round(inProgress/total*100):0}%;background:${color}88;"></div></div>
-    </div>`;
+    return `<tr>
+      <td><span class="project-dot" style="background:${color};"></span>${name}</td>
+      <td style="font-weight:500;">${tasks.length}</td>
+      <td style="color:${critical > 0 ? 'var(--red)' : 'var(--text)'};font-weight:${critical > 0 ? '500' : '400'};">${critical}</td>
+      <td>${done}/${total}</td>
+      <td><div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${color};"></div></div> <span style="font-size:11px;color:var(--text3);margin-left:6px;">${pct}%</span></td>
+      <td><span class="badge ${statusLabel[0]}">${statusLabel[1]}</span></td>
+    </tr>`;
   }).join('');
-
-  document.getElementById('projectGoals').innerHTML = html;
-}
-
-function renderTasksByType() {
-  const types = ['Diseño', 'Activación', 'Decisión', 'Revisión', 'Reunión', 'Optimización', 'Estudio'];
-  const counts = {};
-  types.forEach(t => counts[t] = 0);
-  allTasks.forEach(task => {
-    const tipo = getSelect(task, 'Tipo');
-    if (tipo && counts[tipo] !== undefined) counts[tipo]++;
-  });
-  const max = Math.max(...Object.values(counts), 1);
-  const colorMap = { 'Diseño': '#C44880', 'Activación': '#C47A20', 'Decisión': '#D94040', 'Revisión': '#5B4FE8', 'Reunión': '#2D9B6F', 'Optimización': '#5B4FE8', 'Estudio': '#C47A20' };
-
-  const html = types.map(t => `
-    <div class="skill-bar-row">
-      <span class="skill-name">${t}</span>
-      <div class="skill-bar"><div class="skill-fill" style="width:${Math.round(counts[t]/max*100)}%;background:${colorMap[t]||'#5B4FE8'};"></div></div>
-      <span class="skill-count">${counts[t]}</span>
-    </div>`).join('');
-
-  document.getElementById('tasksByType').innerHTML = html;
+  tbody.innerHTML = rows;
 }
 
 function renderCriticalTasks() {
-  const critical = allTasks.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy').slice(0, 5);
-  if (!critical.length) { document.getElementById('criticalTasks').innerHTML = '<div class="empty-state">Sin tareas críticas</div>'; return; }
+  const all = getAllTasks();
+  const critical = all.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy').slice(0, 6);
+  if (!critical.length) { document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas críticas</div>'; return; }
 
   const html = critical.map(t => {
     const overdue = isOverdue(t);
-    const d = getDate(t, 'Fecha Límite');
+    const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
     const daysAgo = d ? Math.floor((new Date() - new Date(d)) / 86400000) : 0;
     const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Vence hoy';
     const cls = overdue ? 'red' : 'amber';
-    return `<div class="critical-item ${cls}">
+    const resp = getSelect(t, 'Responsable') || '';
+    return `<div class="critical-item ${cls}" onclick="window.open('${getUrl(t)}','_blank')">
       <div class="critical-dot" style="background:${overdue ? 'var(--red)' : 'var(--amber)'};"></div>
-      <div>
-        <div class="critical-title ${cls}">${getTitle(t)}</div>
-        <div class="critical-meta ${cls}">${getSelect(t, 'Responsable') || ''} · ${meta}</div>
-      </div>
+      <div><div class="critical-title ${cls}">${getTitle(t)}</div>
+      <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
     </div>`;
   }).join('');
-
   document.getElementById('criticalTasks').innerHTML = html;
 }
 
 function renderCriticalPoints() {
-  const moriTasks = allTasks.filter(t => getSelect(t, 'Responsable') === 'Mari').length;
-  const totalTeam = allTasks.length;
   const points = [];
+  const maitTasks = allTasks.maitinada || [];
+  const mariCount = maitTasks.filter(t => getSelect(t,'Responsable') === 'Mari').length;
+  const avgLoad = maitTasks.length / 5;
+  if (mariCount > avgLoad * 1.5) points.push({ color: 'red', project: 'Maitinada', text: `Carga operativa alta en Mari (${mariCount} tareas). Riesgo de desgaste si no se redistribuye.` });
 
-  if (moriTasks > 5) points.push({ color: 'red', project: 'Maitinada', text: `Carga operativa alta en Mari (${moriTasks} tareas). Riesgo de desgaste si no se redistribuye pronto.` });
+  const maraGoals = allGoals.filter(g => getSelect(g,'Proyecto') === 'Mara' && getSelect(g,'Estado') !== 'Logrado');
+  if ((allTasks.mara || []).filter(isOverdue).length > 1) points.push({ color: 'amber', project: 'Mara', text: 'Pipeline de clientes vacío. Requiere activación de captación esta semana.' });
 
-  const maraGoals = allGoals.filter(g => getSelect(g, 'Proyecto') === 'Mara' && getSelect(g, 'Estado') !== 'Logrado');
-  if (maraGoals.length > 2) points.push({ color: 'amber', project: 'Mara', text: 'Pipeline de clientes vacío. Requiere activación de captación esta semana.' });
+  const hazecoTasks = allTasks.hazeco || [];
+  if (hazecoTasks.length > 0 && allGoals.filter(g => getSelect(g,'Proyecto') === 'Haz Eco').length === 0) points.push({ color: 'amber', project: 'Haz Eco', text: 'Sin objetivos definidos. Pendiente reunión estratégica con la fundadora.' });
 
-  if (!points.length) points.push({ color: 'amber', project: 'General', text: 'Sin puntos críticos detectados esta semana. Buen ritmo.' });
+  if (!points.length) points.push({ color: 'amber', project: 'General', text: 'Sin puntos críticos detectados esta semana.' });
 
   document.getElementById('criticalPoints').innerHTML = points.map(p => `
-    <div style="border-left:2px solid var(--${p.color});padding-left:12px;margin-bottom:10px;border-radius:0;">
+    <div style="border-left:2px solid var(--${p.color});padding-left:12px;margin-bottom:10px;">
       <span class="badge badge-${p.color === 'red' ? 'red' : 'amber'}" style="margin-bottom:4px;display:inline-block;">${p.project}</span>
       <p style="font-size:13px;color:var(--text);line-height:1.6;">${p.text}</p>
     </div>`).join('');
 }
 
-function renderWellbeing() {
-  document.getElementById('wb-sleep').textContent = '—';
-  document.getElementById('wb-work').textContent = '—';
-  document.getElementById('wb-energy').textContent = '—';
-  document.getElementById('wb-cycle').textContent = 'Registra por Telegram';
-  document.getElementById('wb-vitamins').textContent = '—';
+function drawTeamChart() {
+  const c = document.getElementById('teamChart');
+  if (!c) return;
+  c.width = c.offsetWidth * devicePixelRatio;
+  c.height = 180 * devicePixelRatio;
+  const ctx = c.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const W = c.offsetWidth, H = 180;
+  ctx.clearRect(0, 0, W, H);
+
+  const maitTasks = allTasks.maitinada || [];
+  const people = {};
+  maitTasks.forEach(t => {
+    const r = getSelect(t, 'Responsable');
+    if (r) people[r] = (people[r] || 0) + 1;
+  });
+
+  // Add Rayo from all projects
+  const myTotal = Object.values(allTasks).flat().filter(isMyTask).length;
+  people['Rayo'] = myTotal;
+
+  const entries = Object.entries(people).filter(([,v]) => v > 0);
+  if (!entries.length) return;
+
+  const colors = { Rayo: '#5B4FE8', Mari: '#2D9B6F', Gery: '#C47A20', Maryo: '#C44880', Javi: '#6B6860' };
+
+  if (currentChartType === 'bubble') {
+    const positions = { Rayo: [W*0.5,90], Mari: [W*0.2,80], Gery: [W*0.38,60], Maryo: [W*0.65,95], Javi: [W*0.82,70] };
+    entries.forEach(([name, count]) => {
+      const [x, y] = positions[name] || [W * 0.5, 90];
+      const r = 14 + count * 3;
+      const color = colors[name] || '#9B9890';
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+      ctx.fillStyle = color + '30'; ctx.fill();
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = `500 11px 'DM Sans', sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText(name, x, y - 2);
+      ctx.font = `400 10px 'DM Sans', sans-serif`;
+      ctx.fillText(`${count}t`, x, y + 11);
+    });
+  } else {
+    const max = Math.max(...entries.map(([,v]) => v), 1);
+    const barW = Math.min(40, (W - 40) / entries.length - 8);
+    const startX = (W - entries.length * (barW + 8)) / 2;
+    entries.forEach(([name, count], i) => {
+      const x = startX + i * (barW + 8);
+      const bh = Math.round((count / max) * 120);
+      const color = colors[name] || '#9B9890';
+      ctx.fillStyle = color + '40';
+      ctx.beginPath(); ctx.roundRect(x, H - 30 - bh, barW, bh, 4); ctx.fill();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.roundRect(x, H - 30 - bh, barW, 4, 2); ctx.fill();
+      ctx.fillStyle = color;
+      ctx.font = `400 10px 'DM Sans', sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText(name, x + barW/2, H - 14);
+      ctx.fillText(`${count}t`, x + barW/2, H - 34 - bh);
+    });
+  }
 }
 
 function renderMyPanel() {
-  const myTasks = allTasks.filter(isMyTask);
-  const decisions = myTasks.filter(t => getSelect(t, 'Tipo') === 'Decisión');
-  const meetings = myTasks.filter(t => getSelect(t, 'Tipo') === 'Reunión');
-  const ideas = myTasks.filter(t => getSelect(t, 'Tipo') === 'Idea');
-  const done = allTasks.filter(t => getSelect(t, 'Estado') === 'Completada');
+  const allFlat = Object.values(allTasks).flat();
+  const myTasks = allFlat.filter(isMyTask);
+  const decisions = myTasks.filter(t => getSelect(t,'Tipo') === 'Decisión');
+  const meetings = myTasks.filter(t => getSelect(t,'Tipo') === 'Reunión');
+  const ideas = myTasks.filter(t => getSelect(t,'Tipo') === 'Idea');
 
   document.getElementById('p-total').textContent = myTasks.length;
   document.getElementById('p-meetings').textContent = meetings.length;
   document.getElementById('p-decisions').textContent = decisions.length;
   document.getElementById('p-ideas').textContent = ideas.length;
-  document.getElementById('p-done').textContent = done.length;
+  document.getElementById('p-done').textContent = allFlat.filter(t => getSelect(t,'Estado') === 'Completada').length;
 
   renderWorkCols(myTasks);
-  renderMyTasks(myTasks);
-  renderAgenda(meetings);
+  renderProjCols(myTasks);
+  renderAgenda(myTasks);
   renderNotifications(myTasks);
+  renderIdeas(ideas);
   renderSkillBars(myTasks);
 }
 
 function renderWorkCols(tasks) {
-  const types = ['Diseño', 'Decisión', 'Revisión', 'Activación', 'Optimización', 'Estudio', 'Reunión'];
+  const types = ['Diseño','Decisión','Revisión','Activación','Reunión','Optimización','Estudio','Tarea'];
   const grouped = {};
   types.forEach(t => grouped[t] = []);
-  tasks.forEach(t => {
-    const tipo = getSelect(t, 'Tipo');
-    if (tipo && grouped[tipo]) grouped[tipo].push(t);
-  });
+  tasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && grouped[tipo] !== undefined) grouped[tipo].push(t); });
+  const active = types.filter(t => grouped[t].length > 0).slice(0,4);
+  if (!active.length) { document.getElementById('workCols').innerHTML = '<div class="empty" style="grid-column:span 4;">Sin tareas activas</div>'; return; }
 
-  const cols = types.filter(t => grouped[t].length > 0).slice(0, 4);
-  if (!cols.length) { document.getElementById('workCols').innerHTML = '<div class="empty-state" style="grid-column:span 4;">Sin tareas activas</div>'; return; }
-
-  const html = cols.map(tipo => {
+  const colorMap = { 'Decisión': 'var(--red-light)', 'Diseño': 'var(--pink-light)', 'Reunión': 'var(--green-light)' };
+  const html = active.map(tipo => {
     const items = grouped[tipo];
-    const colorMap = { 'Decisión': 'var(--red-light)', 'Diseño': 'var(--pink-light)' };
-    const taskHtml = items.slice(0, 3).map(t => `<div class="work-task" style="background:${colorMap[tipo] || 'var(--surface)'};">${getTitle(t)}</div>`).join('');
-    const extra = items.length > 3 ? `<div class="work-task" style="color:var(--text3);">+ ${items.length - 3} más</div>` : '';
-    return `<div class="work-col">
-      <div class="work-col-title">${tipo} <span style="color:${items.length > 2 ? 'var(--red)' : 'var(--text3)'};">${items.length}</span></div>
-      ${taskHtml}${extra}
-    </div>`;
+    const taskHtml = items.slice(0,3).map(t => `<div class="work-task" style="background:${colorMap[tipo]||'var(--surface)'};" onclick="window.open('${getUrl(t)}','_blank')">${getTitle(t)}</div>`).join('');
+    const extra = items.length > 3 ? `<div class="work-task" style="color:var(--text3);">+ ${items.length-3} más</div>` : '';
+    return `<div class="work-col"><div class="work-col-title">${tipo}<span style="color:${items.length>2?'var(--red)':'var(--text3)'};">${items.length}</span></div>${taskHtml}${extra}</div>`;
   }).join('');
-
   document.getElementById('workCols').innerHTML = html;
 }
 
-function renderMyTasks(tasks) {
-  const sorted = [...tasks].sort((a, b) => {
-    const order = { '🔴 Hacer hoy': 0, '🟠 Esta semana': 1, '🟠 Para esta semana': 1, '🟡 Bloque rápido': 2 };
-    return (order[getSelect(a, 'Prioridad')] ?? 3) - (order[getSelect(b, 'Prioridad')] ?? 3);
+function renderProjCols(tasks) {
+  const sorted = [...tasks].sort((a,b) => {
+    const order = {'🔴 Hacer hoy':0,'🟠 Para esta semana':1,'🟠 Esta semana':1,'🟡 Bloque rápido':2};
+    return (order[getSelect(a,'Prioridad')]??3) - (order[getSelect(b,'Prioridad')]??3);
   });
 
-  if (!sorted.length) { document.getElementById('myTasks').innerHTML = '<div class="empty-state">Sin tareas asignadas</div>'; return; }
-
-  const html = sorted.map(t => {
-    const prio = getSelect(t, 'Prioridad');
-    const tipo = getSelect(t, 'Tipo');
-    const color = PRIORITY_COLORS[prio] || '#9B9890';
-    const badgeClass = prio?.includes('🔴') ? 'badge-red' : prio?.includes('🟠') ? 'badge-amber' : 'badge-green';
-    return `<div class="task-item">
-      <div class="task-priority" style="background:${color};"></div>
-      <div class="task-content">
-        <div class="task-title">${getTitle(t)}</div>
-        <div class="task-tags">
-          ${prio ? `<span class="badge ${badgeClass}">${prio}</span>` : ''}
-          ${tipo ? `<span class="badge badge-gray">${tipo}</span>` : ''}
-        </div>
-      </div>
-    </div>`;
+  const html = Object.entries(PROJECT_NAMES).map(([key,name]) => {
+    const projTasks = sorted.filter(t => {
+      const db = Object.entries(DBS).find(([k,v]) => allTasks[k]?.includes(t));
+      return db && db[0] === key;
+    });
+    const color = PROJECT_COLORS[key];
+    const taskHtml = projTasks.slice(0,4).map(t => {
+      const prio = getSelect(t,'Prioridad');
+      const pc = PRIORITY_COLORS[prio] || '#9B9890';
+      return `<div class="proj-task" style="border-left-color:${pc};" onclick="window.open('${getUrl(t)}','_blank')">${getTitle(t)}</div>`;
+    }).join('');
+    const extra = projTasks.length > 4 ? `<div class="proj-task" style="color:var(--text3);">+ ${projTasks.length-4} más</div>` : '';
+    const empty = projTasks.length === 0 ? `<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Sin tareas</div>` : '';
+    return `<div class="proj-col"><div class="proj-col-title"><span style="color:${color};">${name}</span><span style="color:var(--text3);">${projTasks.length}</span></div>${taskHtml}${extra}${empty}</div>`;
   }).join('');
-
-  document.getElementById('myTasks').innerHTML = html;
+  document.getElementById('projCols').innerHTML = html;
 }
 
-function renderAgenda(meetings) {
-  if (!meetings.length) { document.getElementById('myAgenda').innerHTML = '<div class="empty-state">Sin reuniones registradas</div>'; return; }
-  const html = meetings.map(t => `
-    <div class="timeline-item">
+function renderAgenda(tasks) {
+  const today = new Date().toISOString().split('T')[0];
+  const events = tasks.filter(t => {
+    const d = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
+    return d && d.startsWith(today) && (getSelect(t,'Tipo') === 'Reunión' || getSelect(t,'Tipo') === 'Evento');
+  });
+  if (!events.length) { document.getElementById('myAgenda').innerHTML = '<div class="empty">Sin eventos con fecha registrada hoy</div>'; return; }
+  document.getElementById('myAgenda').innerHTML = events.map(t => `
+    <div class="timeline-item" style="cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
       <span class="timeline-time">—</span>
-      <div class="timeline-content">
-        <div class="timeline-title">${getTitle(t)}</div>
-        <div class="timeline-tags"><span class="badge badge-purple">Reunión</span></div>
-      </div>
+      <div><p style="font-size:13px;">${getTitle(t)}</p><div style="margin-top:3px;"><span class="badge badge-purple">${getSelect(t,'Tipo')||'Evento'}</span></div></div>
     </div>`).join('');
-  document.getElementById('myAgenda').innerHTML = html;
 }
 
 function renderNotifications(tasks) {
-  const notifs = tasks.filter(t => getSelect(t, 'Tipo') === 'Notificación' || getSelect(t, 'Tipo') === 'Idea');
-  if (!notifs.length) { document.getElementById('myNotifications').innerHTML = '<div class="empty-state">Sin notificaciones</div>'; return; }
-
-  const html = notifs.slice(0, 4).map(t => {
-    const isIdea = getSelect(t, 'Tipo') === 'Idea';
-    return `<div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:6px;">
-      <span style="font-size:14px;flex-shrink:0;margin-top:1px;">${isIdea ? '💡' : '🔔'}</span>
-      <div>
-        <p style="font-size:12px;margin:0;color:var(--text);">${getTitle(t)}</p>
-        <p style="font-size:11px;margin:0;color:var(--text3);">${getSelect(t, 'Tipo')}</p>
-      </div>
+  const notifs = tasks.filter(t => getSelect(t,'Tipo') === 'Notificación');
+  if (!notifs.length) { document.getElementById('myNotifications').innerHTML = '<div class="empty">Sin notificaciones</div>'; return; }
+  document.getElementById('myNotifications').innerHTML = notifs.slice(0,4).map(t => {
+    const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+    const projName = PROJECT_NAMES[projKey] || '';
+    const color = PROJECT_COLORS[projKey] || '#9B9890';
+    return `<div style="display:flex;gap:8px;padding:8px;background:var(--surface2);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+      <span style="font-size:14px;flex-shrink:0;">🔔</span>
+      <div><p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
+      <p style="font-size:11px;color:var(--text3);margin-top:2px;"><span style="color:${color};font-weight:500;">${projName}</span></p></div>
     </div>`;
   }).join('');
+}
 
-  document.getElementById('myNotifications').innerHTML = html;
+function renderIdeas(ideas) {
+  if (!ideas.length) { document.getElementById('myIdeas').innerHTML = '<div class="empty">Sin ideas registradas</div>'; return; }
+  document.getElementById('myIdeas').innerHTML = ideas.slice(0,4).map(t => {
+    const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+    const projName = PROJECT_NAMES[projKey] || '';
+    return `<div style="display:flex;gap:8px;padding:8px;background:var(--purple-light);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+      <span style="font-size:14px;flex-shrink:0;">💡</span>
+      <div><p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
+      <p style="font-size:11px;color:var(--purple);margin-top:2px;">${projName}</p></div>
+    </div>`;
+  }).join('');
 }
 
 function renderSkillBars(tasks) {
-  const types = ['Diseño', 'Activación', 'Decisión', 'Revisión', 'Optimización', 'Estudio', 'Reunión'];
+  const types = ['Diseño','Reunión','Tarea','Estudio','Optimización','Decisión'];
   const counts = {};
   types.forEach(t => counts[t] = 0);
-  tasks.forEach(t => { const tipo = getSelect(t, 'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
+  tasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
   const max = Math.max(...Object.values(counts), 1);
-  const colorMap = { 'Diseño': '#C44880', 'Activación': '#C47A20', 'Decisión': '#D94040', 'Revisión': '#5B4FE8', 'Optimización': '#2D9B6F', 'Estudio': '#C47A20', 'Reunión': '#2D9B6F' };
-
+  const colorMap = { 'Diseño':'#C44880','Reunión':'#2D9B6F','Tarea':'#6B6860','Estudio':'#C47A20','Optimización':'#5B4FE8','Decisión':'#D94040' };
   const html = types.filter(t => counts[t] > 0).map(t => `
-    <div class="skill-bar-row">
+    <div class="skill-row">
       <span class="skill-name">${t}</span>
       <div class="skill-bar"><div class="skill-fill" style="width:${Math.round(counts[t]/max*100)}%;background:${colorMap[t]};"></div></div>
       <span class="skill-count">${counts[t]}</span>
     </div>`).join('');
-
-  document.getElementById('skillBars').innerHTML = html || '<div class="empty-state">Sin datos suficientes</div>';
+  document.getElementById('skillBars').innerHTML = html || '<div class="empty">Sin datos suficientes</div>';
 }
 
-function drawBubbles() {
-  const c = document.getElementById('bubbleCanvas');
-  if (!c) return;
-  c.width = c.offsetWidth * window.devicePixelRatio;
-  c.height = 160 * window.devicePixelRatio;
-  const ctx = c.getContext('2d');
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = c.offsetWidth, H = 160;
-
-  const people = { Mari: 0, Gery: 0, Maryo: 0, Javi: 0, Rayo: 0 };
-  allTasks.forEach(t => { const r = getSelect(t, 'Responsable'); if (r && people[r] !== undefined) people[r]++; });
-
-  const positions = { Mari: [W*0.2, 80], Gery: [W*0.42, 55], Maryo: [W*0.62, 90], Javi: [W*0.78, 65], Rayo: [W*0.5, 115] };
-  const colors = { Mari: '#2D9B6F', Gery: '#5B4FE8', Maryo: '#C44880', Javi: '#C47A20', Rayo: '#5B4FE8' };
-
-  Object.entries(people).forEach(([name, count]) => {
-    const [x, y] = positions[name];
-    const r = 14 + count * 3.5;
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
-    ctx.fillStyle = colors[name] + '30'; ctx.fill();
-    ctx.strokeStyle = colors[name]; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = colors[name];
-    ctx.font = `500 11px 'DM Sans', sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText(name, x, y - 2);
-    ctx.font = `400 10px 'DM Sans', sans-serif`;
-    ctx.fillText(`${count}t`, x, y + 11);
-  });
-}
-
-function drawSparkline() {
-  const c = document.getElementById('sparkCanvas');
-  if (!c) return;
-  c.width = c.offsetWidth * window.devicePixelRatio;
-  c.height = 60 * window.devicePixelRatio;
-  const ctx = c.getContext('2d');
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = c.offsetWidth, H = 60, pad = 8;
-  const data = [3, 5, 4, 7, 6, 2, 1];
-  const max = Math.max(...data);
-  const pts = data.map((v, i) => [pad + i*(W-2*pad)/6, H-pad-(v/max)*(H-2*pad)]);
-  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-  pts.slice(1).forEach(p => ctx.lineTo(p[0], p[1]));
-  ctx.strokeStyle = '#5B4FE8'; ctx.lineWidth = 1.5; ctx.stroke();
-  pts.forEach(p => { ctx.beginPath(); ctx.arc(p[0], p[1], 2.5, 0, Math.PI*2); ctx.fillStyle = '#5B4FE8'; ctx.fill(); });
-}
-
-function drawHoursLine() {
-  const c = document.getElementById('hoursCanvas');
-  if (!c) return;
-  c.width = c.offsetWidth * window.devicePixelRatio;
-  c.height = 50 * window.devicePixelRatio;
-  const ctx = c.getContext('2d');
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = c.offsetWidth, H = 50, pad = 8;
-  const data = [0.5, 1.2, 0.8, 1.5, 1.8, 0.7, 0];
-  const max = Math.max(...data);
-  const pts = data.map((v, i) => [pad + i*(W-2*pad)/6, H-pad-(v/max)*(H-2*pad)]);
-  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-  pts.slice(1).forEach(p => ctx.lineTo(p[0], p[1]));
-  ctx.strokeStyle = '#5B4FE8'; ctx.lineWidth = 1.5; ctx.stroke();
-  pts.forEach(p => { ctx.beginPath(); ctx.arc(p[0], p[1], 2.5, 0, Math.PI*2); ctx.fillStyle = '#5B4FE8'; ctx.fill(); });
-}
-
-let bitacoraData = JSON.parse(localStorage.getItem('bitacora') || '[]');
+let bitacoraData = [];
+try { bitacoraData = JSON.parse(localStorage.getItem('bitacora') || '[]'); } catch {}
 
 function renderBitacora() {
-  if (!bitacoraData.length) { document.getElementById('bitacoraEntries').innerHTML = '<div class="empty-state" style="padding:1rem 0;">Sin entradas esta semana. Agrega tu primera observación.</div>'; return; }
-  const html = bitacoraData.slice(-5).reverse().map(e => `
+  if (!bitacoraData.length) { document.getElementById('bitacoraEntries').innerHTML = '<div class="empty" style="padding:1rem 0;">Sin entradas esta semana. Agrega tu primera observación.</div>'; return; }
+  document.getElementById('bitacoraEntries').innerHTML = bitacoraData.slice(-5).reverse().map(e => `
     <div class="bitacora-entry">
-      <div class="bitacora-header">
-        <span class="bitacora-date">${e.date}</span>
-        <span class="badge badge-gray">${e.project}</span>
-      </div>
+      <div class="bitacora-header"><span class="bitacora-date">${e.date}</span><span class="badge badge-gray">${e.project}</span></div>
       <p class="bitacora-text">${e.text}</p>
     </div>`).join('');
-  document.getElementById('bitacoraEntries').innerHTML = html;
 }
 
 function addBitacora() {
   const input = document.getElementById('bitacoraInput');
   const project = document.getElementById('bitacoraProject').value;
   if (!input.value.trim()) return;
-  const now = new Date();
-  const date = now.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'short' });
+  const date = new Date().toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'short' });
   bitacoraData.push({ date, project, text: input.value.trim() });
-  localStorage.setItem('bitacora', JSON.stringify(bitacoraData));
+  try { localStorage.setItem('bitacora', JSON.stringify(bitacoraData)); } catch {}
   input.value = '';
   renderBitacora();
 }
 
-function openLink(url) { window.open(url, '_blank'); }
-
-function addBookmarkPrompt() {
+function addBookmark() {
   const name = prompt('Nombre del marcador:');
   const url = prompt('URL:');
-  if (name && url) alert('Marcador guardado: ' + name);
+  if (name && url) alert(`Marcador "${name}" guardado.`);
 }
 
 async function generateAnalysis() {
   const btn = document.getElementById('btnAnalysis');
-  btn.textContent = 'Analizando...';
-  btn.disabled = true;
+  btn.textContent = 'Analizando...'; btn.disabled = true;
   document.getElementById('aiAnalysis').innerHTML = '<div class="ai-loading">Analizando tus proyectos con IA...</div>';
 
   const summary = {
-    totalTasks: allTasks.length,
-    critical: allTasks.filter(t => isOverdue(t)).length,
+    totalTasks: getAllTasks().length,
+    critical: getAllTasks().filter(isOverdue).length,
     goals: allGoals.length,
-    loggedGoals: allGoals.filter(g => getSelect(g, 'Estado') === 'Logrado').length,
-    byProject: {}
+    loggedGoals: allGoals.filter(g => getSelect(g,'Estado') === 'Logrado').length,
+    byProject: Object.fromEntries(Object.entries(PROJECT_NAMES).map(([k,name]) => [name, {
+      tasks: (allTasks[k]||[]).length,
+      critical: (allTasks[k]||[]).filter(t => isOverdue(t) || getSelect(t,'Prioridad') === '🔴 Hacer hoy').length,
+      goals: allGoals.filter(g => getSelect(g,'Proyecto') === name).length,
+      done: allGoals.filter(g => getSelect(g,'Proyecto') === name && getSelect(g,'Estado') === 'Logrado').length
+    }]))
   };
-
-  ['Mara', 'Casa Lunae', 'Haz Eco', 'Personal'].forEach(p => {
-    summary.byProject[p] = {
-      tasks: allTasks.filter(t => isMyTask(t)).length,
-      goals: allGoals.filter(g => getSelect(g, 'Proyecto') === p).length,
-      done: allGoals.filter(g => getSelect(g, 'Proyecto') === p && getSelect(g, 'Estado') === 'Logrado').length
-    };
-  });
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 800,
-        messages: [{
-          role: 'user',
-          content: `Eres el asistente estratégico personal de Rayo, directora de múltiples proyectos (Mara: consultoría de branding, Casa Lunae: experiencias espirituales femeninas, Haz Eco: fundación socioambiental, Personal). Rayo es neurodivergente y trabaja con equipos neurodivergentes.
+        model: 'claude-sonnet-4-20250514', max_tokens: 800,
+        messages: [{ role: 'user', content: `Eres el asistente estratégico personal de Rayo, directora de múltiples proyectos (Maitinada: espacio de bienestar, Mara: consultoría de branding, Casa Lunae: experiencias espirituales femeninas, Haz Eco: fundación socioambiental, Personal). Rayo es neurodivergente y trabaja con equipos neurodivergentes.
 
-Datos actuales:
-${JSON.stringify(summary, null, 2)}
+Datos actuales: ${JSON.stringify(summary, null, 2)}
 
-Genera un análisis semanal breve pero crítico. Por proyecto, en máximo 2 oraciones cada uno. Sé directa, sin condescendencia. Identifica lo que está funcionando, lo que está en riesgo, y una acción concreta para esta semana. Responde en español.`
-        }]
+Genera un análisis semanal breve pero crítico. Por proyecto, máximo 2 oraciones. Directa, sin condescendencia. Identifica qué funciona, qué está en riesgo, y una acción concreta para esta semana. Responde en español.` }]
       })
     });
-
     const data = await res.json();
     const text = data.content?.[0]?.text || 'Error generando análisis.';
-
-    const projects = ['Mara', 'Casa Lunae', 'Haz Eco', 'Personal'];
+    const projects = Object.values(PROJECT_NAMES);
     let html = '';
-    const lines = text.split('\n').filter(l => l.trim());
-    lines.forEach(line => {
+    text.split('\n').filter(l => l.trim()).forEach(line => {
       const proj = projects.find(p => line.includes(p));
-      if (proj) {
-        html += `<div class="ai-block"><p class="ai-project">${proj}</p><p class="ai-text">${line.replace(proj + ':', '').replace(proj, '').trim()}</p></div>`;
-      } else if (line.trim()) {
-        html += `<div class="ai-block"><p class="ai-text">${line}</p></div>`;
-      }
+      if (proj) html += `<div class="ai-block"><p class="ai-project">${proj}</p><p class="ai-text">${line.replace(proj+':','').replace(proj,'').trim()}</p></div>`;
+      else if (line.trim()) html += `<div class="ai-block"><p class="ai-text">${line}</p></div>`;
     });
-
     document.getElementById('aiAnalysis').innerHTML = html || `<div class="ai-block"><p class="ai-text">${text}</p></div>`;
-  } catch (e) {
-    document.getElementById('aiAnalysis').innerHTML = '<div class="ai-loading">Error conectando con la IA. Verifica tu conexión.</div>';
+  } catch(e) {
+    document.getElementById('aiAnalysis').innerHTML = '<div class="ai-loading">Error conectando con la IA.</div>';
   }
-
-  btn.textContent = 'Regenerar análisis →';
-  btn.disabled = false;
+  btn.textContent = 'Regenerar análisis →'; btn.disabled = false;
 }
 
 async function generateSkillAnalysis() {
   document.getElementById('skillAnalysis').innerHTML = '<div class="ai-loading">Analizando tu perfil...</div>';
-
-  const myTasks = allTasks.filter(isMyTask);
-  const types = ['Diseño', 'Activación', 'Decisión', 'Revisión', 'Optimización', 'Estudio', 'Reunión'];
+  const allFlat = Object.values(allTasks).flat();
+  const myTasks = allFlat.filter(isMyTask);
+  const types = ['Diseño','Reunión','Tarea','Estudio','Optimización','Decisión','Activación'];
   const counts = {};
   types.forEach(t => counts[t] = 0);
-  myTasks.forEach(t => { const tipo = getSelect(t, 'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
+  myTasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 500,
-        messages: [{
-          role: 'user',
-          content: `Eres el asistente estratégico de Rayo, profesional neurodivergente, directora creativa y consultora de branding. Su perfil de trabajo esta semana:
-
-${JSON.stringify(counts)}
+        model: 'claude-sonnet-4-20250514', max_tokens: 500,
+        messages: [{ role: 'user', content: `Eres el asistente estratégico de Rayo, profesional neurodivergente, directora creativa y consultora de branding. Su distribución de trabajo: ${JSON.stringify(counts)}
 
 Analiza brevemente (máximo 4 oraciones):
 1. Qué tipos de trabajo están sobrerepresentados (posible sobrecarga)
-2. Qué talentos naturales se evidencian en su distribución de trabajo
-3. Qué tipo de trabajo falta o se está evitando (posible fricción o necesidad de delegar)
-4. Una recomendación concreta para potenciar sus talentos y liberar carga
+2. Qué talentos naturales se evidencian
+3. Qué tipo de trabajo falta o se evita (posible delegación)
+4. Una recomendación concreta para potenciar sus talentos
 
-Sé directa, sin condescendencia. En español.`
-        }]
+Directa, sin condescendencia. En español.` }]
       })
     });
-
     const data = await res.json();
-    const text = data.content?.[0]?.text || 'Error generando análisis.';
-    document.getElementById('skillAnalysis').innerHTML = `<p style="font-size:13px;color:var(--text);line-height:1.7;">${text}</p>`;
-  } catch (e) {
+    document.getElementById('skillAnalysis').innerHTML = `<p style="font-size:13px;color:var(--text);line-height:1.7;">${data.content?.[0]?.text || 'Error.'}</p>`;
+  } catch {
     document.getElementById('skillAnalysis').innerHTML = '<div class="ai-loading">Error conectando con la IA.</div>';
   }
 }
 
 setDate();
 renderBitacora();
-setTimeout(() => {
-  loadData();
-  drawBubbles();
-  drawSparkline();
-  drawHoursLine();
-}, 100);
+setTimeout(loadData, 100);
 </script>
 </body>
 </html>
