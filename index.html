@@ -699,26 +699,52 @@ function renderProjectTable() {
 
 function renderCriticalTasks() {
   const all = getAllTasks();
-  const critical = all.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy').slice(0, 6);
-  if (!critical.length) { document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas críticas</div>'; return; }
+  const critical = all.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy');
 
-  const html = critical.map(t => {
+  const responsable = critical.filter(t => getSelect(t, 'Responsable') === 'Rayo');
+  const destinataria = critical.filter(t => {
+    const dest = t.properties.Destinatarios?.multi_select?.map(d => d.name) || [];
+    const env = getSelect(t, 'Enviado por');
+    return getSelect(t, 'Responsable') !== 'Rayo' && (dest.includes('Rayo') || env === 'Rayo');
+  });
+
+  if (!responsable.length && !destinataria.length) {
+    document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas críticas</div>';
+    return;
+  }
+
+  function buildItem(t, showBtn) {
     const overdue = isOverdue(t);
     const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
     const daysAgo = d ? Math.floor((new Date() - new Date(d)) / 86400000) : 0;
-    const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Vence hoy';
+    const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Hacer hoy';
     const cls = overdue ? 'red' : 'amber';
     const resp = getSelect(t, 'Responsable') || '';
     const tid = t.id || '';
-    return `<div class="critical-item ${cls}" style="justify-content:space-between;">
-      <div style="display:flex;gap:10px;align-items:flex-start;flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
-        <div class="critical-dot" style="background:${overdue ? 'var(--red)' : 'var(--amber)'};margin-top:4px;"></div>
-        <div><div class="critical-title ${cls}">${getTitle(t)}</div>
+    const btn = showBtn
+      ? `<button onclick="completeTask('${tid}',this)" style="padding:3px 8px;border-radius:6px;border:1px solid currentColor;background:transparent;font-size:11px;cursor:pointer;color:${overdue?'var(--red)':'var(--amber)'};flex-shrink:0;font-family:inherit;" title="Marcar completada">✅</button>`
+      : `<button onclick="window.open('${getUrl(t)}','_blank')" style="padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:11px;cursor:pointer;color:var(--text3);flex-shrink:0;font-family:inherit;" title="Ver en Notion">→</button>`;
+    return `<div class="critical-item ${cls}" style="justify-content:space-between;margin-bottom:5px;">
+      <div style="display:flex;gap:8px;align-items:flex-start;flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+        <div class="critical-dot" style="background:${overdue?'var(--red)':'var(--amber)'};margin-top:4px;"></div>
+        <div><div class="critical-title ${cls}" style="font-size:12px;">${getTitle(t)}</div>
         <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
       </div>
-      <button onclick="completeTask('${tid}',this)" style="padding:4px 10px;border-radius:6px;border:1px solid currentColor;background:transparent;font-size:11px;cursor:pointer;color:${overdue?'var(--red)':'var(--amber)'};flex-shrink:0;font-family:inherit;" title="Marcar completada">✓</button>
+      ${btn}
     </div>`;
-  }).join('');
+  }
+
+  const html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mi responsabilidad</p>
+      ${responsable.length ? responsable.slice(0,5).map(t => buildItem(t, true)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Soy destinataria</p>
+      ${destinataria.length ? destinataria.slice(0,5).map(t => buildItem(t, false)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
+    </div>
+  </div>`;
+
   document.getElementById('criticalTasks').innerHTML = html;
 }
 
@@ -1098,6 +1124,10 @@ function applyTheme() {
   r.style.setProperty('--font-title', f.title);
   r.style.setProperty('--font-body', f.body);
   document.body.style.fontFamily = f.body;
+  // Inyectar CSS para que persista en re-renders
+  let styleTag = document.getElementById('dynamic-font-style');
+  if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'dynamic-font-style'; document.head.appendChild(styleTag); }
+  styleTag.textContent = `body, .tab-content, .card, .badge, button, input, select, .task-title, .work-task, .proj-task, .timeline-item, .bitacora-text { font-family: ${f.body} !important; } .greeting h1, .logo, .wb-value, h1, h2 { font-family: ${f.title} !important; }`;
   localStorage.setItem('pd_theme', currentTheme);
   localStorage.setItem('pd_accent', currentAccent);
   localStorage.setItem('pd_font', currentFont);
