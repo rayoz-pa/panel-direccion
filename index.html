@@ -853,14 +853,21 @@ function renderMyPanel() {
 }
 
 function renderWorkCols(tasks) {
-  const types = ['Diseño','Decisión','Revisión','Activación','Reunión','Optimización','Estudio','Tarea'];
   const grouped = {};
-  types.forEach(t => grouped[t] = []);
-  tasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && grouped[tipo] !== undefined) grouped[tipo].push(t); });
-  const active = types.filter(t => grouped[t].length > 0).slice(0,4);
+  tasks.forEach(t => {
+    const tipo = getSelect(t,'Tipo');
+    if (tipo) { if (!grouped[tipo]) grouped[tipo] = []; grouped[tipo].push(t); }
+  });
+  const active = Object.keys(grouped).sort((a,b) => grouped[b].length - grouped[a].length).slice(0,4);
   if (!active.length) { document.getElementById('workCols').innerHTML = '<div class="empty" style="grid-column:span 4;">Sin tareas activas</div>'; return; }
 
-  const colorMap = { 'Decisión': 'var(--red-light)', 'Diseño': 'var(--pink-light)', 'Reunión': 'var(--green-light)' };
+  const colorMap = {
+    'Diseño':'var(--pink-light)','Reunión':'var(--green-light)',
+    'Publicidad':'rgba(55,138,221,0.12)','Difusión':'rgba(29,158,117,0.12)',
+    'Notificación':'var(--pink-light)','Objetivo':'var(--red-light)',
+    'Flujo de Trabajo':'var(--amber-light)','Evento':'var(--purple-light)',
+    'Idea':'var(--amber-light)','Tarea':'var(--surface2)'
+  };
   const html = active.map(tipo => {
     const items = grouped[tipo];
     const taskHtml = items.slice(0,3).map(t => {
@@ -951,17 +958,24 @@ function renderIdeas(ideas) {
 }
 
 function renderSkillBars(tasks) {
-  const types = ['Diseño','Reunión','Tarea','Estudio','Optimización','Decisión'];
+  const colorMap = {
+    'Diseño':'#C44880','Reunión':'#2D9B6F','Tarea':'#6B6860',
+    'Publicidad':'#378ADD','Difusión':'#1D9E75','Idea':'#C47A20',
+    'Evento':'#8B5CF6','Notificación':'#EC4899','Flujo de Trabajo':'#F59E0B',
+    'Objetivo':'#D94040','Estudio':'#C47A20','Rutina':'#2D9B6F'
+  };
   const counts = {};
-  types.forEach(t => counts[t] = 0);
-  tasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
-  const max = Math.max(...Object.values(counts), 1);
-  const colorMap = { 'Diseño':'#C44880','Reunión':'#2D9B6F','Tarea':'#6B6860','Estudio':'#C47A20','Optimización':'#5B4FE8','Decisión':'#D94040' };
-  const html = types.filter(t => counts[t] > 0).map(t => `
+  tasks.forEach(t => {
+    const tipo = getSelect(t,'Tipo');
+    if (tipo) counts[tipo] = (counts[tipo] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const max = sorted.length ? sorted[0][1] : 1;
+  const html = sorted.map(([tipo, count]) => `
     <div class="skill-row">
-      <span class="skill-name">${t}</span>
-      <div class="skill-bar"><div class="skill-fill" style="width:${Math.round(counts[t]/max*100)}%;background:${colorMap[t]};"></div></div>
-      <span class="skill-count">${counts[t]}</span>
+      <span class="skill-name">${tipo}</span>
+      <div class="skill-bar"><div class="skill-fill" style="width:${Math.round(count/max*100)}%;background:${colorMap[tipo]||'#9B9890'};"></div></div>
+      <span class="skill-count">${count}</span>
     </div>`).join('');
   document.getElementById('skillBars').innerHTML = html || '<div class="empty">Sin datos suficientes</div>';
 }
