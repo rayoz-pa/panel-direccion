@@ -294,6 +294,17 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
     <button class="period-btn" onclick="setPeriod('month',this)">Este mes</button>
   </div>
 
+  <!-- LÍNEA DE TIEMPO ANUAL -->
+  <div class="card" style="margin-bottom:1rem;overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <div class="card-title card-title-main">Línea de tiempo 2026</div>
+      <span style="font-size:11px;color:var(--text3);">Progreso de objetivos por proyecto</span>
+    </div>
+    <div id="timeline2026" style="overflow-x:auto;">
+      <canvas id="timelineCanvas" style="display:block;"></canvas>
+    </div>
+  </div>
+
   <!-- PROJECT METRICS TABLE -->
   <div class="card draggable" draggable="true" data-module="resumen">
     <div class="card-title card-title-main" style="margin-bottom:1rem;">Resumen por proyecto</div>
@@ -1652,5 +1663,165 @@ function applyPreset(name) {
   localStorage.setItem('pd_theme', preset.mode);
   localStorage.setItem('pd_accent', preset.accent);
   localStorage.setItem('pd_font', preset.font);
+}
+</script>
+<script>
+// ── LÍNEA DE TIEMPO 2026 ──
+function drawTimeline() {
+  const canvas = document.getElementById('timelineCanvas');
+  if (!canvas) return;
+
+  const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const PROJECTS = [
+    { key: 'maitinada', name: 'Maitinada', color: '#C47A20' },
+    { key: 'mara',      name: 'Mara',      color: '#9B6FCC' },
+    { key: 'casalunae', name: 'Casa Lunae', color: '#CC6F9B' },
+    { key: 'hazeco',    name: 'Haz Eco',   color: '#5A9B6F' },
+    { key: 'personal',  name: 'Personal',  color: '#888888' }
+  ];
+
+  const LABEL_W = 80;
+  const ROW_H = 32;
+  const HEADER_H = 24;
+  const CELL_W = 36;
+  const TOTAL_W = LABEL_W + CELL_W * 12;
+  const TOTAL_H = HEADER_H + ROW_H * PROJECTS.length + 8;
+
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = TOTAL_W * dpr;
+  canvas.height = TOTAL_H * dpr;
+  canvas.style.width = TOTAL_W + 'px';
+  canvas.style.height = TOTAL_H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // Detect dark mode from CSS var
+  const isDark = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim().startsWith('#0') ||
+                 getComputedStyle(document.documentElement).getPropertyValue('--bg').trim().startsWith('#1');
+  const textColor = isDark ? '#9B9080' : '#9B9890';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  const bgColor = isDark ? '#1E1B16' : '#FFFDF9';
+  const todayColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, TOTAL_W, TOTAL_H);
+
+  // Today marker
+  const now = new Date();
+  const todayFrac = (now.getMonth() + now.getDate() / 31) / 12;
+  const todayX = LABEL_W + todayFrac * (CELL_W * 12);
+  ctx.fillStyle = todayColor;
+  ctx.fillRect(todayX - 1, 0, 2, TOTAL_H);
+
+  // Month headers
+  MONTHS.forEach((m, i) => {
+    const x = LABEL_W + i * CELL_W;
+    ctx.fillStyle = gridColor;
+    ctx.fillRect(x, 0, CELL_W - 0.5, TOTAL_H);
+    ctx.fillStyle = textColor;
+    ctx.font = `400 9px 'DM Sans', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(m, x + CELL_W / 2, HEADER_H - 6);
+    // Grid line
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(x, HEADER_H);
+    ctx.lineTo(x, TOTAL_H);
+    ctx.stroke();
+  });
+
+  // Rows
+  PROJECTS.forEach((proj, ri) => {
+    const y = HEADER_H + ri * ROW_H;
+    const goals = allGoals.filter(g => getSelect(g, 'Proyecto') === proj.name);
+    const done = goals.filter(g => getSelect(g, 'Estado') === 'Logrado').length;
+    const total = goals.length;
+    const pct = total > 0 ? done / total : 0;
+
+    // Project label
+    ctx.fillStyle = proj.color;
+    ctx.font = `500 10px 'DM Sans', sans-serif`;
+    ctx.textAlign = 'right';
+    ctx.fillText(proj.name, LABEL_W - 8, y + ROW_H / 2 + 3);
+
+    // Background track
+    const trackY = y + ROW_H / 2 - 4;
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    ctx.beginPath();
+    ctx.roundRect(LABEL_W + 4, trackY, CELL_W * 12 - 8, 8, 4);
+    ctx.fill();
+
+    // Progress bar
+    if (pct > 0) {
+      ctx.fillStyle = proj.color;
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath();
+      ctx.roundRect(LABEL_W + 4, trackY, (CELL_W * 12 - 8) * pct, 8, 4);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // Objective dots — by fecha_limite month
+    goals.forEach(g => {
+      const fl = g.properties?.['Fecha límite']?.date?.start;
+      if (!fl) return;
+      const d = new Date(fl);
+      const monthFrac = (d.getMonth() + d.getDate() / 31) / 12;
+      const dotX = LABEL_W + 4 + monthFrac * (CELL_W * 12 - 8);
+      const estado = getSelect(g, 'Estado');
+      const dotColor = estado === 'Logrado' ? proj.color :
+                       estado === 'En proceso' ? proj.color + '88' :
+                       estado === 'En riesgo' ? '#E24B4A' : isDark ? '#444' : '#DDD';
+      ctx.beginPath();
+      ctx.arc(dotX, trackY + 4, 4, 0, Math.PI * 2);
+      ctx.fillStyle = dotColor;
+      ctx.fill();
+      if (estado === 'Logrado') {
+        ctx.strokeStyle = bgColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    });
+
+    // % label
+    if (total > 0) {
+      ctx.fillStyle = proj.color;
+      ctx.font = `400 9px 'DM Sans', sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText(`${Math.round(pct * 100)}%`, LABEL_W + CELL_W * 12 - 4 + 8, y + ROW_H / 2 + 3);
+    }
+
+    // Separator line
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y + ROW_H);
+    ctx.lineTo(TOTAL_W, y + ROW_H);
+    ctx.stroke();
+  });
+
+  // Today label
+  ctx.fillStyle = textColor;
+  ctx.font = `400 8px 'DM Sans', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('hoy', todayX, HEADER_H - 6);
+}
+
+// Hook drawTimeline into loadData
+const _origLoadForTimeline = window.loadData;
+window.loadData = async function() {
+  await _origLoadForTimeline();
+  drawTimeline();
+};
+
+// También al cambiar tema
+const _origApplyThemeForTimeline = window.applyTheme;
+if (_origApplyThemeForTimeline) {
+  window.applyTheme = function() {
+    _origApplyThemeForTimeline();
+    setTimeout(drawTimeline, 100);
+  };
 }
 </script>
