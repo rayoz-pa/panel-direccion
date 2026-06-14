@@ -215,9 +215,11 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
   <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:20px;align-items:start;">
     <div>
       <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
-      <div style="display:flex;gap:6px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="theme-mode-btn" data-mode="warm" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Cálido</button>
         <button class="theme-mode-btn" data-mode="dark" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Oscuro</button>
+        <button class="theme-mode-btn" data-mode="editorial" onclick="applyPreset('editorial');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">Editorial</button>
+        <button class="theme-mode-btn" data-mode="dashboard" onclick="applyPreset('dashboard');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Dashboard</button>
       </div>
     </div>
     <div>
@@ -872,8 +874,14 @@ function renderWorkCols(tasks) {
     const items = grouped[tipo];
     const taskHtml = items.slice(0,3).map(t => {
       const tid = t.id || '';
+      const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+      const projName = PROJECT_NAMES[projKey] || '';
+      const projColor = PROJECT_COLORS[projKey] || '#9B9890';
       return `<div class="work-task" style="background:${colorMap[tipo]||'var(--surface)'};display:flex;justify-content:space-between;align-items:center;">
-        <span onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;">${getTitle(t)}</span>
+        <div onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;">
+          <div style="font-size:11px;">${getTitle(t)}</div>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${projColor}22;color:${projColor};font-weight:500;">${projName}</span>
+        </div>
         <button onclick="completeTask('${tid}',this)" style="border:none;background:transparent;cursor:pointer;font-size:12px;padding:0 2px;color:var(--text3);" title="Completar">✅</button>
       </div>`;
     }).join('');
@@ -1098,7 +1106,26 @@ setTimeout(loadData, 100);
 <script>
 const THEMES = {
   warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
-  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' }
+  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
+  editorial: { bg:'#F5F2EC', surface:'#FAFAF5', surface2:'#ECEAE2', text:'#1A1A1A', text2:'#5A5A5A', text3:'#999990', border:'rgba(0,0,0,0.08)' },
+  dashboard: { bg:'#111111', surface:'#1C1C1C', surface2:'#272727', text:'#FFFFFF', text2:'#AAAAAA', text3:'#666666', border:'rgba(255,255,255,0.10)' }
+};
+
+const PRESET_THEMES = {
+  editorial: {
+    mode: 'editorial',
+    accent: 'c8b4d8',
+    font: 'dm',
+    accentName: 'Lavanda editorial',
+    description: 'Tipografía serif · Lavanda suave · Fondo papel'
+  },
+  dashboard: {
+    mode: 'dashboard',
+    accent: 'c8a84b',
+    font: 'spacemono',
+    accentName: 'Dorado dashboard',
+    description: 'Space Mono · Dorado saturado · Fondo negro profundo'
+  }
 };
 const ACCENTS = {
   'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
@@ -1109,7 +1136,9 @@ const ACCENTS = {
   '9ecab1': { main:'#9ecab1', dark:'#1A5A3A', light:'rgba(158,202,177,0.2)', name:'Menta verde' },
   'd8bda7': { main:'#d8bda7', dark:'#6A3A1A', light:'rgba(216,189,167,0.2)', name:'Mocca' },
   'e6b791': { main:'#e6b791', dark:'#7A4A10', light:'rgba(230,183,145,0.2)', name:'Mocca dorado' },
-  'd8b79b': { main:'#d8b79b', dark:'#6A3A18', light:'rgba(216,183,155,0.2)', name:'Mocca terracota' }
+  'd8b79b': { main:'#d8b79b', dark:'#6A3A18', light:'rgba(216,183,155,0.2)', name:'Mocca terracota' },
+  'c8b4d8': { main:'#c8b4d8', dark:'#6A3A8A', light:'rgba(200,180,216,0.2)', name:'Lavanda editorial' },
+  'c8a84b': { main:'#c8a84b', dark:'#7A6200', light:'rgba(200,168,75,0.2)', name:'Dorado dashboard' }
 };
 const FONTS = {
   spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif", name:'Space Mono' },
@@ -1604,4 +1633,24 @@ const fData = fontMap[savedFont] || fontMap.spacemono;
 document.documentElement.style.setProperty('--font-title', fData.title);
 document.documentElement.style.setProperty('--font-body', fData.body);
 document.body.style.fontFamily = fData.body;
+</script>
+<script>
+function applyPreset(name) {
+  const preset = PRESET_THEMES[name];
+  if (!preset) return;
+  currentTheme = preset.mode;
+  currentAccent = preset.accent;
+  currentFont = preset.font;
+  applyTheme();
+  const picker = document.getElementById('accentPicker');
+  const preview = document.getElementById('accentPreview');
+  const hex = document.getElementById('accentHex');
+  const acc = ACCENTS[preset.accent];
+  if (picker) picker.value = acc?.main || '#c8b4d8';
+  if (preview) preview.style.background = acc?.main || '#c8b4d8';
+  if (hex) hex.textContent = acc?.main || '#c8b4d8';
+  localStorage.setItem('pd_theme', preset.mode);
+  localStorage.setItem('pd_accent', preset.accent);
+  localStorage.setItem('pd_font', preset.font);
+}
 </script>
