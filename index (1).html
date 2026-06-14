@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Dirección — Rayo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-title: 'DM Serif Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --bg: #FAF7F2;
+  --surface: #FFFDF9;
+  --surface2: #F5F1EA;
+  --border: rgba(90,60,30,0.08);
+  --text: #2A1F14;
+  --text2: #7A6A5A;
+  --text3: #A8978A;
+  --purple: #639922;
+  --purple-light: #EAF3DE;
+  --purple-dark: #3B6D11;
+  --green: #2D9B6F;
+  --green-light: #E3F5EC;
+  --red: #D94040;
+  --red-light: #FCEAEA;
+  --amber: #C47A20;
+  --amber-light: #FDF0DC;
+  --pink: #C44880;
+  --pink-light: #FCE8F1;
+  --r: 12px;
+  --rsm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.greeting h1, .logo, .wb-value, .p-num-big { font-family: var(--font-title) !important; }
+body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+/* HEADER */
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+.logo span { color: var(--purple); }
+.tabs { display: flex; border: 1px solid var(--border); border-radius: var(--rsm); overflow: hidden; }
+.tab { padding: 5px 16px; font-size: 13px; color: var(--text2); background: transparent; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.tab.active { background: var(--purple); color: white; font-weight: 500; }
+.btn-refresh { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--purple); color: white; border: none; border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-refresh:hover { background: var(--purple-dark); }
+.date-label { font-size: 12px; color: var(--text3); }
+
+/* LOADING */
+.loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 12px; }
+.loading-screen.hidden { display: none; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MAIN */
+.main { padding: 1.5rem 2rem; max-width: 1280px; margin: 0 auto; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* GREETING */
+.greeting { margin-bottom: 1.25rem; }
+.greeting h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; letter-spacing: -0.3px; }
+.greeting p { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+/* PERIOD SELECTOR */
+.period-row { display: flex; align-items: center; gap: 6px; margin-bottom: 1.25rem; }
+.period-label { font-size: 12px; color: var(--text3); }
+.period-btn { padding: 4px 12px; font-size: 12px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.period-btn.active { background: var(--text); color: white; border-color: var(--text); }
+
+/* PROJECT METRICS TABLE */
+.project-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); margin-bottom: 1rem; }
+.project-table th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; background: var(--surface2); }
+.project-table td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.project-table tr:last-child td { border-bottom: none; }
+.project-table tr:hover td { background: var(--surface2); }
+.project-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.mini-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; width: 80px; display: inline-block; vertical-align: middle; }
+.mini-fill { height: 100%; border-radius: 2px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+.card-title-main { font-size: 14px; font-weight: 500; color: var(--text); text-transform: none; letter-spacing: 0; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+/* BADGES */
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-purple { background: var(--purple-light); color: var(--purple); }
+.badge-pink { background: var(--pink-light); color: var(--pink); }
+.badge-gray { background: var(--surface2); color: var(--text2); }
+
+/* CRITICAL ITEMS */
+.critical-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--rsm); margin-bottom: 6px; cursor: pointer; transition: opacity 0.15s; }
+.critical-item:hover { opacity: 0.8; }
+.critical-item.red { background: var(--red-light); }
+.critical-item.amber { background: var(--amber-light); }
+.critical-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.critical-title { font-size: 12px; font-weight: 500; }
+.critical-title.red { color: #7A1A1A; }
+.critical-title.amber { color: #5A3A10; }
+.critical-meta { font-size: 11px; margin-top: 2px; }
+.critical-meta.red { color: var(--red); }
+.critical-meta.amber { color: var(--amber); }
+
+/* SKILL BARS */
+.skill-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.skill-name { font-size: 12px; color: var(--text2); width: 90px; flex-shrink: 0; }
+.skill-bar { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.skill-fill { height: 100%; border-radius: 3px; }
+.skill-count { font-size: 11px; color: var(--text3); width: 24px; text-align: right; }
+
+/* WELLBEING */
+.wb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.wb-item { background: var(--surface2); border-radius: var(--rsm); padding: 10px; text-align: center; }
+.wb-value { font-family: 'DM Serif Display', serif; font-size: 20px; }
+.wb-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+.cycle-bar { background: var(--purple-light); border-radius: var(--rsm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cycle-info p:first-child { font-size: 11px; color: var(--text3); }
+.cycle-info p:last-child { font-size: 13px; font-weight: 500; color: var(--purple); margin-top: 1px; }
+
+/* BITACORA */
+.bitacora-entry { background: var(--surface2); border-radius: var(--rsm); padding: 12px; margin-bottom: 8px; }
+.bitacora-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.bitacora-date { font-size: 11px; font-weight: 500; color: var(--text2); }
+.bitacora-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+.bitacora-row { display: flex; gap: 8px; margin-top: 10px; }
+.bitacora-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--rsm); font-size: 13px; font-family: 'DM Sans', sans-serif; background: var(--surface2); color: var(--text); outline: none; }
+.bitacora-row input:focus { border-color: var(--purple); }
+.bitacora-row select { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; background: var(--surface2); color: var(--text); outline: none; }
+
+/* BOOKMARKS */
+.bookmark-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bookmark-item { background: var(--surface2); border-radius: var(--rsm); padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: background 0.15s; }
+.bookmark-item:hover { background: var(--border); }
+.bookmark-icon { width: 28px; height: 28px; background: var(--purple-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.bookmark-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.bookmark-tag { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+/* AI BLOCK */
+.ai-block { border-left: 2px solid var(--purple); padding-left: 12px; margin-bottom: 12px; }
+.ai-project { font-size: 11px; font-weight: 500; color: var(--purple); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.ai-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+.ai-loading { text-align: center; padding: 2rem; color: var(--text3); font-size: 13px; }
+
+/* BTN */
+.btn-full { width: 100%; padding: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--rsm); font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text2); cursor: pointer; transition: all 0.15s; margin-top: 10px; }
+.btn-full:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+.btn-sm { padding: 8px 14px; background: var(--purple); color: white; border: none; border-radius: var(--rsm); font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
+
+/* TASK CARDS */
+.task-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: var(--surface2); border-radius: var(--rsm); margin-bottom: 6px; cursor: pointer; transition: opacity 0.15s; }
+.task-item:hover { opacity: 0.8; }
+.task-priority { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
+.task-title { font-size: 13px; color: var(--text); }
+.task-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+
+/* PROJECT COLUMNS */
+.proj-cols { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+.proj-col { background: var(--surface2); border-radius: var(--rsm); padding: 10px; }
+.proj-col-title { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.proj-task { background: var(--surface); border-radius: 6px; padding: 7px 9px; font-size: 11px; color: var(--text); margin-bottom: 5px; line-height: 1.4; cursor: pointer; border-left: 2px solid transparent; }
+.proj-task:hover { opacity: 0.8; }
+
+/* WORK TYPE COLS */
+.work-cols { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+.work-col { background: var(--surface2); border-radius: var(--rsm); padding: 10px; }
+.work-col-title { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.work-task { background: var(--surface); border-radius: 6px; padding: 7px 9px; font-size: 11px; color: var(--text); margin-bottom: 5px; line-height: 1.4; cursor: pointer; }
+
+/* TIMELINE */
+.timeline-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-time { font-size: 11px; color: var(--text3); width: 44px; flex-shrink: 0; padding-top: 2px; }
+
+/* CHART SELECTOR */
+.chart-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+.chart-btn { padding: 3px 10px; font-size: 11px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--text3); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.chart-btn.active { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+
+/* EMPTY */
+.empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <p style="font-family:'DM Serif Display',serif;font-size:20px;">Panel Dirección</p>
+  <p style="font-size:12px;color:var(--text3);" id="loadingMsg">Conectando con Notion...</p>
+</div>
+
+<header class="header">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <div class="logo">Panel <span>Dirección</span></div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('general',this)">Vista general</button>
+      <button class="tab" onclick="switchTab('mipanel',this)">Mi panel</button>
+      <button class="tab" onclick="switchTab('calendario',this)">Calendario</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="date-label" id="dateLabel"></span>
+    <button onclick="toggleThemePanel()" style="padding:6px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--rsm);font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;">🎨</button>
+    <button class="btn-refresh" onclick="loadData()">↻ Actualizar</button>
+  </div>
+</header>
+
+<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 2rem;color:var(--text);">
+  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:20px;align-items:start;">
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="theme-mode-btn" data-mode="warm" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Cálido</button>
+        <button class="theme-mode-btn" data-mode="dark" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Oscuro</button>
+        <button class="theme-mode-btn" data-mode="editorial" onclick="applyPreset('editorial');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">Editorial</button>
+        <button class="theme-mode-btn" data-mode="dashboard" onclick="applyPreset('dashboard');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Dashboard</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tipografía</p>
+      <div style="display:flex;gap:6px;">
+        <button class="theme-font-btn" data-font="spacemono" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Space Mono</button>
+        <button class="theme-font-btn" data-font="dm" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">DM Serif</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Acento</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="accentPicker" value="#ffc297" oninput="setCustomAccent(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
+        <div id="accentPreview" style="width:36px;height:36px;border-radius:50%;background:#ffc297;border:2px solid var(--border);"></div>
+        <span id="accentHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#ffc297</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Fondo</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="bgPicker" value="#FAF7F2" oninput="setCustomBg(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
+        <span id="bgHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FAF7F2</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Títulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="titleColorPicker" value="#2A1F14" oninput="setTitleColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="titleColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#2A1F14</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Labels / subtítulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="text3ColorPicker" value="#A8978A" oninput="setText3Color(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="text3ColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#A8978A</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Contenido</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="bodyColorPicker" value="#7A6A5A" oninput="setBodyColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="bodyColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#7A6A5A</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Módulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="cardColorPicker" value="#FFFDF9" oninput="setCardColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="cardColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FFFDF9</span>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <button onclick="resetTheme()" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:transparent;color:var(--text3);">Resetear</button>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- TAB GENERAL -->
+<div id="tab-general" class="tab-content active">
+  <div class="greeting">
+    <h1 id="greetingText">Hola, Rayo</h1>
+    <p id="greetingSub">Cargando...</p>
+  </div>
+
+  <div class="period-row">
+    <span class="period-label">Ver:</span>
+    <button class="period-btn active" onclick="setPeriod('day',this)">Hoy</button>
+    <button class="period-btn" onclick="setPeriod('week',this)">Esta semana</button>
+    <button class="period-btn" onclick="setPeriod('month',this)">Este mes</button>
+  </div>
+
+  <!-- PROJECT METRICS TABLE -->
+  <div class="card draggable" draggable="true" data-module="resumen">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Resumen por proyecto</div>
+    <table class="project-table" id="projectTable">
+      <thead>
+        <tr>
+          <th>Proyecto</th>
+          <th>Tareas activas</th>
+          <th>Críticas</th>
+          <th>Objetivos</th>
+          <th>Progreso</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="projectTableBody">
+        <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:1.5rem;">Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2" id="drag-row-1">
+    <!-- CARGA EQUIPO -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title card-title-main">Carga del equipo</div>
+        <div class="chart-selector">
+          <button class="chart-btn active" onclick="setChartType('bubble',this)">Burbujas</button>
+          <button class="chart-btn" onclick="setChartType('bar',this)">Barras</button>
+        </div>
+      </div>
+      <canvas id="teamChart" style="width:100%;height:180px;"></canvas>
+      <p style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center;">Tamaño / largo = cantidad de tareas activas</p>
+    </div>
+
+    <!-- CRITICAS Y ATRASADAS -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Críticas y atrasadas</div>
+      <div id="criticalTasks"><div class="empty">Cargando...</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2" id="drag-row-2">
+    <!-- BIENESTAR -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Bienestar</div>
+      <div class="wb-grid">
+        <div class="wb-item"><div class="wb-value" id="wb-sleep">—</div><div class="wb-label">Sueño</div></div>
+        <div class="wb-item"><div class="wb-value" id="wb-work">—</div><div class="wb-label">Trabajo</div></div>
+        <div class="wb-item"><div class="wb-value" id="wb-energy">—</div><div class="wb-label">Energía</div></div>
+      </div>
+      <div class="cycle-bar">
+        <div class="cycle-info"><p>Fase del ciclo</p><p id="wb-cycle">Registra por Telegram</p></div>
+        <span style="font-size:20px;">🌒</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Vitaminas</span>
+        <span style="font-size:12px;font-weight:500;color:var(--green);" id="wb-vitamins">—</span>
+      </div>
+      <div style="margin-top:8px;padding:8px 0;border-top:1px solid var(--border);">
+        <p style="font-size:11px;color:var(--text3);">Horas liberadas por automatización esta semana</p>
+        <p style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--purple);margin-top:4px;">6.5h</p>
+      </div>
+    </div>
+
+    <!-- PUNTOS CRITICOS -->
+    <div class="card">
+      <div class="card-title card-title-main" style="margin-bottom:1rem;">Puntos críticos</div>
+      <div id="criticalPoints"><div class="empty">Cargando...</div></div>
+    </div>
+  </div>
+
+  <!-- BITACORA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Bitácora de la semana</div>
+    <div id="bitacoraEntries"></div>
+    <div class="bitacora-row">
+      <input type="text" id="bitacoraInput" placeholder="Agregar entrada — desafío, aprendizaje, observación..." />
+      <select id="bitacoraProject">
+        <option>Maitinada</option><option>Mara</option><option>Casa Lunae</option><option>Haz Eco</option><option>Personal</option><option>Transversal</option>
+      </select>
+      <button class="btn-sm" onclick="addBitacora()">Agregar</button>
+    </div>
+  </div>
+
+  <!-- MARCADORES -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Marcadores</div>
+    <div class="bookmark-grid">
+      <div class="bookmark-item" onclick="window.open('https://app.notion.com/p/d864d37740c440138705e0711696119c','_blank')"><div class="bookmark-icon">📋</div><div><div class="bookmark-name">Tareas Maitinada</div><div class="bookmark-tag">Notion</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://app.notion.com/p/566e9a9c617b4367b9f1e5842fdb35e3','_blank')"><div class="bookmark-icon">🎯</div><div><div class="bookmark-name">Objetivos</div><div class="bookmark-tag">Panel Automatización</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://instagram.com','_blank')"><div class="bookmark-icon">📸</div><div><div class="bookmark-name">Instagram Mara</div><div class="bookmark-tag">Redes</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://instagram.com','_blank')"><div class="bookmark-icon">🌙</div><div><div class="bookmark-name">Casa Lunae IG</div><div class="bookmark-tag">Redes</div></div></div>
+      <div class="bookmark-item" onclick="window.open('https://make.com','_blank')"><div class="bookmark-icon">⚡</div><div><div class="bookmark-name">Make.com</div><div class="bookmark-tag">Automatización</div></div></div>
+      <div class="bookmark-item" onclick="addBookmark()"><div class="bookmark-icon" style="background:var(--surface2);">+</div><div><div class="bookmark-name" style="color:var(--text3);">Agregar marcador</div></div></div>
+    </div>
+  </div>
+
+  <!-- ANALISIS IA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Análisis IA — esta semana</div>
+    <div id="aiAnalysis"><div class="ai-loading">Presiona "Generar análisis" para obtener tu revisión semanal con IA</div></div>
+    <button class="btn-full" id="btnAnalysis" onclick="generateAnalysis()">Generar análisis semanal →</button>
+  </div>
+</div>
+
+<!-- TAB MI PANEL -->
+<div id="tab-mipanel" class="tab-content">
+  <div class="greeting">
+    <h1 style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;">Mi panel de responsabilidades</h1>
+    <p style="font-size:12px;color:var(--text3);margin-top:2px;">Solo lo que te compete a ti</p>
+  </div>
+
+  <div class="period-row">
+    <span class="period-label">Ver:</span>
+    <button class="period-btn active" onclick="setPeriod2('day',this)">Hoy</button>
+    <button class="period-btn" onclick="setPeriod2('week',this)">Esta semana</button>
+  </div>
+
+  <!-- METRICS -->
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:1rem;">
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Mis tareas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;" id="p-total">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Reuniones</p><p style="font-family:'DM Serif Display',serif;font-size:28px;" id="p-meetings">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Decisiones</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--red);" id="p-decisions">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Ideas activas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--purple);" id="p-ideas">—</p></div>
+    <div class="card" style="margin-bottom:0;padding:1rem;"><p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Completadas</p><p style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--green);" id="p-done">—</p></div>
+  </div>
+
+  <!-- TRABAJO POR TIPO -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Trabajo por tipo</div>
+    <div class="work-cols" id="workCols"><div class="empty" style="grid-column:span 4;">Cargando...</div></div>
+  </div>
+
+  <!-- MIS TAREAS POR PROYECTO -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Mis tareas — por proyecto y prioridad</div>
+    <div class="proj-cols" id="projCols"><div class="empty" style="grid-column:span 5;">Cargando...</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- AGENDA + NOTIFICACIONES -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Agenda de hoy</div>
+        <div id="myAgenda"><div class="empty">Sin eventos con fecha registrada</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Notificaciones</div>
+        <div id="myNotifications"><div class="empty">Sin notificaciones</div></div>
+      </div>
+    </div>
+
+    <!-- IDEAS + PERFIL -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:1rem;">Ideas a evaluar</div>
+        <div id="myIdeas"><div class="empty">Sin ideas registradas</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title card-title-main" style="margin-bottom:6px;">Mi perfil actual</div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">Directora estratégica · 4 proyectos activos · Perfil expansivo y creativo</p>
+        <div id="profileRoles">
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Maitinada</span><span class="badge badge-purple">Dirección</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Mara</span><span class="badge badge-pink">Rol único</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text2);">Casa Lunae</span><span class="badge badge-pink">Rol único</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;"><span style="color:var(--text2);">Haz Eco</span><span class="badge badge-green">Estrategia</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUEVA IDEA -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Agregar idea</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input type="text" id="ideaText" placeholder="Describe tu idea..." style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;width:100%;" />
+      <div style="display:flex;gap:8px;">
+        <select id="ideaProject" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;">
+          <option value="maitinada">Maitinada</option>
+          <option value="mara">Mara</option>
+          <option value="casalunae">Casa Lunae</option>
+          <option value="hazeco">Haz Eco</option>
+          <option value="personal">Personal</option>
+        </select>
+        <select id="ideaArea" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;">
+          <option value="">Sin área</option>
+          <option value="Estrategia">Estrategia</option>
+          <option value="Contenido">Contenido</option>
+          <option value="Diseño">Diseño</option>
+          <option value="Operación">Operación</option>
+        </select>
+        <button class="btn-sm" onclick="submitIdea()" id="ideaBtn">Agregar idea</button>
+      </div>
+      <div id="ideaStatus" style="font-size:12px;color:var(--text3);display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ANALISIS DE PERFIL -->
+  <div class="card">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Análisis de perfil — tendencias de habilidades</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Carga por tipo de trabajo</p>
+        <div id="skillBars"><div class="empty">Cargando...</div></div>
+      </div>
+      <div>
+        <p style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Análisis IA de tu perfil</p>
+        <div id="skillAnalysis"><div class="ai-loading" style="padding:1rem 0;">Presiona para analizar tus patrones de trabajo</div></div>
+        <button class="btn-full" onclick="generateSkillAnalysis()">Analizar mi perfil →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB CALENDARIO -->
+<div id="tab-calendario" class="tab-content">
+  <div class="greeting">
+    <h1 style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;">Calendario</h1>
+    <p style="font-size:12px;color:var(--text3);margin-top:2px;">Todos tus eventos y reuniones</p>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="prevMonth()" style="padding:6px 12px;border:1px solid var(--border);border-radius:var(--rsm);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;">‹</button>
+      <h2 id="calMonthTitle" style="font-size:16px;font-weight:500;min-width:160px;text-align:center;"></h2>
+      <button onclick="nextMonth()" style="padding:6px 12px;border:1px solid var(--border);border-radius:var(--rsm);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;">›</button>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="period-btn active" onclick="setCalView('month',this)">Mes</button>
+      <button class="period-btn" onclick="setCalView('week',this)">Semana</button>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:hidden;">
+    <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--border);">
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Lun</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Mar</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Mié</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Jue</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Vie</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Sáb</div>
+      <div style="padding:8px;text-align:center;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;">Dom</div>
+    </div>
+    <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));"></div>
+  </div>
+
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Próximos eventos</div>
+    <div id="upcomingEvents"><div class="empty">Sin eventos próximos</div></div>
+  </div>
+</div>
+
+
+</main>
+
+<script>
+const PROXY = 'https://notion-proxy.rayo-pizarroa.workers.dev';
+const DBS = {
+  maitinada: 'd864d37740c440138705e0711696119c',
+  mara: 'cdd54ab81ff847c7a8bdf0b72d76e192',
+  casalunae: 'de9c4c6b36c84ffd838db4adf3e6e95b',
+  hazeco: '0fe981cee91d435e9cdb62780e946e32',
+  personal: '7a45a2551ccb473490d3a47c983ceb59',
+  objetivos: '566e9a9c617b4367b9f1e5842fdb35e3'
+};
+const PROJECT_NAMES = { maitinada: 'Maitinada', mara: 'Mara', casalunae: 'Casa Lunae', hazeco: 'Haz Eco', personal: 'Personal' };
+const PROJECT_COLORS = { maitinada: '#C47A20', mara: '#5B4FE8', casalunae: '#C44880', hazeco: '#2D9B6F', personal: '#6B6860' };
+const PRIORITY_COLORS = { '🔴 Hacer hoy': '#D94040', '🟠 Para esta semana': '#C47A20', '🟠 Esta semana': '#C47A20', '🟡 Bloque rápido': '#2D9B6F' };
+
+let allTasks = {};
+let allGoals = [];
+let currentPeriod = 'week';
+let currentPeriod2 = 'week';
+let currentChartType = 'bubble';
+
+function setDate() {
+  const now = new Date();
+  const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById('dateLabel').textContent = now.toLocaleDateString('es-CL', opts);
+  const h = now.getHours();
+  const g = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('greetingText').textContent = `${g}, Rayo`;
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setPeriod(p, btn) {
+  currentPeriod = p;
+  document.querySelectorAll('#tab-general .period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGeneral();
+}
+
+function setPeriod2(p, btn) {
+  currentPeriod2 = p;
+  document.querySelectorAll('#tab-mipanel .period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMyPanel();
+}
+
+function setChartType(type, btn) {
+  currentChartType = type;
+  document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  drawTeamChart();
+}
+
+async function fetchNotion(endpoint, body) {
+  try {
+    const res = await fetch(`${PROXY}/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch(e) { return null; }
+}
+
+async function loadData() {
+  document.getElementById('btnAnalysis') && (document.getElementById('btnAnalysis').textContent = 'Generar análisis semanal →');
+  document.getElementById('greetingSub').textContent = 'Actualizando...';
+
+  const results = await Promise.allSettled([
+    fetchNotion(`databases/${DBS.maitinada}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.mara}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.casalunae}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.hazeco}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.personal}/query`, { page_size: 100, filter: { property: 'Estado', select: { does_not_equal: 'Completada' } } }),
+    fetchNotion(`databases/${DBS.objetivos}/query`, { page_size: 100 })
+  ]);
+
+  const keys = ['maitinada','mara','casalunae','hazeco','personal'];
+  keys.forEach((k, i) => {
+    const r = results[i];
+    allTasks[k] = (r.status === 'fulfilled' && r.value?.results) ? r.value.results : [];
+  });
+  const gr = results[5];
+  allGoals = (gr.status === 'fulfilled' && gr.value?.results) ? gr.value.results : [];
+
+  const total = Object.values(allTasks).reduce((a,b) => a + b.length, 0);
+  document.getElementById('greetingSub').textContent = `${allGoals.length} objetivos · ${total} tareas activas`;
+
+  renderGeneral();
+  renderMyPanel();
+  drawTeamChart();
+  document.getElementById('loadingScreen').classList.add('hidden');
+}
+
+function getTitle(task) { try { return task.properties.Tarea.title[0].plain_text; } catch { return 'Sin título'; } }
+function getSelect(task, prop) { try { return task.properties[prop].select?.name || null; } catch { return null; } }
+function getDate(task, prop) { try { return task.properties[prop]?.date?.start || null; } catch { return null; } }
+function getUrl(task) { return task.url || '#'; }
+
+function isMyTask(task) {
+  const resp = getSelect(task, 'Responsable');
+  const env = getSelect(task, 'Enviado por');
+  const dest = task.properties.Destinatarios?.multi_select?.map(d => d.name) || [];
+  return resp === 'Rayo' || env === 'Rayo' || dest.includes('Rayo');
+}
+
+function isOverdue(task) {
+  const d = getDate(task, 'Fecha Límite') || getDate(task, 'Fecha limite');
+  if (!d) return false;
+  return new Date(d) < new Date(new Date().toDateString());
+}
+
+function getAllTasks() { return Object.values(allTasks).flat(); }
+
+function renderGeneral() {
+  renderProjectTable();
+  renderCriticalTasks();
+  renderCriticalPoints();
+}
+
+function renderProjectTable() {
+  const tbody = document.getElementById('projectTableBody');
+  const rows = Object.entries(PROJECT_NAMES).map(([key, name]) => {
+    const tasks = allTasks[key] || [];
+    const critical = tasks.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy').length;
+    const goals = allGoals.filter(g => getSelect(g, 'Proyecto') === name);
+    const done = goals.filter(g => getSelect(g, 'Estado') === 'Logrado').length;
+    const total = goals.length;
+    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+    const color = PROJECT_COLORS[key];
+    const inProcess = goals.filter(g => getSelect(g, 'Estado') === 'En proceso').length;
+    const atRisk = goals.filter(g => getSelect(g, 'Estado') === 'En riesgo').length;
+    const statusLabel = atRisk > 0 ? ['badge-red','En riesgo'] : inProcess > 0 ? ['badge-purple','En proceso'] : done === total && total > 0 ? ['badge-green','Logrado'] : ['badge-amber','Por iniciar'];
+
+    return `<tr>
+      <td><span class="project-dot" style="background:${color};"></span>${name}</td>
+      <td style="font-weight:500;">${tasks.length}</td>
+      <td style="color:${critical > 0 ? 'var(--red)' : 'var(--text)'};font-weight:${critical > 0 ? '500' : '400'};">${critical}</td>
+      <td>${done}/${total}</td>
+      <td><div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${color};"></div></div> <span style="font-size:11px;color:var(--text3);margin-left:6px;">${pct}%</span></td>
+      <td><span class="badge ${statusLabel[0]}">${statusLabel[1]}</span></td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML = rows;
+}
+
+function renderCriticalTasks() {
+  const all = getAllTasks();
+  const critical = all.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy');
+
+  const responsable = critical.filter(t => getSelect(t, 'Responsable') === 'Rayo');
+  const destinataria = critical.filter(t => {
+    const dest = t.properties.Destinatarios?.multi_select?.map(d => d.name) || [];
+    const env = getSelect(t, 'Enviado por');
+    return getSelect(t, 'Responsable') !== 'Rayo' && (dest.includes('Rayo') || env === 'Rayo');
+  });
+
+  if (!responsable.length && !destinataria.length) {
+    document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas críticas</div>';
+    return;
+  }
+
+  function buildItem(t, showBtn) {
+    const overdue = isOverdue(t);
+    const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
+    const daysAgo = d ? Math.floor((new Date() - new Date(d)) / 86400000) : 0;
+    const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Hacer hoy';
+    const cls = overdue ? 'red' : 'amber';
+    const resp = getSelect(t, 'Responsable') || '';
+    const tid = t.id || '';
+    const btn = showBtn
+      ? `<button onclick="completeTask('${tid}',this)" style="padding:3px 8px;border-radius:6px;border:1px solid currentColor;background:transparent;font-size:11px;cursor:pointer;color:${overdue?'var(--red)':'var(--amber)'};flex-shrink:0;font-family:inherit;" title="Marcar completada">✅</button>`
+      : `<button onclick="window.open('${getUrl(t)}','_blank')" style="padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:11px;cursor:pointer;color:var(--text3);flex-shrink:0;font-family:inherit;" title="Ver en Notion">→</button>`;
+    return `<div class="critical-item ${cls}" style="justify-content:space-between;margin-bottom:5px;">
+      <div style="display:flex;gap:8px;align-items:flex-start;flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+        <div class="critical-dot" style="background:${overdue?'var(--red)':'var(--amber)'};margin-top:4px;"></div>
+        <div><div class="critical-title ${cls}" style="font-size:12px;">${getTitle(t)}</div>
+        <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
+      </div>
+      ${btn}
+    </div>`;
+  }
+
+  const html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mi responsabilidad</p>
+      ${responsable.length ? responsable.slice(0,5).map(t => buildItem(t, true)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Soy destinataria</p>
+      ${destinataria.length ? destinataria.slice(0,5).map(t => buildItem(t, false)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
+    </div>
+  </div>`;
+
+  document.getElementById('criticalTasks').innerHTML = html;
+}
+
+function renderCriticalPoints() {
+  const points = [];
+  const maitTasks = allTasks.maitinada || [];
+  const mariCount = maitTasks.filter(t => getSelect(t,'Responsable') === 'Mari').length;
+  const avgLoad = maitTasks.length / 5;
+  if (mariCount > avgLoad * 1.5) points.push({ color: 'red', project: 'Maitinada', text: `Carga operativa alta en Mari (${mariCount} tareas). Riesgo de desgaste si no se redistribuye.` });
+
+  const maraGoals = allGoals.filter(g => getSelect(g,'Proyecto') === 'Mara' && getSelect(g,'Estado') !== 'Logrado');
+  if ((allTasks.mara || []).filter(isOverdue).length > 1) points.push({ color: 'amber', project: 'Mara', text: 'Pipeline de clientes vacío. Requiere activación de captación esta semana.' });
+
+  const hazecoTasks = allTasks.hazeco || [];
+  if (hazecoTasks.length > 0 && allGoals.filter(g => getSelect(g,'Proyecto') === 'Haz Eco').length === 0) points.push({ color: 'amber', project: 'Haz Eco', text: 'Sin objetivos definidos. Pendiente reunión estratégica con la fundadora.' });
+
+  if (!points.length) points.push({ color: 'amber', project: 'General', text: 'Sin puntos críticos detectados esta semana.' });
+
+  document.getElementById('criticalPoints').innerHTML = points.map(p => `
+    <div style="border-left:2px solid var(--${p.color});padding-left:12px;margin-bottom:10px;">
+      <span class="badge badge-${p.color === 'red' ? 'red' : 'amber'}" style="margin-bottom:4px;display:inline-block;">${p.project}</span>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;">${p.text}</p>
+    </div>`).join('');
+}
+
+function drawTeamChart() {
+  const c = document.getElementById('teamChart');
+  if (!c) return;
+  c.width = c.offsetWidth * devicePixelRatio;
+  c.height = 180 * devicePixelRatio;
+  const ctx = c.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const W = c.offsetWidth, H = 180;
+  ctx.clearRect(0, 0, W, H);
+
+  const maitTasks = allTasks.maitinada || [];
+  const people = {};
+  maitTasks.forEach(t => {
+    const r = getSelect(t, 'Responsable');
+    if (r) people[r] = (people[r] || 0) + 1;
+  });
+
+  // Add Rayo from all projects
+  const myTotal = Object.values(allTasks).flat().filter(isMyTask).length;
+  people['Rayo'] = myTotal;
+
+  const entries = Object.entries(people).filter(([,v]) => v > 0);
+  if (!entries.length) return;
+
+  const colors = { Rayo: '#5B4FE8', Mari: '#2D9B6F', Gery: '#C47A20', Maryo: '#C44880', Javi: '#6B6860' };
+
+  if (currentChartType === 'bubble') {
+    const positions = { Rayo: [W*0.5,90], Mari: [W*0.2,80], Gery: [W*0.38,60], Maryo: [W*0.65,95], Javi: [W*0.82,70] };
+    entries.forEach(([name, count]) => {
+      const [x, y] = positions[name] || [W * 0.5, 90];
+      const r = 14 + count * 3;
+      const color = colors[name] || '#9B9890';
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+      ctx.fillStyle = color + '30'; ctx.fill();
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = `500 11px 'DM Sans', sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText(name, x, y - 2);
+      ctx.font = `400 10px 'DM Sans', sans-serif`;
+      ctx.fillText(`${count}t`, x, y + 11);
+    });
+  } else {
+    const max = Math.max(...entries.map(([,v]) => v), 1);
+    const barW = Math.min(40, (W - 40) / entries.length - 8);
+    const startX = (W - entries.length * (barW + 8)) / 2;
+    entries.forEach(([name, count], i) => {
+      const x = startX + i * (barW + 8);
+      const bh = Math.round((count / max) * 120);
+      const color = colors[name] || '#9B9890';
+      ctx.fillStyle = color + '40';
+      ctx.beginPath(); ctx.roundRect(x, H - 30 - bh, barW, bh, 4); ctx.fill();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.roundRect(x, H - 30 - bh, barW, 4, 2); ctx.fill();
+      ctx.fillStyle = color;
+      ctx.font = `400 10px 'DM Sans', sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText(name, x + barW/2, H - 14);
+      ctx.fillText(`${count}t`, x + barW/2, H - 34 - bh);
+    });
+  }
+}
+
+function renderMyPanel() {
+  const allFlat = Object.values(allTasks).flat();
+  const myTasks = allFlat.filter(isMyTask);
+  const decisions = myTasks.filter(t => getSelect(t,'Tipo') === 'Decisión');
+  const meetings = myTasks.filter(t => getSelect(t,'Tipo') === 'Reunión');
+  const ideas = myTasks.filter(t => getSelect(t,'Tipo') === 'Idea');
+
+  document.getElementById('p-total').textContent = myTasks.length;
+  document.getElementById('p-meetings').textContent = meetings.length;
+  document.getElementById('p-decisions').textContent = decisions.length;
+  document.getElementById('p-ideas').textContent = ideas.length;
+  document.getElementById('p-done').textContent = allFlat.filter(t => getSelect(t,'Estado') === 'Completada').length;
+
+  renderWorkCols(myTasks);
+  renderProjCols(myTasks);
+  renderAgenda(myTasks);
+  renderNotifications(myTasks);
+  renderIdeas(ideas);
+  renderSkillBars(myTasks);
+}
+
+function renderWorkCols(tasks) {
+  const grouped = {};
+  tasks.forEach(t => {
+    const tipo = getSelect(t,'Tipo');
+    if (tipo) { if (!grouped[tipo]) grouped[tipo] = []; grouped[tipo].push(t); }
+  });
+  const active = Object.keys(grouped).sort((a,b) => grouped[b].length - grouped[a].length).slice(0,4);
+  if (!active.length) { document.getElementById('workCols').innerHTML = '<div class="empty" style="grid-column:span 4;">Sin tareas activas</div>'; return; }
+
+  const colorMap = {
+    'Diseño':'var(--pink-light)','Reunión':'var(--green-light)',
+    'Publicidad':'rgba(55,138,221,0.12)','Difusión':'rgba(29,158,117,0.12)',
+    'Notificación':'var(--pink-light)','Objetivo':'var(--red-light)',
+    'Flujo de Trabajo':'var(--amber-light)','Evento':'var(--purple-light)',
+    'Idea':'var(--amber-light)','Tarea':'var(--surface2)'
+  };
+  const html = active.map(tipo => {
+    const items = grouped[tipo];
+    const taskHtml = items.slice(0,3).map(t => {
+      const tid = t.id || '';
+      const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+      const projName = PROJECT_NAMES[projKey] || '';
+      const projColor = PROJECT_COLORS[projKey] || '#9B9890';
+      return `<div class="work-task" style="background:${colorMap[tipo]||'var(--surface)'};display:flex;justify-content:space-between;align-items:center;">
+        <div onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;">
+          <div style="font-size:11px;">${getTitle(t)}</div>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${projColor}22;color:${projColor};font-weight:500;">${projName}</span>
+        </div>
+        <button onclick="completeTask('${tid}',this)" style="border:none;background:transparent;cursor:pointer;font-size:12px;padding:0 2px;color:var(--text3);" title="Completar">✅</button>
+      </div>`;
+    }).join('');
+    const extra = items.length > 3 ? `<div class="work-task" style="color:var(--text3);">+ ${items.length-3} más</div>` : '';
+    return `<div class="work-col"><div class="work-col-title">${tipo}<span style="color:${items.length>2?'var(--red)':'var(--text3)'};">${items.length}</span></div>${taskHtml}${extra}</div>`;
+  }).join('');
+  document.getElementById('workCols').innerHTML = html;
+}
+
+function renderProjCols(tasks) {
+  const sorted = [...tasks].sort((a,b) => {
+    const order = {'🔴 Hacer hoy':0,'🟠 Para esta semana':1,'🟠 Esta semana':1,'🟡 Bloque rápido':2};
+    return (order[getSelect(a,'Prioridad')]??3) - (order[getSelect(b,'Prioridad')]??3);
+  });
+
+  const html = Object.entries(PROJECT_NAMES).map(([key,name]) => {
+    const projTasks = sorted.filter(t => {
+      const db = Object.entries(DBS).find(([k,v]) => allTasks[k]?.includes(t));
+      return db && db[0] === key;
+    });
+    const color = PROJECT_COLORS[key];
+    const taskHtml = projTasks.slice(0,4).map(t => {
+      const prio = getSelect(t,'Prioridad');
+      const pc = PRIORITY_COLORS[prio] || '#9B9890';
+      const tid2 = t.id || '';
+      return `<div class="proj-task" style="border-left-color:${pc};display:flex;justify-content:space-between;align-items:center;">
+        <span onclick="window.open('${getUrl(t)}','_blank')" style="cursor:pointer;flex:1;font-size:11px;">${getTitle(t)}</span>
+        <button onclick="completeTask('${tid2}',this)" style="border:none;background:transparent;cursor:pointer;font-size:11px;padding:0 2px;color:var(--text3);" title="Completar">✅</button>
+      </div>`;
+    }).join('');
+    const extra = projTasks.length > 4 ? `<div class="proj-task" style="color:var(--text3);">+ ${projTasks.length-4} más</div>` : '';
+    const empty = projTasks.length === 0 ? `<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Sin tareas</div>` : '';
+    return `<div class="proj-col"><div class="proj-col-title"><span style="color:${color};">${name}</span><span style="color:var(--text3);">${projTasks.length}</span></div>${taskHtml}${extra}${empty}</div>`;
+  }).join('');
+  document.getElementById('projCols').innerHTML = html;
+}
+
+function renderAgenda(tasks) {
+  const today = new Date().toISOString().split('T')[0];
+  const events = tasks.filter(t => {
+    const d = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
+    return d && d.startsWith(today) && (getSelect(t,'Tipo') === 'Reunión' || getSelect(t,'Tipo') === 'Evento');
+  });
+  if (!events.length) { document.getElementById('myAgenda').innerHTML = '<div class="empty">Sin eventos con fecha registrada hoy</div>'; return; }
+  document.getElementById('myAgenda').innerHTML = events.map(t => `
+    <div class="timeline-item" style="cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+      <span class="timeline-time">—</span>
+      <div><p style="font-size:13px;">${getTitle(t)}</p><div style="margin-top:3px;"><span class="badge badge-purple">${getSelect(t,'Tipo')||'Evento'}</span></div></div>
+    </div>`).join('');
+}
+
+function renderNotifications(tasks) {
+  const notifs = tasks.filter(t => getSelect(t,'Tipo') === 'Notificación');
+  if (!notifs.length) { document.getElementById('myNotifications').innerHTML = '<div class="empty">Sin notificaciones</div>'; return; }
+  document.getElementById('myNotifications').innerHTML = notifs.slice(0,4).map(t => {
+    const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+    const projName = PROJECT_NAMES[projKey] || '';
+    const color = PROJECT_COLORS[projKey] || '#9B9890';
+    const ntid = t.id || '';
+    return `<div style="display:flex;gap:8px;padding:8px;background:var(--surface2);border-radius:var(--rsm);margin-bottom:6px;align-items:center;">
+      <span style="font-size:14px;flex-shrink:0;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">🔔</span>
+      <div style="flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+        <p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
+        <p style="font-size:11px;color:var(--text3);margin-top:2px;"><span style="color:${color};font-weight:500;">${projName}</span></p>
+      </div>
+      <button onclick="completeTask('${ntid}',this)" style="border:none;background:transparent;cursor:pointer;font-size:12px;padding:0 2px;color:var(--text3);" title="Marcar leída">✅</button>
+    </div>`;
+  }).join('');
+}
+
+function renderIdeas(ideas) {
+  if (!ideas.length) { document.getElementById('myIdeas').innerHTML = '<div class="empty">Sin ideas registradas</div>'; return; }
+  document.getElementById('myIdeas').innerHTML = ideas.slice(0,4).map(t => {
+    const projKey = Object.entries(allTasks).find(([k,v]) => v.includes(t))?.[0];
+    const projName = PROJECT_NAMES[projKey] || '';
+    return `<div style="display:flex;gap:8px;padding:8px;background:var(--purple-light);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
+      <span style="font-size:14px;flex-shrink:0;">💡</span>
+      <div><p style="font-size:12px;color:var(--text);">${getTitle(t)}</p>
+      <p style="font-size:11px;color:var(--purple);margin-top:2px;">${projName}</p></div>
+    </div>`;
+  }).join('');
+}
+
+function renderSkillBars(tasks) {
+  const colorMap = {
+    'Diseño':'#C44880','Reunión':'#2D9B6F','Tarea':'#6B6860',
+    'Publicidad':'#378ADD','Difusión':'#1D9E75','Idea':'#C47A20',
+    'Evento':'#8B5CF6','Notificación':'#EC4899','Flujo de Trabajo':'#F59E0B',
+    'Objetivo':'#D94040','Estudio':'#C47A20','Rutina':'#2D9B6F'
+  };
+  const counts = {};
+  tasks.forEach(t => {
+    const tipo = getSelect(t,'Tipo');
+    if (tipo) counts[tipo] = (counts[tipo] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const max = sorted.length ? sorted[0][1] : 1;
+  const html = sorted.map(([tipo, count]) => `
+    <div class="skill-row">
+      <span class="skill-name">${tipo}</span>
+      <div class="skill-bar"><div class="skill-fill" style="width:${Math.round(count/max*100)}%;background:${colorMap[tipo]||'#9B9890'};"></div></div>
+      <span class="skill-count">${count}</span>
+    </div>`).join('');
+  document.getElementById('skillBars').innerHTML = html || '<div class="empty">Sin datos suficientes</div>';
+}
+
+let bitacoraData = [];
+try { bitacoraData = JSON.parse(localStorage.getItem('bitacora') || '[]'); } catch {}
+
+function renderBitacora() {
+  if (!bitacoraData.length) { document.getElementById('bitacoraEntries').innerHTML = '<div class="empty" style="padding:1rem 0;">Sin entradas esta semana. Agrega tu primera observación.</div>'; return; }
+  document.getElementById('bitacoraEntries').innerHTML = bitacoraData.slice(-5).reverse().map(e => `
+    <div class="bitacora-entry">
+      <div class="bitacora-header"><span class="bitacora-date">${e.date}</span><span class="badge badge-gray">${e.project}</span></div>
+      <p class="bitacora-text">${e.text}</p>
+    </div>`).join('');
+}
+
+function addBitacora() {
+  const input = document.getElementById('bitacoraInput');
+  const project = document.getElementById('bitacoraProject').value;
+  if (!input.value.trim()) return;
+  const date = new Date().toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'short' });
+  bitacoraData.push({ date, project, text: input.value.trim() });
+  try { localStorage.setItem('bitacora', JSON.stringify(bitacoraData)); } catch {}
+  input.value = '';
+  renderBitacora();
+}
+
+function addBookmark() {
+  const name = prompt('Nombre del marcador:');
+  const url = prompt('URL:');
+  if (name && url) alert(`Marcador "${name}" guardado.`);
+}
+
+async function generateAnalysis() {
+  const btn = document.getElementById('btnAnalysis');
+  btn.textContent = 'Analizando...'; btn.disabled = true;
+  document.getElementById('aiAnalysis').innerHTML = '<div class="ai-loading">Analizando tus proyectos con IA...</div>';
+
+  const summary = {
+    totalTasks: getAllTasks().length,
+    critical: getAllTasks().filter(isOverdue).length,
+    goals: allGoals.length,
+    loggedGoals: allGoals.filter(g => getSelect(g,'Estado') === 'Logrado').length,
+    byProject: Object.fromEntries(Object.entries(PROJECT_NAMES).map(([k,name]) => [name, {
+      tasks: (allTasks[k]||[]).length,
+      critical: (allTasks[k]||[]).filter(t => isOverdue(t) || getSelect(t,'Prioridad') === '🔴 Hacer hoy').length,
+      goals: allGoals.filter(g => getSelect(g,'Proyecto') === name).length,
+      done: allGoals.filter(g => getSelect(g,'Proyecto') === name && getSelect(g,'Estado') === 'Logrado').length
+    }]))
+  };
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 800,
+        messages: [{ role: 'user', content: `Eres el asistente estratégico personal de Rayo, directora de múltiples proyectos (Maitinada: espacio de bienestar, Mara: consultoría de branding, Casa Lunae: experiencias espirituales femeninas, Haz Eco: fundación socioambiental, Personal). Rayo es neurodivergente y trabaja con equipos neurodivergentes.
+
+Datos actuales: ${JSON.stringify(summary, null, 2)}
+
+Genera un análisis semanal breve pero crítico. Por proyecto, máximo 2 oraciones. Directa, sin condescendencia. Identifica qué funciona, qué está en riesgo, y una acción concreta para esta semana. Responde en español.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Error generando análisis.';
+    const projects = Object.values(PROJECT_NAMES);
+    let html = '';
+    text.split('\n').filter(l => l.trim()).forEach(line => {
+      const proj = projects.find(p => line.includes(p));
+      if (proj) html += `<div class="ai-block"><p class="ai-project">${proj}</p><p class="ai-text">${line.replace(proj+':','').replace(proj,'').trim()}</p></div>`;
+      else if (line.trim()) html += `<div class="ai-block"><p class="ai-text">${line}</p></div>`;
+    });
+    document.getElementById('aiAnalysis').innerHTML = html || `<div class="ai-block"><p class="ai-text">${text}</p></div>`;
+  } catch(e) {
+    document.getElementById('aiAnalysis').innerHTML = '<div class="ai-loading">Error conectando con la IA.</div>';
+  }
+  btn.textContent = 'Regenerar análisis →'; btn.disabled = false;
+}
+
+async function generateSkillAnalysis() {
+  document.getElementById('skillAnalysis').innerHTML = '<div class="ai-loading">Analizando tu perfil...</div>';
+  const allFlat = Object.values(allTasks).flat();
+  const myTasks = allFlat.filter(isMyTask);
+  const types = ['Diseño','Reunión','Tarea','Estudio','Optimización','Decisión','Activación'];
+  const counts = {};
+  types.forEach(t => counts[t] = 0);
+  myTasks.forEach(t => { const tipo = getSelect(t,'Tipo'); if (tipo && counts[tipo] !== undefined) counts[tipo]++; });
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 500,
+        messages: [{ role: 'user', content: `Eres el asistente estratégico de Rayo, profesional neurodivergente, directora creativa y consultora de branding. Su distribución de trabajo: ${JSON.stringify(counts)}
+
+Analiza brevemente (máximo 4 oraciones):
+1. Qué tipos de trabajo están sobrerepresentados (posible sobrecarga)
+2. Qué talentos naturales se evidencian
+3. Qué tipo de trabajo falta o se evita (posible delegación)
+4. Una recomendación concreta para potenciar sus talentos
+
+Directa, sin condescendencia. En español.` }]
+      })
+    });
+    const data = await res.json();
+    document.getElementById('skillAnalysis').innerHTML = `<p style="font-size:13px;color:var(--text);line-height:1.7;">${data.content?.[0]?.text || 'Error.'}</p>`;
+  } catch {
+    document.getElementById('skillAnalysis').innerHTML = '<div class="ai-loading">Error conectando con la IA.</div>';
+  }
+}
+
+setDate();
+renderBitacora();
+setTimeout(loadData, 100);
+</script>
+</body>
+</html>
+<script>
+const THEMES = {
+  warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
+  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
+  editorial: { bg:'#F5F2EC', surface:'#FAFAF5', surface2:'#ECEAE2', text:'#1A1A1A', text2:'#5A5A5A', text3:'#999990', border:'rgba(0,0,0,0.08)' },
+  dashboard: { bg:'#111111', surface:'#1C1C1C', surface2:'#272727', text:'#FFFFFF', text2:'#AAAAAA', text3:'#666666', border:'rgba(255,255,255,0.10)' }
+};
+
+const PRESET_THEMES = {
+  editorial: {
+    mode: 'editorial',
+    accent: 'c8b4d8',
+    font: 'dm',
+    accentName: 'Lavanda editorial',
+    description: 'Tipografía serif · Lavanda suave · Fondo papel'
+  },
+  dashboard: {
+    mode: 'dashboard',
+    accent: 'c8a84b',
+    font: 'spacemono',
+    accentName: 'Dorado dashboard',
+    description: 'Space Mono · Dorado saturado · Fondo negro profundo'
+  }
+};
+const ACCENTS = {
+  'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
+  'ffd897': { main:'#ffd897', dark:'#8A6200', light:'rgba(255,216,151,0.2)', name:'Damasco oro' },
+  'efb9c8': { main:'#efb9c8', dark:'#8A2A4A', light:'rgba(239,185,200,0.2)', name:'Damasco rosa' },
+  'bbcaa1': { main:'#bbcaa1', dark:'#3B5A20', light:'rgba(187,202,161,0.2)', name:'Menta suave' },
+  'a1cabe': { main:'#a1cabe', dark:'#1A5A52', light:'rgba(161,202,190,0.2)', name:'Menta agua' },
+  '9ecab1': { main:'#9ecab1', dark:'#1A5A3A', light:'rgba(158,202,177,0.2)', name:'Menta verde' },
+  'd8bda7': { main:'#d8bda7', dark:'#6A3A1A', light:'rgba(216,189,167,0.2)', name:'Mocca' },
+  'e6b791': { main:'#e6b791', dark:'#7A4A10', light:'rgba(230,183,145,0.2)', name:'Mocca dorado' },
+  'd8b79b': { main:'#d8b79b', dark:'#6A3A18', light:'rgba(216,183,155,0.2)', name:'Mocca terracota' },
+  'c8b4d8': { main:'#c8b4d8', dark:'#6A3A8A', light:'rgba(200,180,216,0.2)', name:'Lavanda editorial' },
+  'c8a84b': { main:'#c8a84b', dark:'#7A6200', light:'rgba(200,168,75,0.2)', name:'Dorado dashboard' }
+};
+const FONTS = {
+  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif", name:'Space Mono' },
+  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif", name:'DM Serif' }
+};
+
+let currentTheme = localStorage.getItem('pd_theme') || 'warm';
+let currentAccent = localStorage.getItem('pd_accent') || 'ffc297';
+let currentFont = localStorage.getItem('pd_font') || 'spacemono';
+
+function applyTheme() {
+  const t = THEMES[currentTheme];
+  const a = ACCENTS[currentAccent];
+  const f = FONTS[currentFont];
+  const r = document.documentElement;
+  r.style.setProperty('--bg', t.bg);
+  r.style.setProperty('--surface', t.surface);
+  r.style.setProperty('--surface2', t.surface2);
+  r.style.setProperty('--text', t.text);
+  r.style.setProperty('--text2', t.text2);
+  r.style.setProperty('--text3', t.text3);
+  r.style.setProperty('--border', t.border);
+  r.style.setProperty('--purple', a.main);
+  r.style.setProperty('--purple-light', a.light);
+  r.style.setProperty('--purple-dark', a.dark);
+  r.style.setProperty('--font-title', f.title);
+  r.style.setProperty('--font-body', f.body);
+  document.body.style.fontFamily = f.body;
+  // Inyectar CSS para que persista en re-renders
+  let styleTag = document.getElementById('dynamic-font-style');
+  if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'dynamic-font-style'; document.head.appendChild(styleTag); }
+  styleTag.textContent = `body, .tab-content, .card, .badge, button, input, select, .task-title, .work-task, .proj-task, .timeline-item, .bitacora-text { font-family: ${f.body} !important; } .greeting h1, .logo, .wb-value, h1, h2 { font-family: ${f.title} !important; }`;
+  localStorage.setItem('pd_theme', currentTheme);
+  localStorage.setItem('pd_accent', currentAccent);
+  localStorage.setItem('pd_font', currentFont);
+  updateThemeUI();
+}
+
+function updateThemeUI() {
+  document.querySelectorAll('.theme-mode-btn').forEach(b => {
+    b.style.background = b.dataset.mode === currentTheme ? 'var(--purple)' : 'transparent';
+    b.style.color = b.dataset.mode === currentTheme ? (currentTheme === 'dark' ? '#F0E8DC' : '#2A1F14') : 'var(--text2)';
+  });
+  document.querySelectorAll('.theme-accent-dot').forEach(d => {
+    d.style.outline = d.dataset.accent === currentAccent ? '2px solid var(--text)' : 'none';
+    d.style.outlineOffset = '2px';
+  });
+  document.querySelectorAll('.theme-font-btn').forEach(b => {
+    b.style.background = b.dataset.font === currentFont ? 'var(--surface2)' : 'transparent';
+    b.style.fontWeight = b.dataset.font === currentFont ? '500' : '400';
+  });
+}
+
+function toggleThemePanel() {
+  const panel = document.getElementById('themePanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+applyTheme();
+</script>
+<script>
+function setCustomAccent(hex) {
+  currentAccent = hex.replace('#','');
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const dark = `rgb(${Math.round(r*0.5)},${Math.round(g*0.5)},${Math.round(b*0.5)})`;
+  const light = `rgba(${r},${g},${b},0.18)`;
+  document.documentElement.style.setProperty('--purple', hex);
+  document.documentElement.style.setProperty('--purple-light', light);
+  document.documentElement.style.setProperty('--purple-dark', dark);
+  document.getElementById('accentPreview').style.background = hex;
+  document.getElementById('accentHex').textContent = hex;
+  localStorage.setItem('pd_accent_custom', hex);
+  localStorage.setItem('pd_accent', hex.replace('#',''));
+}
+
+function setCustomBg(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const surface = `rgb(${Math.min(255,r+12)},${Math.min(255,g+12)},${Math.min(255,b+12)})`;
+  const surface2 = `rgb(${Math.max(0,r-8)},${Math.max(0,g-8)},${Math.max(0,b-8)})`;
+  document.documentElement.style.setProperty('--bg', hex);
+  document.documentElement.style.setProperty('--surface', surface);
+  document.documentElement.style.setProperty('--surface2', surface2);
+  document.getElementById('bgHex').textContent = hex;
+  localStorage.setItem('pd_bg_custom', hex);
+}
+
+function resetTheme() {
+  localStorage.removeItem('pd_accent_custom');
+  localStorage.removeItem('pd_bg_custom');
+  currentTheme = 'warm';
+  currentAccent = 'ffc297';
+  currentFont = 'spacemono';
+  applyTheme();
+  document.getElementById('accentPicker').value = '#ffc297';
+  document.getElementById('bgPicker').value = '#FAF7F2';
+  document.getElementById('accentPreview').style.background = '#ffc297';
+  document.getElementById('accentHex').textContent = '#ffc297';
+  document.getElementById('bgHex').textContent = '#FAF7F2';
+}
+
+// Restaurar colores personalizados al cargar
+const savedAccent = localStorage.getItem('pd_accent_custom');
+const savedBg = localStorage.getItem('pd_bg_custom');
+if (savedAccent) { document.getElementById('accentPicker').value = savedAccent; setCustomAccent(savedAccent); }
+if (savedBg) { document.getElementById('bgPicker').value = savedBg; setCustomBg(savedBg); }
+</script>
+<script>
+// ── DRAG AND DROP ──
+let dragSrc = null;
+
+function initDragDrop() {
+  document.querySelectorAll('.card[draggable="true"]').forEach(card => {
+    card.style.cursor = 'grab';
+    card.addEventListener('dragstart', e => {
+      dragSrc = card;
+      setTimeout(() => card.style.opacity = '0.4', 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.style.opacity = '1';
+      document.querySelectorAll('.card').forEach(c => c.style.outline = '');
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (card !== dragSrc) card.style.outline = '2px dashed var(--purple)';
+    });
+    card.addEventListener('dragleave', () => card.style.outline = '');
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      card.style.outline = '';
+      if (!dragSrc || dragSrc === card) return;
+      const parent = card.parentNode;
+      const srcParent = dragSrc.parentNode;
+      if (parent === srcParent) {
+        const cards = [...parent.children];
+        const si = cards.indexOf(dragSrc), ti = cards.indexOf(card);
+        if (si < ti) parent.insertBefore(dragSrc, card.nextSibling);
+        else parent.insertBefore(dragSrc, card);
+      }
+    });
+  });
+}
+
+// ── CALENDARIO ──
+let calDate = new Date();
+let calView = 'month';
+
+const PROJECT_COLORS_CAL = {
+  maitinada: '#C47A20', mara: '#639922', casalunae: '#C44880',
+  hazeco: '#2D9B6F', personal: '#6B6860'
+};
+
+function setCalView(view, btn) {
+  calView = view;
+  document.querySelectorAll('#tab-calendario .period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function prevMonth() {
+  calDate = new Date(calDate.getFullYear(), calDate.getMonth() - 1, 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  calDate = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 1);
+  renderCalendar();
+}
+
+function getTasksWithDates() {
+  const result = [];
+  Object.entries(allTasks).forEach(([key, tasks]) => {
+    tasks.forEach(t => {
+      const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
+      if (d) result.push({ task: t, date: d, project: key });
+    });
+  });
+  return result;
+}
+
+function renderCalendar() {
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('calMonthTitle').textContent = `${months[calDate.getMonth()]} ${calDate.getFullYear()}`;
+
+  if (calView === 'month') renderMonthView();
+  else renderWeekView();
+  renderUpcoming();
+}
+
+function renderMonthView() {
+  const grid = document.getElementById('calGrid');
+  const year = calDate.getFullYear(), month = calDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDow = (firstDay.getDay() + 6) % 7; // lunes = 0
+  const today = new Date().toISOString().split('T')[0];
+  const tasksWithDates = getTasksWithDates();
+
+  let html = '';
+  // empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;opacity:0.3;"></div>`;
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === today;
+    const dayTasks = tasksWithDates.filter(t => t.date.startsWith(dateStr));
+    const taskDots = dayTasks.slice(0,3).map(t => {
+      const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+      const title = getTitle(t.task);
+      return `<div onclick="window.open('${getUrl(t.task)}','_blank')" title="${title}" style="font-size:10px;padding:1px 5px;border-radius:3px;background:${color}22;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;margin-bottom:2px;border-left:2px solid ${color};">${title}</div>`;
+    }).join('');
+    const extra = dayTasks.length > 3 ? `<div style="font-size:10px;color:var(--text3);">+${dayTasks.length-3} más</div>` : '';
+
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;${isToday ? 'background:var(--purple-light);' : ''}">
+      <div style="font-size:12px;font-weight:${isToday?'500':'400'};color:${isToday?'var(--purple)':'var(--text2)'};margin-bottom:4px;">${d}</div>
+      ${taskDots}${extra}
+    </div>`;
+  }
+
+  // fill remaining cells
+  const totalCells = startDow + lastDay.getDate();
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 0; i < remaining; i++) {
+    html += `<div style="min-height:80px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;opacity:0.3;"></div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderWeekView() {
+  const grid = document.getElementById('calGrid');
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+  const tasksWithDates = getTasksWithDates();
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = d.toISOString().split('T')[0];
+    const isToday = dateStr === today.toISOString().split('T')[0];
+    const dayTasks = tasksWithDates.filter(t => t.date.startsWith(dateStr));
+    const taskList = dayTasks.map(t => {
+      const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+      const title = getTitle(t.task);
+      const tipo = getSelect(t.task, 'Tipo');
+      const modalidad = getSelect(t.task, 'Modalidad');
+      const isReunion = tipo === 'Reunión' || tipo === 'Evento';
+      const modalBadge = isReunion && modalidad ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${modalidad==='Online'?'#378ADD22':modalidad==='Presencial'?'#2D9B6F22':'#5B4FE822'};color:${modalidad==='Online'?'#378ADD':modalidad==='Presencial'?'#2D9B6F':'var(--purple)'};margin-left:4px;">${modalidad}</span>` : '';
+      return `<div onclick="window.open('${getUrl(t.task)}','_blank')" style="font-size:11px;padding:4px 7px;border-radius:4px;background:${color}22;color:${color};margin-bottom:3px;cursor:pointer;border-left:2px solid ${color};line-height:1.4;">${title}${modalBadge}</div>`;
+    }).join('');
+    html += `<div style="min-height:200px;border-right:1px solid var(--border);padding:8px;${isToday ? 'background:var(--purple-light);' : ''}">
+      <div style="font-size:13px;font-weight:${isToday?'500':'400'};color:${isToday?'var(--purple)':'var(--text2)'};margin-bottom:8px;">${d.getDate()}</div>
+      ${taskList || '<div style="font-size:11px;color:var(--text3);">—</div>'}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderUpcoming() {
+  const today = new Date().toISOString().split('T')[0];
+  const tasksWithDates = getTasksWithDates()
+    .filter(t => t.date >= today)
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .slice(0, 8);
+
+  if (!tasksWithDates.length) {
+    document.getElementById('upcomingEvents').innerHTML = '<div class="empty">Sin eventos próximos con fecha</div>';
+    return;
+  }
+
+  const html = tasksWithDates.map(t => {
+    const color = PROJECT_COLORS_CAL[t.project] || '#9B9890';
+    const projName = PROJECT_NAMES[t.project] || '';
+    const d = new Date(t.date + 'T12:00:00');
+    const dateLabel = d.toLocaleDateString('es-CL', { weekday:'short', day:'numeric', month:'short' });
+    const tipo = getSelect(t.task, 'Tipo');
+    const modalidad = getSelect(t.task, 'Modalidad');
+    const participantes = t.task.properties?.Participantes?.rich_text?.map(r => r.plain_text).join('') || '';
+    const contenido = t.task.properties?.Contenido?.rich_text?.map(r => r.plain_text).join('') || '';
+    const isReunion = tipo === 'Reunión' || tipo === 'Evento';
+    const modalColor = modalidad==='Online'?'#378ADD':modalidad==='Presencial'?'#2D9B6F':'var(--purple)';
+    const modalBg = modalidad==='Online'?'#378ADD22':modalidad==='Presencial'?'#2D9B6F22':'var(--purple-light)';
+    return `<div onclick="window.open('${getUrl(t.task)}','_blank')" style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+      <div style="width:3px;min-height:36px;border-radius:2px;background:${color};flex-shrink:0;margin-top:2px;"></div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <p style="font-size:13px;color:var(--text);margin:0;">${getTitle(t.task)}</p>
+          ${modalidad && isReunion ? `<span style="font-size:10px;padding:2px 7px;border-radius:12px;background:${modalBg};color:${modalColor};">${modalidad}</span>` : ''}
+        </div>
+        <p style="font-size:11px;color:var(--text3);margin:3px 0 0;">${projName} · ${dateLabel}</p>
+        ${participantes ? `<p style="font-size:11px;color:var(--text2);margin:3px 0 0;">👥 ${participantes}</p>` : ''}
+        ${contenido ? `<p style="font-size:11px;color:var(--text2);margin:3px 0 0;font-style:italic;">${contenido.slice(0,80)}${contenido.length>80?'...':''}"></p>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('upcomingEvents').innerHTML = html;
+}
+
+// ── SELECTORES DE COLOR EXTENDIDOS ──
+function setTitleColor(hex) {
+  document.documentElement.style.setProperty('--text', hex);
+  document.getElementById('titleColorHex').textContent = hex;
+  localStorage.setItem('pd_title_color', hex);
+}
+
+function setBodyColor(hex) {
+  document.documentElement.style.setProperty('--text2', hex);
+  document.getElementById('bodyColorHex').textContent = hex;
+  localStorage.setItem('pd_body_color', hex);
+}
+
+function setCardColor(hex) {
+  document.documentElement.style.setProperty('--surface', hex);
+  document.getElementById('cardColorHex').textContent = hex;
+  localStorage.setItem('pd_card_color', hex);
+}
+
+// Restaurar colores guardados
+['pd_title_color','pd_body_color','pd_card_color'].forEach((key, i) => {
+  const val = localStorage.getItem(key);
+  if (!val) return;
+  const ids = ['titleColorPicker','bodyColorPicker','cardColorPicker'];
+  const hexIds = ['titleColorHex','bodyColorHex','cardColorHex'];
+  const el = document.getElementById(ids[i]);
+  const hexEl = document.getElementById(hexIds[i]);
+  if (el) el.value = val;
+  if (hexEl) hexEl.textContent = val;
+  if (i === 0) document.documentElement.style.setProperty('--text', val);
+  if (i === 1) document.documentElement.style.setProperty('--text2', val);
+  if (i === 2) document.documentElement.style.setProperty('--surface', val);
+});
+
+// Extender resetTheme para incluir colores de texto
+const _origReset = window.resetTheme;
+window.resetTheme = function() {
+  _origReset && _origReset();
+  ['pd_title_color','pd_body_color','pd_card_color'].forEach(k => localStorage.removeItem(k));
+  document.getElementById('titleColorPicker') && (document.getElementById('titleColorPicker').value = '#2A1F14');
+  document.getElementById('bodyColorPicker') && (document.getElementById('bodyColorPicker').value = '#7A6A5A');
+  document.getElementById('cardColorPicker') && (document.getElementById('cardColorPicker').value = '#FFFDF9');
+};
+
+// Inicializar después de cargar datos
+const _origLoad = window.loadData;
+window.loadData = async function() {
+  await _origLoad();
+  renderCalendar();
+  setTimeout(initDragDrop, 300);
+};
+
+renderCalendar();
+setTimeout(initDragDrop, 500);
+</script>
+<script>
+// ── COMPLETAR TAREA ──
+async function completeTask(pageId, btn) {
+  if (!pageId) return;
+  const original = btn.textContent;
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${PROXY}/pages/${pageId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        properties: {
+          Estado: { select: { name: 'Completada' } }
+        }
+      })
+    });
+    const data = await res.json();
+    if (data.id) {
+      // Eliminar visualmente la tarjeta
+      const card = btn.closest('.task-item') || btn.closest('.critical-item');
+      if (card) {
+        card.style.transition = 'opacity 0.3s, height 0.3s';
+        card.style.opacity = '0';
+        setTimeout(() => { card.remove(); loadData(); }, 300);
+      }
+    } else {
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = original;
+    btn.disabled = false;
+  }
+}
+
+// ── AGREGAR IDEA ──
+const IDEA_DB_MAP = {
+  maitinada: 'd864d37740c440138705e0711696119c',
+  mara: 'cdd54ab81ff847c7a8bdf0b72d76e192',
+  casalunae: 'de9c4c6b36c84ffd838db4adf3e6e95b',
+  hazeco: '0fe981cee91d435e9cdb62780e946e32',
+  personal: '7a45a2551ccb473490d3a47c983ceb59'
+};
+
+async function submitIdea() {
+  const text = document.getElementById('ideaText').value.trim();
+  const project = document.getElementById('ideaProject').value;
+  const area = document.getElementById('ideaArea').value;
+  const status = document.getElementById('ideaStatus');
+  const btn = document.getElementById('ideaBtn');
+
+  if (!text) {
+    status.textContent = 'Escribe algo primero.';
+    status.style.display = 'block';
+    status.style.color = 'var(--red)';
+    return;
+  }
+
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+  status.style.display = 'none';
+
+  const dbId = IDEA_DB_MAP[project];
+  const properties = {
+    Tarea: { title: [{ text: { content: text } }] },
+    Tipo: { select: { name: 'Idea' } },
+    Estado: { select: { name: 'Pendiente' } },
+    Prioridad: { select: { name: '🟡 Bloque rápido' } },
+    Responsable: { select: { name: 'Rayo' } },
+    'Enviado por': { select: { name: 'Rayo' } }
+  };
+  if (area) properties['Área'] = { select: { name: area } };
+
+  try {
+    const res = await fetch(`${PROXY}/pages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        parent: { database_id: dbId },
+        properties
+      })
+    });
+    const data = await res.json();
+
+    if (data.id) {
+      document.getElementById('ideaText').value = '';
+      status.textContent = '✓ Idea guardada en Notion';
+      status.style.color = 'var(--green)';
+      status.style.display = 'block';
+      setTimeout(() => { status.style.display = 'none'; loadData(); }, 2000);
+    } else {
+      throw new Error('Error al guardar');
+    }
+  } catch(e) {
+    status.textContent = 'Error al guardar. Intenta de nuevo.';
+    status.style.color = 'var(--red)';
+    status.style.display = 'block';
+  }
+
+  btn.textContent = 'Agregar idea';
+  btn.disabled = false;
+}
+
+// Enter en campo de idea
+document.getElementById('ideaText') && document.getElementById('ideaText').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitIdea();
+});
+</script>
+<script>
+function setText3Color(hex) {
+  document.documentElement.style.setProperty('--text3', hex);
+  document.getElementById('text3ColorHex').textContent = hex;
+  localStorage.setItem('pd_text3_color', hex);
+}
+
+// Restaurar text3 color guardado
+const savedText3 = localStorage.getItem('pd_text3_color');
+if (savedText3) {
+  const el = document.getElementById('text3ColorPicker');
+  if (el) el.value = savedText3;
+  const hexEl = document.getElementById('text3ColorHex');
+  if (hexEl) hexEl.textContent = savedText3;
+  document.documentElement.style.setProperty('--text3', savedText3);
+}
+
+// Aplicar font guardada al cargar
+const savedFont = localStorage.getItem('pd_font') || 'spacemono';
+const fontMap = {
+  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif" },
+  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif" }
+};
+const fData = fontMap[savedFont] || fontMap.spacemono;
+document.documentElement.style.setProperty('--font-title', fData.title);
+document.documentElement.style.setProperty('--font-body', fData.body);
+document.body.style.fontFamily = fData.body;
+</script>
+<script>
+function applyPreset(name) {
+  const preset = PRESET_THEMES[name];
+  if (!preset) return;
+  currentTheme = preset.mode;
+  currentAccent = preset.accent;
+  currentFont = preset.font;
+  applyTheme();
+  const picker = document.getElementById('accentPicker');
+  const preview = document.getElementById('accentPreview');
+  const hex = document.getElementById('accentHex');
+  const acc = ACCENTS[preset.accent];
+  if (picker) picker.value = acc?.main || '#c8b4d8';
+  if (preview) preview.style.background = acc?.main || '#c8b4d8';
+  if (hex) hex.textContent = acc?.main || '#c8b4d8';
+  localStorage.setItem('pd_theme', preset.mode);
+  localStorage.setItem('pd_accent', preset.accent);
+  localStorage.setItem('pd_font', preset.font);
+}
+</script>
