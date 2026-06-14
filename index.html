@@ -31,192 +31,91 @@
   --rsm: 8px;
 }
 
-/* ── POSTER THEME OVERRIDES ── */
-body.poster-oscuro,
-body.poster-claro {
+/* ── POSTER THEME ── */
+body.poster-oscuro, body.poster-claro {
   font-family: 'Space Grotesk', sans-serif !important;
 }
-body.poster-oscuro .logo,
-body.poster-oscuro .greeting h1,
-body.poster-oscuro h1,
-body.poster-oscuro h2,
-body.poster-claro .logo,
-body.poster-claro .greeting h1,
-body.poster-claro h1,
-body.poster-claro h2 {
-  font-family: 'Bebas Neue', sans-serif !important;
-  letter-spacing: 1px;
+body.poster-oscuro .greeting, body.poster-claro .greeting {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
-body.poster-oscuro .logo { font-family: 'Space Mono', monospace !important; font-size:11px; letter-spacing:3px; }
-body.poster-claro  .logo { font-family: 'Space Mono', monospace !important; font-size:11px; letter-spacing:3px; }
-
-/* Hero greeting big */
-body.poster-oscuro .greeting h1,
-body.poster-claro  .greeting h1 {
-  font-size: 52px !important;
+body.poster-oscuro .greeting h1, body.poster-claro .greeting h1 {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 54px !important;
   line-height: 0.92 !important;
   letter-spacing: 1px !important;
 }
-body.poster-oscuro .greeting p,
-body.poster-claro  .greeting p {
+body.poster-oscuro .greeting p, body.poster-claro .greeting p {
   font-family: 'Space Mono', monospace !important;
   font-size: 9px !important;
-  letter-spacing: 1px;
+  letter-spacing: 1px !important;
+  margin-top: 6px !important;
 }
-
-/* KPI numbers big */
-body.poster-oscuro .wb-value,
-body.poster-claro  .wb-value,
-body.poster-oscuro [id^="p-"],
-body.poster-claro  [id^="p-"] {
-  font-family: 'Bebas Neue', sans-serif !important;
+body.poster-oscuro .logo, body.poster-claro .logo {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
 }
-
-/* Poster card labels */
-body.poster-oscuro .card-title,
-body.poster-claro  .card-title {
+body.poster-oscuro .card, body.poster-claro .card { border-radius: 3px !important; }
+body.poster-oscuro .card-title, body.poster-claro .card-title {
   font-family: 'Space Mono', monospace !important;
   font-size: 8px !important;
   letter-spacing: 2px !important;
-}
-
-/* Tabs */
-body.poster-oscuro .tab,
-body.poster-claro  .tab {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 8px !important;
-  letter-spacing: 1px !important;
   text-transform: uppercase !important;
 }
-
-/* Project columns in poster: solid color blocks */
-body.poster-oscuro .proj-col[data-proj="maitinada"],
-body.poster-oscuro .proj-col[data-proj="mara"],
-body.poster-oscuro .proj-col[data-proj="casalunae"],
-body.poster-oscuro .proj-col[data-proj="hazeco"],
-body.poster-oscuro .proj-col[data-proj="personal"] {
-  border-radius: 3px !important;
-}
-
-/* POSTER KPI cards: bigger numbers */
-body.poster-oscuro .card p[style*="font-size:28px"],
-body.poster-claro  .card p[style*="font-size:28px"] {
+body.poster-oscuro .wb-value, body.poster-claro .wb-value {
   font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 40px !important;
+  font-size: 44px !important;
 }
-
-/* Poster border radius: squarer */
-body.poster-oscuro .card,
-body.poster-oscuro .badge,
-body.poster-claro  .card,
-body.poster-claro  .badge { border-radius: 3px !important; }
-
-body.poster-oscuro .critical-item,
-body.poster-claro  .critical-item { border-radius: 2px !important; }
-
-/* Project stat blocks for poster */
+body.poster-oscuro .tab, body.poster-claro .tab {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 8px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+body.poster-oscuro .header { background: #080808 !important; border-bottom-color: #1A1A1A !important; }
+body.poster-claro  .header { background: #E0D9CE !important; border-bottom-color: #C8C0B4 !important; }
+/* Poster project blocks */
+#posterProjRow { display: none; }
+body.poster-oscuro #posterProjRow,
+body.poster-claro  #posterProjRow { display: flex; gap: 6px; padding: 0 2rem 14px; max-width: 1280px; margin: 0 auto; }
 .poster-proj-block {
-  padding: 14px 12px;
-  border-radius: 3px;
-  position: relative;
-  overflow: hidden;
-  flex: 1;
+  flex: 1; padding: 14px 12px; border-radius: 3px;
+  position: relative; overflow: hidden;
 }
 .poster-proj-name {
-  font-family: 'Space Mono', monospace;
-  font-size: 7px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace; font-size: 7px;
+  letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.65; margin-bottom: 8px;
 }
 .poster-proj-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 48px;
-  line-height: 0.9;
+  font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.88; margin-bottom: 4px;
+}
+.poster-proj-sub { font-family: 'Space Mono', monospace; font-size: 7px; opacity: 0.4; }
+.poster-proj-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+.poster-proj-fill { height: 100%; }
+/* Poster hero KPIs */
+#posterDirectorLabel { display: none; }
+body.poster-oscuro #posterDirectorLabel,
+body.poster-claro  #posterDirectorLabel {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
   margin-bottom: 4px;
 }
-.poster-proj-sub {
-  font-family: 'Space Mono', monospace;
-  font-size: 7px;
-  opacity: 0.45;
-}
-.poster-proj-bar { position:absolute; bottom:0; left:0; right:0; height:3px; }
-.poster-proj-fill { height:100%; }
-
-/* Poster header bg */
-body.poster-oscuro .header { background: #0A0A0A !important; border-bottom-color: #1E1E1E !important; }
-body.poster-claro  .header { background: #E8E2D6 !important; border-bottom-color: #D4CCBC !important; }
-body.poster-oscuro .greeting { background: #0A0A0A; padding: 18px 0 14px; border-bottom: 1px solid #1A1A1A; margin-bottom:0 !important; }
-body.poster-claro  .greeting { background: #E8E2D6; padding: 18px 0 14px; border-bottom: 1px solid #D4CCBC; margin-bottom:0 !important; }
-
-/* Poster director label */
-.poster-director-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-body.poster-oscuro .poster-director-label { color: #333; }
-body.poster-claro  .poster-director-label { color: #999; }
-
-/* Poster inline KPIs (hero right) */
-.poster-hero-kpis {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-end;
-  flex-shrink: 0;
-}
+body.poster-oscuro #posterDirectorLabel { color: #333; }
+body.poster-claro  #posterDirectorLabel { color: #999; }
+#posterHeroKpis { display: none; }
+body.poster-oscuro #posterHeroKpis,
+body.poster-claro  #posterHeroKpis { display: flex; }
 .poster-kpi-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  line-height: 1;
+  font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1;
 }
 .poster-kpi-lbl {
-  font-family: 'Space Mono', monospace;
-  font-size: 7px;
-  letter-spacing: 1px;
-  text-align: right;
+  font-family: 'Space Mono', monospace; font-size: 7px; letter-spacing: 1px; text-align: right;
 }
 body.poster-oscuro .poster-kpi-lbl { color: #333; }
 body.poster-claro  .poster-kpi-lbl { color: #999; }
-
-/* Poster greeting row */
-.poster-greeting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
-}
-
-/* Poster project row */
-#posterProjRow {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-/* Poster badge responsible */
-.poster-badge-resp {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 2px;
-  align-self: center;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-/* Hide poster row when not in poster mode */
-#posterProjRow { display:none; }
-body.poster-oscuro #posterProjRow,
-body.poster-claro  #posterProjRow { display:flex; }
-body.poster-oscuro #posterDirectorLabel,
-body.poster-claro  #posterDirectorLabel { display:block; }
-#posterDirectorLabel { display:none; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 .greeting h1, .logo, .wb-value, .p-num-big { font-family: var(--font-title) !important; }
 body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
@@ -398,72 +297,15 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
   </div>
 </header>
 
-<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 2rem;color:var(--text);">
-  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:20px;align-items:start;">
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="theme-mode-btn" data-mode="warm" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Cálido</button>
-        <button class="theme-mode-btn" data-mode="dark" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Oscuro</button>
-        <button class="theme-mode-btn" data-mode="editorial" onclick="applyPreset('editorial');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">Editorial</button>
-        <button class="theme-mode-btn" data-mode="dashboard" onclick="applyPreset('dashboard');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Dashboard</button>
-        <button class="theme-mode-btn" data-mode="poster-oscuro" onclick="applyPreset('poster-oscuro');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;">Poster ◼</button>
-        <button class="theme-mode-btn" data-mode="poster-claro" onclick="applyPreset('poster-claro');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;">Poster ◻</button>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tipografía</p>
-      <div style="display:flex;gap:6px;">
-        <button class="theme-font-btn" data-font="spacemono" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Space Mono</button>
-        <button class="theme-font-btn" data-font="dm" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">DM Serif</button>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Acento</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="accentPicker" value="#ffc297" oninput="setCustomAccent(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
-        <div id="accentPreview" style="width:36px;height:36px;border-radius:50%;background:#ffc297;border:2px solid var(--border);"></div>
-        <span id="accentHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#ffc297</span>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Fondo</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="bgPicker" value="#FAF7F2" oninput="setCustomBg(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
-        <span id="bgHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FAF7F2</span>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Títulos</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="titleColorPicker" value="#2A1F14" oninput="setTitleColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
-        <span id="titleColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#2A1F14</span>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Labels / subtítulos</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="text3ColorPicker" value="#A8978A" oninput="setText3Color(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
-        <span id="text3ColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#A8978A</span>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Contenido</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="bodyColorPicker" value="#7A6A5A" oninput="setBodyColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
-        <span id="bodyColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#7A6A5A</span>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Módulos</p>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" id="cardColorPicker" value="#FFFDF9" oninput="setCardColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
-        <span id="cardColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FFFDF9</span>
-      </div>
-    </div>
-    <div style="text-align:right;">
-      <button onclick="resetTheme()" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:transparent;color:var(--text3);">Resetear</button>
-    </div>
+<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 2rem;">
+  <div style="max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace;margin-right:4px;">Tema</span>
+    <button class="theme-mode-btn" data-mode="warm"          onclick="currentTheme=this.dataset.mode;applyTheme();"  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--text2);">Cálido</button>
+    <button class="theme-mode-btn" data-mode="dark"          onclick="currentTheme=this.dataset.mode;applyTheme();"  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--text2);">Oscuro</button>
+    <button class="theme-mode-btn" data-mode="editorial"     onclick="applyPreset('editorial');"                     style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;background:transparent;color:var(--text2);">Editorial</button>
+    <button class="theme-mode-btn" data-mode="dashboard"     onclick="applyPreset('dashboard');"                     style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;background:transparent;color:var(--text2);">Dashboard</button>
+    <button class="theme-mode-btn" data-mode="poster-oscuro" onclick="applyPreset('poster-oscuro');"                 style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:13px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;background:transparent;color:var(--text2);">Poster ◼</button>
+    <button class="theme-mode-btn" data-mode="poster-claro"  onclick="applyPreset('poster-claro');"                  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:13px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;background:transparent;color:var(--text2);">Poster ◻</button>
   </div>
 </div>
 
@@ -472,20 +314,19 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
 <!-- TAB GENERAL -->
 <div id="tab-general" class="tab-content active">
   <div class="greeting">
-    <div class="poster-director-label" id="posterDirectorLabel">Director view</div>
-    <div class="poster-greeting-row">
+    <div id="posterDirectorLabel">Director view</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;">
       <div>
         <h1 id="greetingText">Hola, Rayo</h1>
         <p id="greetingSub">Cargando...</p>
       </div>
-      <div class="poster-hero-kpis" id="posterHeroKpis" style="display:none;">
-        <div><div class="poster-kpi-num" id="poster-critical" style="color:#E24B4A;">—</div><div class="poster-kpi-lbl">críticas</div></div>
-        <div><div class="poster-kpi-num" id="poster-goals" style="color:#C47A20;">—</div><div class="poster-kpi-lbl">objetivos</div></div>
-        <div><div class="poster-kpi-num" id="poster-week" style="color:#2D9B6F;">—</div><div class="poster-kpi-lbl">esta semana</div></div>
+      <div id="posterHeroKpis" style="flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0;padding-bottom:4px;">
+        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-critical" style="color:#E24B4A;">—</div><div class="poster-kpi-lbl">críticas</div></div>
+        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-goals" style="color:#C47A20;">—</div><div class="poster-kpi-lbl">objetivos</div></div>
+        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-week" style="color:#2D9B6F;">—</div><div class="poster-kpi-lbl">esta semana</div></div>
       </div>
     </div>
   </div>
-  <!-- POSTER PROJECT ROW (visible solo en poster mode) -->
   <div id="posterProjRow"></div>
 
   <div class="period-row">
@@ -1319,43 +1160,19 @@ setTimeout(loadData, 100);
 </html>
 <script>
 const THEMES = {
-  warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
-  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
+  warm:      { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
+  dark:      { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
   editorial: { bg:'#F5F2EC', surface:'#FAFAF5', surface2:'#ECEAE2', text:'#1A1A1A', text2:'#5A5A5A', text3:'#999990', border:'rgba(0,0,0,0.08)' },
   dashboard: { bg:'#111111', surface:'#1C1C1C', surface2:'#272727', text:'#FFFFFF', text2:'#AAAAAA', text3:'#666666', border:'rgba(255,255,255,0.10)' },
-  'poster-oscuro': { bg:'#0E0E0E', surface:'#141414', surface2:'#1A1A1A', text:'#F0EDE8', text2:'#888880', text3:'#444440', border:'rgba(255,255,255,0.08)' },
-  'poster-claro':  { bg:'#F0EBE0', surface:'#E8E2D6', surface2:'#DDD6C8', text:'#1A1A1A', text2:'#666660', text3:'#999990', border:'rgba(0,0,0,0.10)' }
+  'poster-oscuro': { bg:'#0A0A0A', surface:'#141414', surface2:'#1A1A1A', text:'#F0EDE8', text2:'#888880', text3:'#444440', border:'rgba(255,255,255,0.08)' },
+  'poster-claro':  { bg:'#F0EBE0', surface:'#E8E2D6', surface2:'#DDD6C8', text:'#1A1A1A', text2:'#555550', text3:'#999990', border:'rgba(0,0,0,0.10)' }
 };
 
 const PRESET_THEMES = {
-  editorial: {
-    mode: 'editorial',
-    accent: 'c8b4d8',
-    font: 'dm',
-    accentName: 'Lavanda editorial',
-    description: 'Tipografía serif · Lavanda suave · Fondo papel'
-  },
-  dashboard: {
-    mode: 'dashboard',
-    accent: 'c8a84b',
-    font: 'spacemono',
-    accentName: 'Dorado dashboard',
-    description: 'Space Mono · Dorado saturado · Fondo negro profundo'
-  },
-  'poster-oscuro': {
-    mode: 'poster-oscuro',
-    accent: 'c47a20',
-    font: 'poster',
-    accentName: 'Ámbar poster',
-    description: 'Bebas Neue · Bloques de color · Fondo negro'
-  },
-  'poster-claro': {
-    mode: 'poster-claro',
-    accent: 'c47a20',
-    font: 'poster',
-    accentName: 'Ámbar poster',
-    description: 'Bebas Neue · Bloques de color sólido · Fondo crema'
-  }
+  editorial: { mode:'editorial', accent:'c8b4d8', font:'dm', description:'Tipografía serif · Lavanda suave · Fondo papel' },
+  dashboard: { mode:'dashboard', accent:'c8a84b', font:'spacemono', description:'Space Mono · Dorado · Fondo negro' },
+  'poster-oscuro': { mode:'poster-oscuro', accent:'c47a20', font:'poster', description:'Bebas Neue · Bloques de color · Fondo negro' },
+  'poster-claro':  { mode:'poster-claro',  accent:'c47a20', font:'poster', description:'Bebas Neue · Bloques de color · Fondo crema' }
 };
 const ACCENTS = {
   'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
@@ -1372,9 +1189,9 @@ const ACCENTS = {
   'c47a20': { main:'#c47a20', dark:'#7A4A00', light:'rgba(196,122,32,0.2)', name:'Ámbar poster' }
 };
 const FONTS = {
-  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif", name:'Space Mono' },
-  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif", name:'DM Serif' },
-  poster: { title:"'Bebas Neue',sans-serif", body:"'Space Grotesk',sans-serif", name:'Poster' }
+  spacemono: { title:"'Space Mono',monospace",      body:"'Jost',sans-serif",          name:'Space Mono' },
+  dm:        { title:"'DM Serif Display',serif",    body:"'DM Sans',sans-serif",        name:'DM Serif' },
+  poster:    { title:"'Bebas Neue',sans-serif",     body:"'Space Grotesk',sans-serif",  name:'Poster' }
 };
 
 let currentTheme = localStorage.getItem('pd_theme') || 'warm';
@@ -1382,9 +1199,9 @@ let currentAccent = localStorage.getItem('pd_accent') || 'ffc297';
 let currentFont = localStorage.getItem('pd_font') || 'spacemono';
 
 function applyTheme() {
-  const t = THEMES[currentTheme];
+  const t = THEMES[currentTheme] || THEMES.warm;
   const a = ACCENTS[currentAccent] || { main:'#'+currentAccent, dark:'#333', light:'rgba(100,100,100,0.2)' };
-  const f = FONTS[currentFont];
+  const f = FONTS[currentFont] || FONTS.spacemono;
   const r = document.documentElement;
   r.style.setProperty('--bg', t.bg);
   r.style.setProperty('--surface', t.surface);
@@ -1399,22 +1216,18 @@ function applyTheme() {
   r.style.setProperty('--font-title', f.title);
   r.style.setProperty('--font-body', f.body);
   document.body.style.fontFamily = f.body;
-  // Poster body class
-  document.body.classList.remove('poster-oscuro','poster-claro');
-  if (currentTheme === 'poster-oscuro') document.body.classList.add('poster-oscuro');
-  if (currentTheme === 'poster-claro')  document.body.classList.add('poster-claro');
-  // Poster UI extras
+  document.body.classList.remove('poster-oscuro', 'poster-claro');
   const isPoster = currentTheme === 'poster-oscuro' || currentTheme === 'poster-claro';
-  const heroKpis = document.getElementById('posterHeroKpis');
-  if (heroKpis) heroKpis.style.display = isPoster ? 'flex' : 'none';
-  if (isPoster) renderPosterProjRow();
-  // Inyectar CSS para que persista en re-renders
+  if (isPoster) {
+    document.body.classList.add(currentTheme);
+    renderPosterProjRow();
+  }
   let styleTag = document.getElementById('dynamic-font-style');
   if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'dynamic-font-style'; document.head.appendChild(styleTag); }
   if (isPoster) {
-    styleTag.textContent = `body, .tab-content, .card, .badge, button, input, select, .task-title, .work-task, .proj-task, .timeline-item, .bitacora-text { font-family: 'Space Grotesk', sans-serif !important; } .greeting h1, .logo, .wb-value, h1, h2 { font-family: 'Bebas Neue', sans-serif !important; letter-spacing:1px; }`;
+    styleTag.textContent = `body,.tab-content,.card,.badge,button,input,select,.task-title,.work-task,.proj-task,.timeline-item,.bitacora-text{font-family:'Space Grotesk',sans-serif!important}.greeting h1,.logo,.wb-value,h1,h2{font-family:'Bebas Neue',sans-serif!important;letter-spacing:1px}`;
   } else {
-    styleTag.textContent = `body, .tab-content, .card, .badge, button, input, select, .task-title, .work-task, .proj-task, .timeline-item, .bitacora-text { font-family: ${f.body} !important; } .greeting h1, .logo, .wb-value, h1, h2 { font-family: ${f.title} !important; }`;
+    styleTag.textContent = `body,.tab-content,.card,.badge,button,input,select,.task-title,.work-task,.proj-task,.timeline-item,.bitacora-text{font-family:${f.body}!important}.greeting h1,.logo,.wb-value,h1,h2{font-family:${f.title}!important}`;
   }
   localStorage.setItem('pd_theme', currentTheme);
   localStorage.setItem('pd_accent', currentAccent);
@@ -1435,40 +1248,33 @@ function renderPosterProjRow() {
   const row = document.getElementById('posterProjRow');
   if (!row) return;
   const isDark = currentTheme === 'poster-oscuro';
-  const projects = [
-    { key:'maitinada', name:'Maitinada', color:'#C47A20', bg: isDark ? '#1C1100' : '#C47A20', text: isDark ? '#C47A20' : '#1C1100' },
-    { key:'mara',      name:'Mara',      color:'#8B7FDD', bg: isDark ? '#110D22' : '#8B7FDD', text: isDark ? '#8B7FDD' : '#110D22' },
-    { key:'casalunae', name:'Casa Lunae',color:'#C44880', bg: isDark ? '#1C0811' : '#C44880', text: isDark ? '#C44880' : '#1C0811' },
-    { key:'hazeco',    name:'Haz Eco',   color:'#2D9B6F', bg: isDark ? '#071A0E' : '#2D9B6F', text: isDark ? '#2D9B6F' : '#071A0E' },
-    { key:'personal',  name:'Personal',  color:'#888',    bg: isDark ? '#111'    : '#777',    text: isDark ? '#666'    : '#F0EBE0' }
+  const projs = [
+    { key:'maitinada', name:'Maitinada', color:'#C47A20', bg: isDark?'#1C1100':'#C47A20', fg: isDark?'#C47A20':'#1C1100' },
+    { key:'mara',      name:'Mara',      color:'#8B7FDD', bg: isDark?'#110D22':'#8B7FDD', fg: isDark?'#8B7FDD':'#110D22' },
+    { key:'casalunae', name:'Casa Lunae',color:'#C44880', bg: isDark?'#1C0811':'#C44880', fg: isDark?'#C44880':'#1C0811' },
+    { key:'hazeco',    name:'Haz Eco',   color:'#2D9B6F', bg: isDark?'#071A0E':'#2D9B6F', fg: isDark?'#2D9B6F':'#071A0E' },
+    { key:'personal',  name:'Personal',  color:'#888888', bg: isDark?'#111111':'#777777', fg: isDark?'#666666':'#F0EBE0' }
   ];
-  row.innerHTML = projects.map(p => {
+  const total = Math.max(Object.values(allTasks).flat().length, 1);
+  row.innerHTML = projs.map(p => {
     const count = (allTasks[p.key] || []).length;
-    const total = Object.values(allTasks).flat().length || 1;
     const pct = Math.round(count / total * 100);
-    return `<div class="poster-proj-block" style="background:${p.bg};color:${p.text};">
+    return `<div class="poster-proj-block" style="background:${p.bg};color:${p.fg};">
       <div class="poster-proj-name">${p.name}</div>
-      <div class="poster-proj-num">${count || '—'}</div>
+      <div class="poster-proj-num">${count || 0}</div>
       <div class="poster-proj-sub">tareas activas</div>
-      <div class="poster-proj-bar"><div class="poster-proj-fill" style="width:${pct}%;background:${p.color};opacity:${isDark?'1':'0.4'};"></div></div>
+      <div class="poster-proj-bar"><div class="poster-proj-fill" style="width:${pct}%;background:${p.color};opacity:${isDark?1:0.35};"></div></div>
     </div>`;
   }).join('');
-  // Update hero KPIs
+  // Hero KPIs
   const allFlat = Object.values(allTasks).flat();
   const critical = allFlat.filter(t => isOverdue(t) || getSelect(t,'Prioridad') === '🔴 Hacer hoy').length;
-  const goalsLogrado = allGoals.filter(g => getSelect(g,'Estado') === 'Logrado').length;
-  const soonCount = allFlat.filter(t => {
-    const d = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
-    if (!d) return false;
-    const diff = (new Date(d) - new Date()) / 86400000;
-    return diff >= 0 && diff <= 7;
-  }).length;
-  const pc = document.getElementById('poster-critical');
-  const pg = document.getElementById('poster-goals');
-  const pw = document.getElementById('poster-week');
-  if (pc) pc.textContent = critical || '—';
-  if (pg) pg.textContent = (goalsLogrado + '/' + allGoals.length) || '—';
-  if (pw) pw.textContent = soonCount || '—';
+  const goalsLog = allGoals.filter(g => getSelect(g,'Estado') === 'Logrado').length;
+  const soon = allFlat.filter(t => { const d=getDate(t,'Fecha Límite')||getDate(t,'Fecha limite'); if(!d) return false; const diff=(new Date(d)-new Date())/86400000; return diff>=0&&diff<=7; }).length;
+  const el = id => document.getElementById(id);
+  if (el('poster-critical')) el('poster-critical').textContent = critical || 0;
+  if (el('poster-goals'))    el('poster-goals').textContent    = `${goalsLog}/${allGoals.length}`;
+  if (el('poster-week'))     el('poster-week').textContent     = soon || 0;
 }
 
 function updateThemeUI() {
