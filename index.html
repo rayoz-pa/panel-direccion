@@ -369,7 +369,37 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
     </table>
   </div>
 
-  <div class="grid-2" id="drag-row-1">
+
+  <!-- SEGUNDA FILA: TAREAS POR PROYECTO · SEMANA Y DÍA -->
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:1rem;">
+    <div style="background:rgba(196,122,32,.12);border-top:3px solid #C47A20;border-radius:var(--rsm);padding:10px 12px;">
+      <div style="font-size:9px;color:#C47A20;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Maitinada</div>
+      <div id="proj-semana-maitinada" style="font-size:11px;color:var(--text3);">—</div>
+      <div id="proj-dia-maitinada" style="font-size:10px;color:var(--text3);margin-top:2px;">— hoy</div>
+    </div>
+    <div style="background:rgba(91,79,232,.12);border-top:3px solid #5B4FE8;border-radius:var(--rsm);padding:10px 12px;">
+      <div style="font-size:9px;color:#5B4FE8;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Mara</div>
+      <div id="proj-semana-mara" style="font-size:11px;color:var(--text3);">—</div>
+      <div id="proj-dia-mara" style="font-size:10px;color:var(--text3);margin-top:2px;">— hoy</div>
+    </div>
+    <div style="background:rgba(196,72,128,.12);border-top:3px solid #C44880;border-radius:var(--rsm);padding:10px 12px;">
+      <div style="font-size:9px;color:#C44880;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Casa Lunae</div>
+      <div id="proj-semana-casalunae" style="font-size:11px;color:var(--text3);">—</div>
+      <div id="proj-dia-casalunae" style="font-size:10px;color:var(--text3);margin-top:2px;">— hoy</div>
+    </div>
+    <div style="background:rgba(45,155,111,.12);border-top:3px solid #2D9B6F;border-radius:var(--rsm);padding:10px 12px;">
+      <div style="font-size:9px;color:#2D9B6F;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Haz Eco</div>
+      <div id="proj-semana-hazeco" style="font-size:11px;color:var(--text3);">—</div>
+      <div id="proj-dia-hazeco" style="font-size:10px;color:var(--text3);margin-top:2px;">— hoy</div>
+    </div>
+    <div style="background:rgba(107,104,96,.1);border-top:3px solid #6B6860;border-radius:var(--rsm);padding:10px 12px;">
+      <div style="font-size:9px;color:#6B6860;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Personal</div>
+      <div id="proj-semana-personal" style="font-size:11px;color:var(--text3);">—</div>
+      <div id="proj-dia-personal" style="font-size:10px;color:var(--text3);margin-top:2px;">— hoy</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1rem;" id="drag-row-1">
     <!-- CARGA EQUIPO -->
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -379,7 +409,7 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
           <button class="chart-btn" onclick="setChartType('bar',this)">Barras</button>
         </div>
       </div>
-      <canvas id="teamChart" style="width:100%;height:180px;"></canvas>
+      <canvas id="teamChart" style="width:100%;height:110px;"></canvas>
       <p style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center;">Tamaño / largo = cantidad de tareas activas</p>
     </div>
 
@@ -716,16 +746,37 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
       <div style="border-left:2px solid var(--purple);padding:10px 14px;background:var(--purple-light);border-radius:0 var(--rsm) var(--rsm) 0;"><p style="margin:0;font-size:12px;color:var(--text);font-style:italic;line-height:1.5;">"Las mujeres que conocen su propio poder son peligrosamente creativas."</p><span style="font-size:10px;color:var(--text3);margin-top:4px;display:block;">— Clarissa Pinkola Estés</span></div>
     </div>
   </div>
+
+  <!-- DIAGRAMA CICLO -->
+  <div class="card" style="margin-top:0;">
+    <div class="card-title card-title-main" style="margin-bottom:1rem;">Ciclo menstrual · diagrama lunar</div>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center;">
+      <canvas id="cicloEnBienestar" width="300" height="300" role="img" aria-label="Diagrama radial del ciclo menstrual"></canvas>
+      <div style="display:flex;flex-direction:column;gap:7px;max-width:220px;">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:2px;background:#D4537E;flex-shrink:0;"></div><span style="font-size:11px;color:var(--text2);">Menstruación · días 1–5</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:2px;background:#EF9F27;flex-shrink:0;"></div><span style="font-size:11px;color:var(--text2);">Folicular · días 6–13</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:2px;background:#5DCAA5;flex-shrink:0;"></div><span style="font-size:11px;color:var(--text2);">Ovulación · días 14–16</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--purple);flex-shrink:0;"></div><span style="font-size:11px;color:var(--text2);">Lútea · días 17–28</span></div>
+        <div style="margin-top:6px;padding-top:8px;border-top:1px solid var(--border);">
+          <p style="font-size:10px;color:var(--text3);margin-bottom:4px;">Sueño <span style="color:#1D9E75;">█</span> · Energía <span style="color:var(--purple);">█</span></p>
+          <p style="font-size:10px;color:var(--text3);">Emociones: <span style="color:#2D9B6F;">●</span> motivante <span style="color:#AFA9EC;">●</span> reflexiva <span style="color:#E24B4A;">●</span> desmotivante</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
 <!-- TAB CICLO -->
 <div id="tab-ciclo" class="tab-content">
 <div style="padding:1.5rem 0;">
-  <div style="margin-bottom:1.25rem;">
-    <p style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:0 0 4px;">Ciclo menstrual</p>
-    <h1 style="font-size:22px;font-weight:500;margin:0;color:var(--text);">Diagrama lunar · 5 capas</h1>
-  </div>
+  <p style="color:var(--text3);text-align:center;padding:2rem;">El diagrama lunar está en la pestaña Bienestar.</p>
+</div>
+</div>
+
+<!-- CICLO RADIAL MOVED -->
+<div id="tab-ciclo-placeholder" style="display:none;">
   <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;justify-content:center;">
     <canvas id="cicloRadial" width="380" height="380" role="img" aria-label="Diagrama radial del ciclo menstrual con 5 capas"></canvas>
     <div style="display:flex;flex-direction:column;gap:10px;max-width:240px;">
@@ -783,7 +834,7 @@ function switchTab(tab, btn) {
   document.getElementById('tab-' + tab).classList.add('active');
   btn.classList.add('active');
   if (tab === 'bienestar') { setTimeout(renderBienestar, 50); }
-  if (tab === 'ciclo') { setTimeout(renderCicloRadial, 50); }
+  if (tab === 'ciclo') { setTimeout(()=>renderCicloCanvas('cicloRadial'), 50); }
   if (tab === 'general') { setTimeout(renderMiniCal, 50); }
 }
 
@@ -873,8 +924,30 @@ function renderGeneral() {
   renderProjectTable();
   renderCriticalTasks();
   renderCriticalPoints();
+  renderSecondRow();
   const isPoster = currentTheme === 'poster-oscuro' || currentTheme === 'poster-claro';
   if (isPoster) renderPosterProjRow();
+}
+
+function renderSecondRow() {
+  const today = new Date().toISOString().split('T')[0];
+  const weekEnd = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
+  const keys = ['maitinada','mara','casalunae','hazeco','personal'];
+  keys.forEach(key => {
+    const tasks = allTasks[key] || [];
+    const semana = tasks.filter(t => {
+      const d = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
+      return d && d >= today && d <= weekEnd;
+    }).length;
+    const dia = tasks.filter(t => {
+      const d = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
+      return d && d === today;
+    }).length;
+    const sw = document.getElementById('proj-semana-'+key);
+    const sd = document.getElementById('proj-dia-'+key);
+    if (sw) sw.textContent = semana + ' esta semana';
+    if (sd) sd.textContent = dia + ' hoy';
+  });
 }
 
 function renderProjectTable() {
@@ -2093,6 +2166,7 @@ let bwInit=false;
 
 function renderBienestar(){
   if(bwInit)return; bwInit=true;
+  setTimeout(()=>renderCicloCanvas("cicloEnBienestar"), 150);
   const s=document.getElementById('bwSueno');
   if(s)s.innerHTML=BW_SUENO.map(x=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;"><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);width:28px;">${x.d}</span><div style="flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:${x.pct}%;height:100%;background:${x.c};border-radius:3px;"></div></div><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);width:28px;text-align:right;">${x.h}h</span></div>`).join('');
   const h=document.getElementById('bwHabitos');
@@ -2106,10 +2180,8 @@ function renderBienestar(){
   }
 }
 
-let cicloInit=false;
-function renderCicloRadial(){
-  if(cicloInit)return; cicloInit=true;
-  const cv=document.getElementById('cicloRadial'); if(!cv)return;
+function renderCicloCanvas(canvasId){
+  const cv=document.getElementById(canvasId); if(!cv)return;
   const ctx=cv.getContext('2d'),W=380,cx=W/2,cy=W/2,T=28;
   const energia=[3,4,4,5,5,6,7,8,8,9,8,8,9,9,9,8,7,7,6,6,5,5,4,4,5,4,3,3];
   const sueno=[5,5,6,6,7,7,8,8,8,9,8,7,8,8,7,8,6,6,7,6,5,5,6,5,6,5,5,4];
@@ -2143,8 +2215,7 @@ function setBienestarPeriod(p,btn){
 
 
 </script>
-
-
+<script>
 // ── MINI CALENDARIO LUNAR ──
 function renderMiniCal() {
   const grid = document.getElementById('miniCalGrid');
