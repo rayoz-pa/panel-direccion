@@ -420,6 +420,15 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
     </div>
   </div>
 
+  <!-- CALENDARIO LUNAR MINI -->
+  <div class="card" style="margin-bottom:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div class="card-title card-title-main">Calendario lunar</div>
+      <span id="miniCalMonthLabel" style="font-size:11px;color:var(--text3);"></span>
+    </div>
+    <div id="miniCalGrid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;"></div>
+  </div>
+
   <!-- BITACORA -->
   <div class="card">
     <div class="card-title card-title-main" style="margin-bottom:1rem;">Bitácora de la semana</div>
@@ -773,6 +782,9 @@ function switchTab(tab, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   btn.classList.add('active');
+  if (tab === 'bienestar') { setTimeout(renderBienestar, 50); }
+  if (tab === 'ciclo') { setTimeout(renderCicloRadial, 50); }
+  if (tab === 'general') { setTimeout(renderMiniCal, 50); }
 }
 
 function setPeriod(p, btn) {
@@ -893,50 +905,70 @@ function renderProjectTable() {
 
 function renderCriticalTasks() {
   const all = getAllTasks();
-  const critical = all.filter(t => isOverdue(t) || getSelect(t, 'Prioridad') === '🔴 Hacer hoy');
 
-  const responsable = critical.filter(t => getSelect(t, 'Responsable') === 'Rayo');
-  const destinataria = critical.filter(t => {
-    const dest = t.properties.Destinatarios?.multi_select?.map(d => d.name) || [];
-    const env = getSelect(t, 'Enviado por');
-    return getSelect(t, 'Responsable') !== 'Rayo' && (dest.includes('Rayo') || env === 'Rayo');
+  // Columna 1: En proceso (estado = En proceso)
+  const enProceso = all.filter(t => getSelect(t, 'Estado') === 'En proceso' || getSelect(t, 'Estado') === 'En Proceso');
+
+  // Columna 2: Retrasos (vencidas)
+  const retrasos = all.filter(t => isOverdue(t));
+
+  // Columna 3: Críticas (Hacer hoy, no vencidas)
+  const criticas = all.filter(t => !isOverdue(t) && getSelect(t, 'Prioridad') === '🔴 Hacer hoy');
+
+  // Columna 4: Eventos (tipo Reunión o Evento con fecha hoy o próxima semana)
+  const today = new Date().toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
+  const eventos = all.filter(t => {
+    const tipo = getSelect(t, 'Tipo');
+    const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
+    return (tipo === 'Reunión' || tipo === 'Evento') && d && d >= today && d <= nextWeek;
   });
 
-  if (!responsable.length && !destinataria.length) {
-    document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas críticas</div>';
+  const totalCount = enProceso.length + retrasos.length + criticas.length + eventos.length;
+  if (!totalCount) {
+    document.getElementById('criticalTasks').innerHTML = '<div class="empty">Sin tareas activas críticas</div>';
     return;
   }
 
-  function buildItem(t, showBtn) {
+  function buildItem(t, col) {
     const overdue = isOverdue(t);
     const d = getDate(t, 'Fecha Límite') || getDate(t, 'Fecha limite');
     const daysAgo = d ? Math.floor((new Date() - new Date(d)) / 86400000) : 0;
-    const meta = overdue ? `${daysAgo} día${daysAgo !== 1 ? 's' : ''} de retraso` : 'Hacer hoy';
-    const cls = overdue ? 'red' : 'amber';
     const resp = getSelect(t, 'Responsable') || '';
     const tid = t.id || '';
-    const btn = showBtn
-      ? `<button onclick="completeTask('${tid}',this)" style="padding:3px 8px;border-radius:6px;border:1px solid currentColor;background:transparent;font-size:11px;cursor:pointer;color:${overdue?'var(--red)':'var(--amber)'};flex-shrink:0;font-family:inherit;" title="Marcar completada">✅</button>`
-      : `<button onclick="window.open('${getUrl(t)}','_blank')" style="padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:11px;cursor:pointer;color:var(--text3);flex-shrink:0;font-family:inherit;" title="Ver en Notion">→</button>`;
-    return `<div class="critical-item ${cls}" style="justify-content:space-between;margin-bottom:5px;">
-      <div style="display:flex;gap:8px;align-items:flex-start;flex:1;cursor:pointer;" onclick="window.open('${getUrl(t)}','_blank')">
-        <div class="critical-dot" style="background:${overdue?'var(--red)':'var(--amber)'};margin-top:4px;"></div>
-        <div><div class="critical-title ${cls}" style="font-size:12px;">${getTitle(t)}</div>
-        <div class="critical-meta ${cls}">${resp ? resp + ' · ' : ''}${meta}</div></div>
+    const colors = { retrasos: 'var(--red)', criticas: 'var(--amber)', enProceso: 'var(--purple)', eventos: 'var(--green)' };
+    const dotColor = colors[col] || 'var(--text3)';
+    const meta = col === 'retrasos' ? `${daysAgo}d retraso` :
+                 col === 'eventos' ? (d ? new Date(d+'T12:00:00').toLocaleDateString('es-CL',{weekday:'short',day:'numeric'}) : '') :
+                 col === 'criticas' ? 'Hacer hoy' : getSelect(t, 'Estado') || '';
+    const respBadge = resp ? `<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:${dotColor}22;color:${dotColor};font-weight:500;">${resp}</span>` : '';
+    return `<div class="critical-item" style="background:var(--surface2);margin-bottom:4px;justify-content:space-between;">
+      <div style="display:flex;gap:7px;align-items:flex-start;flex:1;cursor:pointer;min-width:0;" onclick="window.open('${getUrl(t)}','_blank')">
+        <div class="critical-dot" style="background:${dotColor};margin-top:4px;flex-shrink:0;"></div>
+        <div style="min-width:0;">
+          <div style="font-size:11px;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${getTitle(t)}</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap;">
+            ${respBadge}
+            <span style="font-size:9px;color:var(--text3);">${meta}</span>
+          </div>
+        </div>
       </div>
-      ${btn}
+      <button onclick="completeTask('${tid}',this)" style="padding:2px 6px;border-radius:4px;border:1px solid var(--border);background:transparent;font-size:11px;cursor:pointer;color:var(--text3);flex-shrink:0;font-family:inherit;" title="Completar">✅</button>
     </div>`;
   }
 
-  const html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mi responsabilidad</p>
-      ${responsable.length ? responsable.slice(0,5).map(t => buildItem(t, true)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
-    </div>
-    <div>
-      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Soy destinataria</p>
-      ${destinataria.length ? destinataria.slice(0,5).map(t => buildItem(t, false)).join('') : '<div class="empty" style="padding:8px 0;font-size:12px;">Sin tareas</div>'}
-    </div>
+  function col(label, items, key, dotColor) {
+    return `<div>
+      <p style="font-size:9px;color:${dotColor};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:500;">${label} <span style="color:var(--text3);font-weight:400;">${items.length}</span></p>
+      ${items.length ? items.slice(0,5).map(t => buildItem(t, key)).join('') : '<div style="font-size:11px;color:var(--text3);padding:8px 0;">—</div>'}
+    </div>`;
+  }
+
+  const html = `<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+    ${col('En proceso', enProceso, 'enProceso', 'var(--purple)')}
+    ${col('Retrasos', retrasos, 'retrasos', 'var(--red)')}
+    ${col('Críticas', criticas, 'criticas', 'var(--amber)')}
+    ${col('Eventos', eventos, 'eventos', 'var(--green)')}
   </div>`;
 
   document.getElementById('criticalTasks').innerHTML = html;
@@ -2109,12 +2141,82 @@ function setBienestarPeriod(p,btn){
   btn.classList.add('active');
 }
 
-const _origSwitch=switchTab;
-function switchTab(tab,btn){
-  _origSwitch(tab,btn);
-  if(tab==='bienestar') renderBienestar();
-  if(tab==='ciclo') renderCicloRadial();
-}
+
 </script>
+
+
+// ── MINI CALENDARIO LUNAR ──
+function renderMiniCal() {
+  const grid = document.getElementById('miniCalGrid');
+  const label = document.getElementById('miniCalMonthLabel');
+  if (!grid) return;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  if (label) label.textContent = `${months[month]} ${year}`;
+
+  // Fases lunares hemisferio sur — aproximadas por mes
+  // Sur: cuarto creciente=🌘, gibosa creciente=🌖, llena=🌕, menguante=🌒, nueva=🌑
+  const lunarPhases = getLunarPhasesSur(year, month);
+
+  const firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // lunes=0
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let html = '';
+  // Day headers
+  ['L','M','X','J','V','S','D'].forEach(d => {
+    html += `<div style="text-align:center;font-size:9px;color:var(--text3);padding:2px 0;font-family:'Space Mono',monospace;">${d}</div>`;
+  });
+  // Empty cells
+  for (let i = 0; i < firstDow; i++) {
+    html += `<div></div>`;
+  }
+  // Days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === today;
+    const moon = lunarPhases[d] || '';
+    const hasTasks = getAllTasks().some(t => {
+      const td = getDate(t,'Fecha Límite') || getDate(t,'Fecha limite');
+      if (!td) return false;
+      const dd = new Date(td+'T12:00:00');
+      return dd.getFullYear()===year && dd.getMonth()===month && dd.getDate()===d;
+    });
+    html += `<div style="text-align:center;padding:2px 1px;border-radius:3px;${isToday?'background:var(--purple-light);':''}">
+      <div style="font-size:10px;font-weight:${isToday?'600':'400'};color:${isToday?'var(--purple)':'var(--text2)'};">${d}</div>
+      <div style="font-size:8px;line-height:1;">${moon}</div>
+      ${hasTasks ? '<div style="width:3px;height:3px;border-radius:50%;background:var(--amber);margin:1px auto 0;"></div>' : '<div style="height:4px;"></div>'}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function getLunarPhasesSur(year, month) {
+  // Nueva lunar de referencia: 25 mayo 2025 (aproximada)
+  // Ciclo: 29.53 días. Sur: creciente=🌘, llena=🌕, menguante=🌒
+  const refNew = new Date(2025, 4, 25); // 25 mayo 2025
+  const cycle = 29.53;
+  const result = {};
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const diff = (date - refNew) / 86400000;
+    const phase = ((diff % cycle) + cycle) % cycle;
+    let emoji = '';
+    if (phase < 1 || phase >= 28.5) emoji = '🌑';
+    else if (phase >= 6.5 && phase < 8.5) emoji = '🌘'; // 1er cuarto sur
+    else if (phase >= 13.5 && phase < 15.5) emoji = '🌕'; // llena
+    else if (phase >= 21 && phase < 23) emoji = '🌒';   // 3er cuarto sur
+    if (emoji) result[d] = emoji;
+  }
+  return result;
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(renderMiniCal, 800);
+});
 
 </script>
