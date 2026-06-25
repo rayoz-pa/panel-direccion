@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Dirección — Rayo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=Bebas+Neue&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --font-title: 'DM Serif Display', serif;
@@ -30,92 +30,6 @@
   --r: 12px;
   --rsm: 8px;
 }
-
-/* ── POSTER THEME ── */
-body.poster-oscuro, body.poster-claro {
-  font-family: 'Space Grotesk', sans-serif !important;
-}
-body.poster-oscuro .greeting, body.poster-claro .greeting {
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-}
-body.poster-oscuro .greeting h1, body.poster-claro .greeting h1 {
-  font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 54px !important;
-  line-height: 0.92 !important;
-  letter-spacing: 1px !important;
-}
-body.poster-oscuro .greeting p, body.poster-claro .greeting p {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 9px !important;
-  letter-spacing: 1px !important;
-  margin-top: 6px !important;
-}
-body.poster-oscuro .logo, body.poster-claro .logo {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 10px !important;
-  letter-spacing: 3px !important;
-  text-transform: uppercase !important;
-}
-body.poster-oscuro .card, body.poster-claro .card { border-radius: 3px !important; }
-body.poster-oscuro .card-title, body.poster-claro .card-title {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 8px !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-}
-body.poster-oscuro .wb-value, body.poster-claro .wb-value {
-  font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 44px !important;
-}
-body.poster-oscuro .tab, body.poster-claro .tab {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 8px !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-}
-body.poster-oscuro .header { background: #080808 !important; border-bottom-color: #1A1A1A !important; }
-body.poster-claro  .header { background: #E0D9CE !important; border-bottom-color: #C8C0B4 !important; }
-/* Poster project blocks */
-#posterProjRow { display: none; }
-body.poster-oscuro #posterProjRow,
-body.poster-claro  #posterProjRow { display: flex; gap: 6px; padding: 0 2rem 14px; max-width: 1280px; margin: 0 auto; }
-.poster-proj-block {
-  flex: 1; padding: 14px 12px; border-radius: 3px;
-  position: relative; overflow: hidden;
-}
-.poster-proj-name {
-  font-family: 'Space Mono', monospace; font-size: 7px;
-  letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.65; margin-bottom: 8px;
-}
-.poster-proj-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.88; margin-bottom: 4px;
-}
-.poster-proj-sub { font-family: 'Space Mono', monospace; font-size: 7px; opacity: 0.4; }
-.poster-proj-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
-.poster-proj-fill { height: 100%; }
-/* Poster hero KPIs */
-#posterDirectorLabel { display: none; }
-body.poster-oscuro #posterDirectorLabel,
-body.poster-claro  #posterDirectorLabel {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
-  margin-bottom: 4px;
-}
-body.poster-oscuro #posterDirectorLabel { color: #333; }
-body.poster-claro  #posterDirectorLabel { color: #999; }
-#posterHeroKpis { display: none; }
-body.poster-oscuro #posterHeroKpis,
-body.poster-claro  #posterHeroKpis { display: flex; }
-.poster-kpi-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1;
-}
-.poster-kpi-lbl {
-  font-family: 'Space Mono', monospace; font-size: 7px; letter-spacing: 1px; text-align: right;
-}
-body.poster-oscuro .poster-kpi-lbl { color: #333; }
-body.poster-claro  .poster-kpi-lbl { color: #999; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 .greeting h1, .logo, .wb-value, .p-num-big { font-family: var(--font-title) !important; }
 body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
@@ -288,6 +202,8 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
       <button class="tab active" onclick="switchTab('general',this)">Vista general</button>
       <button class="tab" onclick="switchTab('mipanel',this)">Mi panel</button>
       <button class="tab" onclick="switchTab('calendario',this)">Calendario</button>
+      <button class="tab" onclick="switchTab('bienestar',this)">Bienestar</button>
+      <button class="tab" onclick="switchTab('ciclo',this)">Ciclo</button>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
@@ -297,15 +213,70 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
   </div>
 </header>
 
-<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 2rem;">
-  <div style="max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace;margin-right:4px;">Tema</span>
-    <button class="theme-mode-btn" data-mode="warm"          onclick="currentTheme=this.dataset.mode;applyTheme();"  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--text2);">Cálido</button>
-    <button class="theme-mode-btn" data-mode="dark"          onclick="currentTheme=this.dataset.mode;applyTheme();"  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--text2);">Oscuro</button>
-    <button class="theme-mode-btn" data-mode="editorial"     onclick="applyPreset('editorial');"                     style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;background:transparent;color:var(--text2);">Editorial</button>
-    <button class="theme-mode-btn" data-mode="dashboard"     onclick="applyPreset('dashboard');"                     style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;background:transparent;color:var(--text2);">Dashboard</button>
-    <button class="theme-mode-btn" data-mode="poster-oscuro" onclick="applyPreset('poster-oscuro');"                 style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:13px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;background:transparent;color:var(--text2);">Poster ◼</button>
-    <button class="theme-mode-btn" data-mode="poster-claro"  onclick="applyPreset('poster-claro');"                  style="padding:5px 14px;border:1px solid var(--border);border-radius:4px;font-size:13px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:all 0.15s;background:transparent;color:var(--text2);">Poster ◻</button>
+<div id="themePanel" style="display:none;position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 2rem;color:var(--text);">
+  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:20px;align-items:start;">
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Modo</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="theme-mode-btn" data-mode="warm" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Cálido</button>
+        <button class="theme-mode-btn" data-mode="dark" onclick="currentTheme=this.dataset.mode;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;">Oscuro</button>
+        <button class="theme-mode-btn" data-mode="editorial" onclick="applyPreset('editorial');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">Editorial</button>
+        <button class="theme-mode-btn" data-mode="dashboard" onclick="applyPreset('dashboard');" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Dashboard</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tipografía</p>
+      <div style="display:flex;gap:6px;">
+        <button class="theme-font-btn" data-font="spacemono" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s;">Space Mono</button>
+        <button class="theme-font-btn" data-font="dm" onclick="currentFont=this.dataset.font;applyTheme();" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Serif Display',serif;transition:all 0.15s;">DM Serif</button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Acento</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="accentPicker" value="#ffc297" oninput="setCustomAccent(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
+        <div id="accentPreview" style="width:36px;height:36px;border-radius:50%;background:#ffc297;border:2px solid var(--border);"></div>
+        <span id="accentHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#ffc297</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Fondo</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="bgPicker" value="#FAF7F2" oninput="setCustomBg(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;background:none;">
+        <span id="bgHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FAF7F2</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Títulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="titleColorPicker" value="#2A1F14" oninput="setTitleColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="titleColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#2A1F14</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Labels / subtítulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="text3ColorPicker" value="#A8978A" oninput="setText3Color(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="text3ColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#A8978A</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Contenido</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="bodyColorPicker" value="#7A6A5A" oninput="setBodyColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="bodyColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#7A6A5A</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Módulos</p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="color" id="cardColorPicker" value="#FFFDF9" oninput="setCardColor(this.value)" style="width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;padding:0;">
+        <span id="cardColorHex" style="font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;">#FFFDF9</span>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <button onclick="resetTheme()" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:transparent;color:var(--text3);">Resetear</button>
+    </div>
   </div>
 </div>
 
@@ -314,20 +285,9 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
 <!-- TAB GENERAL -->
 <div id="tab-general" class="tab-content active">
   <div class="greeting">
-    <div id="posterDirectorLabel">Director view</div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;">
-      <div>
-        <h1 id="greetingText">Hola, Rayo</h1>
-        <p id="greetingSub">Cargando...</p>
-      </div>
-      <div id="posterHeroKpis" style="flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0;padding-bottom:4px;">
-        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-critical" style="color:#E24B4A;">—</div><div class="poster-kpi-lbl">críticas</div></div>
-        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-goals" style="color:#C47A20;">—</div><div class="poster-kpi-lbl">objetivos</div></div>
-        <div style="text-align:right;"><div class="poster-kpi-num" id="poster-week" style="color:#2D9B6F;">—</div><div class="poster-kpi-lbl">esta semana</div></div>
-      </div>
-    </div>
+    <h1 id="greetingText">Hola, Rayo</h1>
+    <p id="greetingSub">Cargando...</p>
   </div>
-  <div id="posterProjRow"></div>
 
   <div class="period-row">
     <span class="period-label">Ver:</span>
@@ -600,6 +560,150 @@ body { font-family: var(--font-body, 'DM Sans', sans-serif); background: var(--b
 </div>
 
 
+<!-- TAB BIENESTAR -->
+<div id="tab-bienestar" class="tab-content">
+<div style="padding:1.5rem 0;">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;">
+    <div>
+      <p style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:0 0 4px;">Bienestar</p>
+      <h1 style="font-size:22px;font-weight:500;margin:0;color:var(--text);">Tus patrones esta semana</h1>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="period-btn active" onclick="setBienestarPeriod('week',this)">Esta semana</button>
+      <button class="period-btn" onclick="setBienestarPeriod('month',this)">Este mes</button>
+    </div>
+  </div>
+
+  <!-- KPIs: fase → energía → sueño → cognitivo → luna -->
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px;">
+    <div class="card" style="border-left:3px solid var(--purple);">
+      <div class="card-title" style="margin-bottom:6px;">Fase menstrual</div>
+      <div style="font-size:16px;font-weight:700;color:var(--purple);margin-bottom:4px;" id="bw-fase">Lútea · día 18</div>
+      <div style="font-size:10px;color:var(--text3);line-height:1.4;">Introspección, análisis, soledad productiva. Baja tolerancia social.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px;">Energía promedio</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text);" id="bw-energia">7.2<span style="font-size:12px;color:var(--text3);font-weight:400;"> /10</span></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">+0.8 vs semana anterior</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px;">Sueño promedio</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text);">7.1<span style="font-size:12px;color:var(--text3);font-weight:400;"> h</span></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">Mejor noche: 9h · mar</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px;">Pico cognitivo</div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);">10–13h</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">Concentración alta · mañana</div>
+    </div>
+    <div class="card" style="border-right:3px solid #C47A20;">
+      <div class="card-title" style="margin-bottom:6px;">Luna actual</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);">🌗 Menguante</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">Entrando a Piscis · soltar, integrar</div>
+    </div>
+  </div>
+
+  <!-- COGNITIVO + SUEÑO vs ENERGÍA -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">Estado cognitivo · semana</div>
+      <div style="position:relative;height:130px;"><canvas id="bwCogChart" role="img" aria-label="Foco y claridad por día">Estado cognitivo.</canvas></div>
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);"><span style="width:10px;height:2px;background:var(--purple);display:inline-block;border-radius:2px;"></span>Foco</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);"><span style="width:10px;height:2px;background:#C47A20;display:inline-block;border-radius:2px;"></span>Claridad</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">Sueño vs energía</div>
+      <div id="bwSueno"></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">Cuando duermes +7h tu energía sube en promedio <strong style="color:var(--text);">+2.4 pts</strong></div>
+    </div>
+  </div>
+
+  <!-- HÁBITOS + DESCANSO -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px;">Hábitos esta semana</div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:6px;"><span style="font-family:'Space Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:2px;">L  M  X  J  V  S  D</span></div>
+      <div id="bwHabitos"></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">Los días que meditas tu cognitivo sube <strong style="color:var(--text);">+1.8 pts</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">Descanso activo</div>
+      <div id="bwDescanso"></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">Días con descanso activo: energía vespertina <strong style="color:var(--text);">+1.2 pts</strong></div>
+    </div>
+  </div>
+
+  <!-- SUEÑO DETALLE + EMOCIONES -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">Calidad de sueño · detalle</div>
+      <div style="position:relative;height:120px;"><canvas id="bwSleepChart" role="img" aria-label="Horas de sueño por día">Calidad de sueño.</canvas></div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(45,155,111,.12);color:#2D9B6F;">Profundo 4 noches</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(196,122,32,.12);color:#C47A20;">Fragmentado 2</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(226,75,74,.12);color:#E24B4A;">Insomnio 1</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px;">Estado emocional · semana</div>
+      <div style="position:relative;height:120px;"><canvas id="bwEmoChart" role="img" aria-label="Estado emocional por día">Emociones semanales.</canvas></div>
+      <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(139,127,221,.12);color:var(--purple);">Motivada</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(45,155,111,.12);color:#2D9B6F;">Tranquila</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(226,75,74,.12);color:#E24B4A;">Ansiosa</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(196,122,32,.12);color:#C47A20;">Enfocada</span>
+        <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:rgba(196,72,128,.12);color:#C44880;">Sensible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRASES -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px;">Palabras para seguir</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border-left:2px solid var(--purple);padding:10px 14px;background:rgba(127,119,221,0.04);border-radius:0 4px 4px 0;"><p style="margin:0;font-size:12px;color:var(--text2);font-style:italic;line-height:1.5;">"Una mujer con voluntad es una fuerza de la naturaleza."</p><span style="font-size:10px;color:var(--text3);margin-top:4px;display:block;">— Isabel Allende</span></div>
+      <div style="border-left:2px solid var(--purple);padding:10px 14px;background:rgba(127,119,221,0.04);border-radius:0 4px 4px 0;"><p style="margin:0;font-size:12px;color:var(--text2);font-style:italic;line-height:1.5;">"No esperes el momento perfecto. Empieza donde estás, usa lo que tienes."</p><span style="font-size:10px;color:var(--text3);margin-top:4px;display:block;">— Clarissa Pinkola Estés</span></div>
+      <div style="border-left:2px solid var(--purple);padding:10px 14px;background:rgba(127,119,221,0.04);border-radius:0 4px 4px 0;"><p style="margin:0;font-size:12px;color:var(--text2);font-style:italic;line-height:1.5;">"Mi cuerpo, mi ciclo y mi energía son mi brújula. Con voluntad creo lo que sueño."</p><span style="font-size:10px;color:var(--text3);margin-top:4px;display:block;">— Afirmación propia</span></div>
+      <div style="border-left:2px solid var(--purple);padding:10px 14px;background:rgba(127,119,221,0.04);border-radius:0 4px 4px 0;"><p style="margin:0;font-size:12px;color:var(--text2);font-style:italic;line-height:1.5;">"Las mujeres que conocen su propio poder son peligrosamente creativas."</p><span style="font-size:10px;color:var(--text3);margin-top:4px;display:block;">— Clarissa Pinkola Estés</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB CICLO -->
+<div id="tab-ciclo" class="tab-content">
+<div style="padding:1.5rem 0;">
+
+  <div style="margin-bottom:1.25rem;">
+    <p style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:0 0 4px;">Ciclo menstrual</p>
+    <h1 style="font-size:22px;font-weight:500;margin:0;color:var(--text);">Diagrama lunar · 5 capas</h1>
+  </div>
+
+  <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <canvas id="cicloRadial" width="380" height="380" role="img" aria-label="Diagrama radial del ciclo menstrual con 5 capas"></canvas>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:240px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:4px;flex-shrink:0;border-radius:2px;background:var(--purple);height:32px;margin-top:3px;"></div><div><p style="font-size:12px;color:var(--text);margin:0;font-weight:500;">Capa 1 · Días</p><small style="font-size:10px;color:var(--text3);line-height:1.4;display:block;margin-top:2px;">Numeración 1–28 en color de su fase. Día actual destacado.</small></div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:4px;flex-shrink:0;border-radius:2px;background:#EF9F27;height:32px;margin-top:3px;"></div><div><p style="font-size:12px;color:var(--text);margin:0;font-weight:500;">Capa 2 · Fase menstrual</p><small style="font-size:10px;color:var(--text3);line-height:1.4;display:block;margin-top:2px;">Anillo de color continuo por fase del ciclo.</small></div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:4px;flex-shrink:0;border-radius:2px;background:#1D9E75;height:32px;margin-top:3px;"></div><div><p style="font-size:12px;color:var(--text);margin:0;font-weight:500;">Capa 3 · Sueño</p><small style="font-size:10px;color:var(--text3);line-height:1.4;display:block;margin-top:2px;">Barras radiales verdes. Altura = horas de sueño.</small></div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:4px;flex-shrink:0;border-radius:2px;background:var(--purple);height:32px;margin-top:3px;"></div><div><p style="font-size:12px;color:var(--text);margin:0;font-weight:500;">Capa 4 · Energía</p><small style="font-size:10px;color:var(--text3);line-height:1.4;display:block;margin-top:2px;">Barras radiales moradas. Altura = nivel de energía.</small></div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:4px;flex-shrink:0;border-radius:2px;height:52px;margin-top:3px;background:linear-gradient(to bottom,#2D9B6F,#AFA9EC,#E24B4A);"></div><div><p style="font-size:12px;color:var(--text);margin:0;font-weight:500;">Capa 5 · Emociones</p><small style="font-size:10px;color:var(--text3);line-height:1.4;display:block;margin-top:2px;">Puntos en borde exterior:</small><div style="display:flex;flex-direction:column;gap:4px;margin-top:5px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#2D9B6F;flex-shrink:0;"></div><span style="font-size:10px;color:#2D9B6F;">Motivantes</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#AFA9EC;flex-shrink:0;"></div><span style="font-size:10px;color:#AFA9EC;">Reflexivas</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#E24B4A;flex-shrink:0;"></div><span style="font-size:10px;color:#E24B4A;">Desmotivantes</span></div></div></div></div>
+      <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;">
+        <div style="font-size:9px;padding:4px 10px;border-radius:2px;background:rgba(212,83,126,.12);color:#D4537E;font-family:'Space Mono',monospace;">Menstruación · días 1–5</div>
+        <div style="font-size:9px;padding:4px 10px;border-radius:2px;background:rgba(239,159,39,.1);color:#C47A20;font-family:'Space Mono',monospace;">Folicular · días 6–13</div>
+        <div style="font-size:9px;padding:4px 10px;border-radius:2px;background:rgba(93,202,165,.1);color:#5DCAA5;font-family:'Space Mono',monospace;">Ovulación · días 14–16</div>
+        <div style="font-size:9px;padding:4px 10px;border-radius:2px;background:rgba(139,127,221,.12);color:var(--purple);font-family:'Space Mono',monospace;">Lútea · días 17–28</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
 </main>
 
 <script>
@@ -724,8 +828,6 @@ function renderGeneral() {
   renderProjectTable();
   renderCriticalTasks();
   renderCriticalPoints();
-  const isPoster = currentTheme === 'poster-oscuro' || currentTheme === 'poster-claro';
-  if (isPoster) renderPosterProjRow();
 }
 
 function renderProjectTable() {
@@ -1156,23 +1258,206 @@ setDate();
 renderBitacora();
 setTimeout(loadData, 100);
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── BIENESTAR SCRIPTS ──
+const BW_DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const BW_SUENO_DATA = [
+  {d:'Lun',h:8,pct:80,col:'#1D9E75'},
+  {d:'Mar',h:9,pct:90,col:'#1D9E75'},
+  {d:'Mié',h:5.5,pct:55,col:'#5DCAA5'},
+  {d:'Jue',h:5,pct:50,col:'#C47A20'},
+  {d:'Vie',h:7,pct:70,col:'#1D9E75'},
+  {d:'Sáb',h:8,pct:80,col:'#1D9E75'},
+  {d:'Dom',h:6.5,pct:65,col:'#5DCAA5'},
+];
+const BW_HABITOS = [
+  {n:'Meditación',   dias:[1,1,0,1,1,1,0]},
+  {n:'Ejercicio',    dias:[1,0,1,0,1,0,0]},
+  {n:'Suplementos',  dias:[1,1,1,1,1,0,0]},
+  {n:'Hidratación',  dias:[1,1,0,1,0,1,1]},
+  {n:'Proteínas',    dias:[1,1,1,0,1,1,0]},
+  {n:'Uso celular',  dias:[1,0,1,1,0,1,0]},
+  {n:'Háb. sueño',   dias:[1,1,0,0,1,0,0]},
+];
+const BW_DESCANSO = [
+  {icon:'🎨',label:'Arte / creación',dias:3,pct:43,col:'#C44880'},
+  {icon:'📖',label:'Lectura',        dias:5,pct:71,col:'#8B7FDD'},
+  {icon:'🌿',label:'Naturaleza',     dias:2,pct:29,col:'#2D9B6F'},
+  {icon:'🎵',label:'Música',         dias:4,pct:57,col:'#C47A20'},
+];
+
+let bwChartsInit = false;
+
+function renderBienestar() {
+  if (bwChartsInit) return;
+  bwChartsInit = true;
+
+  // Sueño vs energía
+  const sueno = document.getElementById('bwSueno');
+  if (sueno) {
+    sueno.innerHTML = BW_SUENO_DATA.map(s =>
+      `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);width:28px;">${s.d}</span>
+        <div style="flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+          <div style="width:${s.pct}%;height:100%;background:${s.col};border-radius:3px;"></div>
+        </div>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);width:28px;text-align:right;">${s.h}h</span>
+      </div>`
+    ).join('');
+  }
+
+  // Hábitos
+  const hab = document.getElementById('bwHabitos');
+  if (hab) {
+    hab.innerHTML = BW_HABITOS.map(h =>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">${h.n}</span>
+        <div style="display:flex;gap:3px;">${h.dias.map(d =>
+          `<div style="width:13px;height:13px;border-radius:2px;background:${d?'#1D9E75':'var(--surface2)');"></div>`
+        ).join('')}</div>
+      </div>`
+    ).join('');
+  }
+
+  // Descanso
+  const desc = document.getElementById('bwDescanso');
+  if (desc) {
+    desc.innerHTML = BW_DESCANSO.map(d =>
+      `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${d.icon}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:12px;color:var(--text2);">${d.label}</span>
+            <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);">${d.dias} días</span>
+          </div>
+          <div style="height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+            <div style="width:${d.pct}%;height:100%;background:${d.col};border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  // Cognitivo chart
+  const cogCtx = document.getElementById('bwCogChart');
+  if (cogCtx && window.Chart) {
+    new Chart(cogCtx, {type:'line',data:{labels:BW_DIAS,datasets:[
+      {label:'Foco',data:[9,8,5,4,8,7,6],borderColor:'#8B7FDD',backgroundColor:'rgba(139,127,221,0.07)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#8B7FDD'},
+      {label:'Claridad',data:[8,7,6,5,7,8,7],borderColor:'#C47A20',backgroundColor:'transparent',tension:.4,fill:false,pointRadius:3,borderDash:[4,4],pointBackgroundColor:'#C47A20'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(128,128,128,0.07)'},ticks:{font:{size:10}}},y:{min:0,max:10,grid:{color:'rgba(128,128,128,0.07)'},ticks:{font:{size:10},stepSize:2}}}}});
+  }
+
+  // Sleep chart
+  const slpCtx = document.getElementById('bwSleepChart');
+  if (slpCtx && window.Chart) {
+    new Chart(slpCtx, {type:'bar',data:{labels:BW_DIAS,datasets:[{label:'Horas',data:[8,9,5.5,5,7,8,6.5],backgroundColor:['#1D9E75','#1D9E75','#C47A20','#E24B4A','#1D9E75','#1D9E75','#5DCAA5'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{min:0,max:10,grid:{color:'rgba(128,128,128,0.07)'},ticks:{font:{size:10},stepSize:2}}}}});
+  }
+
+  // Emo chart
+  const emoCtx = document.getElementById('bwEmoChart');
+  if (emoCtx && window.Chart) {
+    new Chart(emoCtx, {type:'line',data:{labels:BW_DIAS,datasets:[
+      {label:'Motivación',data:[8,9,6,5,7,8,6],borderColor:'#8B7FDD',backgroundColor:'rgba(139,127,221,0.07)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#8B7FDD'},
+      {label:'Tranquilidad',data:[7,7,5,6,8,9,7],borderColor:'#2D9B6F',backgroundColor:'transparent',tension:.4,fill:false,pointRadius:3,borderDash:[4,4],pointBackgroundColor:'#2D9B6F'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(128,128,128,0.07)'},ticks:{font:{size:10}}},y:{min:0,max:10,grid:{color:'rgba(128,128,128,0.07)'},ticks:{font:{size:10},stepSize:2}}}}});
+  }
+}
+
+// ── CICLO RADIAL SCRIPT ──
+let cicloInit = false;
+
+function renderCicloRadial() {
+  if (cicloInit) return;
+  cicloInit = true;
+  const cv = document.getElementById('cicloRadial');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const W=380, cx=W/2, cy=W/2, T=28;
+  const energia=[3,4,4,5,5,6,7,8,8,9,8,8,9,9,9,8,7,7,6,6,5,5,4,4,5,4,3,3];
+  const sueno=[5,5,6,6,7,7,8,8,8,9,8,7,8,8,7,8,6,6,7,6,5,5,6,5,6,5,5,4];
+  const emocion=[2,2,1,1,2,1,0,0,0,0,0,1,0,0,0,1,1,0,1,1,2,1,2,1,1,2,2,1];
+  const emoColors=['#2D9B6F','#AFA9EC','#E24B4A'];
+  const fases=[{d1:1,d2:5,c:'#D4537E',a:.28},{d1:6,d2:13,c:'#EF9F27',a:.22},{d1:14,d2:16,c:'#5DCAA5',a:.28},{d1:17,d2:28,c:'#8B7FDD',a:.22}];
+  const rCenter=30,rDias=54,rFase=72,rSueno=102,rEner=132,rEmo=152,rLuna=168,rOuter=178;
+  const toA=d=>-Math.PI/2+((d-1)/T)*2*Math.PI;
+  const toAe=d=>-Math.PI/2+(d/T)*2*Math.PI;
+  const midA=d=>-Math.PI/2+((d-.5)/T)*2*Math.PI;
+
+  // Detect dark mode from CSS var
+  const isDark = getComputedStyle(document.body).getPropertyValue('--bg').trim().startsWith('#0');
+  const bgCol = isDark ? '#0A0A0A' : '#F0EBE0';
+  const lineCol = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
+  const circleCol = isDark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.1)';
+
+  ctx.fillStyle=bgCol;
+  ctx.beginPath();ctx.arc(cx,cy,rOuter+6,0,2*Math.PI);ctx.fill();
+
+  [[rCenter,rDias],[rDias,rFase],[rFase,rSueno],[rSueno,rEner],[rEner,rOuter]].forEach(([r1,r2])=>{
+    ctx.beginPath();ctx.arc(cx,cy,r2,0,2*Math.PI);ctx.arc(cx,cy,r1,0,2*Math.PI,true);
+    ctx.fillStyle=isDark?'rgba(255,255,255,.02)':'rgba(0,0,0,.02)';ctx.fill();
+  });
+
+  for(let d=0;d<T;d++){const a=toA(d+1);ctx.beginPath();ctx.moveTo(cx+rDias*Math.cos(a),cy+rDias*Math.sin(a));ctx.lineTo(cx+rOuter*Math.cos(a),cy+rOuter*Math.sin(a));ctx.strokeStyle=lineCol;ctx.lineWidth=.5;ctx.stroke();}
+  [rCenter,rDias,rFase,rSueno,rEner,rEmo,rLuna,rOuter].forEach(r=>{ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle=circleCol;ctx.lineWidth=.6;ctx.stroke();});
+
+  fases.forEach(f=>{const a1=toA(f.d1),a2=toAe(f.d2);ctx.beginPath();ctx.moveTo(cx+rFase*Math.cos(a1),cy+rFase*Math.sin(a1));ctx.arc(cx,cy,rSueno,a1,a2);ctx.arc(cx,cy,rFase,a2,a1,true);ctx.closePath();ctx.fillStyle=f.c;ctx.globalAlpha=f.a;ctx.fill();ctx.globalAlpha=1;});
+
+  for(let d=0;d<T;d++){const v=sueno[d]/10,gap=.04,a1=toA(d+1)+gap,a2=toAe(d+1)-gap,rO2=rSueno+(rEner-rSueno)*v;ctx.beginPath();ctx.moveTo(cx+rSueno*Math.cos(a1),cy+rSueno*Math.sin(a1));ctx.arc(cx,cy,rO2,a1,a2);ctx.arc(cx,cy,rSueno,a2,a1,true);ctx.closePath();ctx.fillStyle=v>.75?'#1D9E75':v>.55?'#5DCAA5':'#EF9F27';ctx.globalAlpha=.82;ctx.fill();ctx.globalAlpha=1;}
+
+  for(let d=0;d<T;d++){const v=energia[d]/10,gap=.04,a1=toA(d+1)+gap,a2=toAe(d+1)-gap,rO2=rEner+(rEmo-rEner)*v;ctx.beginPath();ctx.moveTo(cx+rEner*Math.cos(a1),cy+rEner*Math.sin(a1));ctx.arc(cx,cy,rO2,a1,a2);ctx.arc(cx,cy,rEner,a2,a1,true);ctx.closePath();ctx.fillStyle=v>.75?'#8B7FDD':v>.55?'#AFA9EC':'#D4537E';ctx.globalAlpha=.88;ctx.fill();ctx.globalAlpha=1;}
+
+  for(let d=0;d<T;d++){const a=midA(d+1),px=cx+rEmo*Math.cos(a),py=cy+rEmo*Math.sin(a),col=emoColors[emocion[d]];ctx.beginPath();ctx.arc(px,py,6,0,2*Math.PI);ctx.fillStyle=col;ctx.globalAlpha=.12;ctx.fill();ctx.globalAlpha=1;ctx.beginPath();ctx.arc(px,py,3.5,0,2*Math.PI);ctx.fillStyle=col;ctx.globalAlpha=.95;ctx.fill();ctx.globalAlpha=1;ctx.beginPath();ctx.arc(px,py,3.5,0,2*Math.PI);ctx.strokeStyle=bgCol;ctx.lineWidth=1;ctx.stroke();}
+
+  [{d:1,e:'🌑'},{d:8,e:'🌘'},{d:14,e:'🌕'},{d:21,e:'🌒'},{d:28,e:'🌑'}].forEach(l=>{const a=midA(l.d);ctx.font='10px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.e,cx+(rLuna+7)*Math.cos(a),cy+(rLuna+7)*Math.sin(a));});
+
+  for(let d=1;d<=T;d++){const a=midA(d),rx=cx+(rDias-11)*Math.cos(a),ry=cy+(rDias-11)*Math.sin(a);let col=d<=5?'#D4537E':d<=13?'#C47A20':d<=16?'#5DCAA5':'#8B7FDD';if(d===18){ctx.beginPath();ctx.arc(rx,ry,8,0,2*Math.PI);ctx.fillStyle='#8B7FDD';ctx.globalAlpha=.3;ctx.fill();ctx.globalAlpha=1;}ctx.font=d===18?'bold 8px sans-serif':'7.5px sans-serif';ctx.fillStyle=d===18?(isDark?'#F0EDE8':'#1A1A1A'):col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(d,rx,ry);}
+
+  ctx.beginPath();ctx.arc(cx,cy,rCenter,0,2*Math.PI);ctx.fillStyle='rgba(139,127,221,.1)';ctx.fill();
+  ctx.font='15px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🌙',cx,cy-5);
+  ctx.fillStyle='rgba(139,127,221,.55)';ctx.font='6.5px sans-serif';ctx.fillText('día 18',cx,cy+10);
+}
+
+function setBienestarPeriod(p,btn){
+  document.querySelectorAll('#tab-bienestar .period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Patch switchTab to init charts lazily
+const _origSwitchTab = switchTab;
+function switchTab(tab, btn) {
+  _origSwitchTab(tab, btn);
+  if (tab === 'bienestar') renderBienestar();
+  if (tab === 'ciclo') renderCicloRadial();
+}
+</script>
+
 </body>
 </html>
 <script>
 const THEMES = {
-  warm:      { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
-  dark:      { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
+  warm: { bg:'#FAF7F2', surface:'#FFFDF9', surface2:'#F2EDE5', text:'#2A1F14', text2:'#7A6A5A', text3:'#A8978A', border:'rgba(90,60,30,0.09)' },
+  dark: { bg:'#0E0C0A', surface:'#1E1B16', surface2:'#2A2620', text:'#F0E8DC', text2:'#9B9080', text3:'#6B6055', border:'rgba(255,255,255,0.10)' },
   editorial: { bg:'#F5F2EC', surface:'#FAFAF5', surface2:'#ECEAE2', text:'#1A1A1A', text2:'#5A5A5A', text3:'#999990', border:'rgba(0,0,0,0.08)' },
-  dashboard: { bg:'#111111', surface:'#1C1C1C', surface2:'#272727', text:'#FFFFFF', text2:'#AAAAAA', text3:'#666666', border:'rgba(255,255,255,0.10)' },
-  'poster-oscuro': { bg:'#0A0A0A', surface:'#141414', surface2:'#1A1A1A', text:'#F0EDE8', text2:'#888880', text3:'#444440', border:'rgba(255,255,255,0.08)' },
-  'poster-claro':  { bg:'#F0EBE0', surface:'#E8E2D6', surface2:'#DDD6C8', text:'#1A1A1A', text2:'#555550', text3:'#999990', border:'rgba(0,0,0,0.10)' }
+  dashboard: { bg:'#111111', surface:'#1C1C1C', surface2:'#272727', text:'#FFFFFF', text2:'#AAAAAA', text3:'#666666', border:'rgba(255,255,255,0.10)' }
 };
 
 const PRESET_THEMES = {
-  editorial: { mode:'editorial', accent:'c8b4d8', font:'dm', description:'Tipografía serif · Lavanda suave · Fondo papel' },
-  dashboard: { mode:'dashboard', accent:'c8a84b', font:'spacemono', description:'Space Mono · Dorado · Fondo negro' },
-  'poster-oscuro': { mode:'poster-oscuro', accent:'c47a20', font:'poster', description:'Bebas Neue · Bloques de color · Fondo negro' },
-  'poster-claro':  { mode:'poster-claro',  accent:'c47a20', font:'poster', description:'Bebas Neue · Bloques de color · Fondo crema' }
+  editorial: {
+    mode: 'editorial',
+    accent: 'c8b4d8',
+    font: 'dm',
+    accentName: 'Lavanda editorial',
+    description: 'Tipografía serif · Lavanda suave · Fondo papel'
+  },
+  dashboard: {
+    mode: 'dashboard',
+    accent: 'c8a84b',
+    font: 'spacemono',
+    accentName: 'Dorado dashboard',
+    description: 'Space Mono · Dorado saturado · Fondo negro profundo'
+  }
 };
 const ACCENTS = {
   'ffc297': { main:'#ffc297', dark:'#9A5A1A', light:'rgba(255,194,151,0.2)', name:'Damasco' },
@@ -1185,13 +1470,11 @@ const ACCENTS = {
   'e6b791': { main:'#e6b791', dark:'#7A4A10', light:'rgba(230,183,145,0.2)', name:'Mocca dorado' },
   'd8b79b': { main:'#d8b79b', dark:'#6A3A18', light:'rgba(216,183,155,0.2)', name:'Mocca terracota' },
   'c8b4d8': { main:'#c8b4d8', dark:'#6A3A8A', light:'rgba(200,180,216,0.2)', name:'Lavanda editorial' },
-  'c8a84b': { main:'#c8a84b', dark:'#7A6200', light:'rgba(200,168,75,0.2)', name:'Dorado dashboard' },
-  'c47a20': { main:'#c47a20', dark:'#7A4A00', light:'rgba(196,122,32,0.2)', name:'Ámbar poster' }
+  'c8a84b': { main:'#c8a84b', dark:'#7A6200', light:'rgba(200,168,75,0.2)', name:'Dorado dashboard' }
 };
 const FONTS = {
-  spacemono: { title:"'Space Mono',monospace",      body:"'Jost',sans-serif",          name:'Space Mono' },
-  dm:        { title:"'DM Serif Display',serif",    body:"'DM Sans',sans-serif",        name:'DM Serif' },
-  poster:    { title:"'Bebas Neue',sans-serif",     body:"'Space Grotesk',sans-serif",  name:'Poster' }
+  spacemono: { title:"'Space Mono',monospace", body:"'Jost',sans-serif", name:'Space Mono' },
+  dm: { title:"'DM Serif Display',serif", body:"'DM Sans',sans-serif", name:'DM Serif' }
 };
 
 let currentTheme = localStorage.getItem('pd_theme') || 'warm';
@@ -1199,9 +1482,9 @@ let currentAccent = localStorage.getItem('pd_accent') || 'ffc297';
 let currentFont = localStorage.getItem('pd_font') || 'spacemono';
 
 function applyTheme() {
-  const t = THEMES[currentTheme] || THEMES.warm;
-  const a = ACCENTS[currentAccent] || { main:'#'+currentAccent, dark:'#333', light:'rgba(100,100,100,0.2)' };
-  const f = FONTS[currentFont] || FONTS.spacemono;
+  const t = THEMES[currentTheme];
+  const a = ACCENTS[currentAccent];
+  const f = FONTS[currentFont];
   const r = document.documentElement;
   r.style.setProperty('--bg', t.bg);
   r.style.setProperty('--surface', t.surface);
@@ -1216,65 +1499,14 @@ function applyTheme() {
   r.style.setProperty('--font-title', f.title);
   r.style.setProperty('--font-body', f.body);
   document.body.style.fontFamily = f.body;
-  document.body.classList.remove('poster-oscuro', 'poster-claro');
-  const isPoster = currentTheme === 'poster-oscuro' || currentTheme === 'poster-claro';
-  if (isPoster) {
-    document.body.classList.add(currentTheme);
-    renderPosterProjRow();
-  }
+  // Inyectar CSS para que persista en re-renders
   let styleTag = document.getElementById('dynamic-font-style');
   if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'dynamic-font-style'; document.head.appendChild(styleTag); }
-  if (isPoster) {
-    styleTag.textContent = `body,.tab-content,.card,.badge,button,input,select,.task-title,.work-task,.proj-task,.timeline-item,.bitacora-text{font-family:'Space Grotesk',sans-serif!important}.greeting h1,.logo,.wb-value,h1,h2{font-family:'Bebas Neue',sans-serif!important;letter-spacing:1px}`;
-  } else {
-    styleTag.textContent = `body,.tab-content,.card,.badge,button,input,select,.task-title,.work-task,.proj-task,.timeline-item,.bitacora-text{font-family:${f.body}!important}.greeting h1,.logo,.wb-value,h1,h2{font-family:${f.title}!important}`;
-  }
+  styleTag.textContent = `body, .tab-content, .card, .badge, button, input, select, .task-title, .work-task, .proj-task, .timeline-item, .bitacora-text { font-family: ${f.body} !important; } .greeting h1, .logo, .wb-value, h1, h2 { font-family: ${f.title} !important; }`;
   localStorage.setItem('pd_theme', currentTheme);
   localStorage.setItem('pd_accent', currentAccent);
   localStorage.setItem('pd_font', currentFont);
   updateThemeUI();
-}
-
-function applyPreset(name) {
-  const p = PRESET_THEMES[name];
-  if (!p) return;
-  currentTheme = p.mode;
-  currentAccent = p.accent;
-  currentFont = p.font;
-  applyTheme();
-}
-
-function renderPosterProjRow() {
-  const row = document.getElementById('posterProjRow');
-  if (!row) return;
-  const isDark = currentTheme === 'poster-oscuro';
-  const projs = [
-    { key:'maitinada', name:'Maitinada', color:'#C47A20', bg: isDark?'#1C1100':'#C47A20', fg: isDark?'#C47A20':'#1C1100' },
-    { key:'mara',      name:'Mara',      color:'#8B7FDD', bg: isDark?'#110D22':'#8B7FDD', fg: isDark?'#8B7FDD':'#110D22' },
-    { key:'casalunae', name:'Casa Lunae',color:'#C44880', bg: isDark?'#1C0811':'#C44880', fg: isDark?'#C44880':'#1C0811' },
-    { key:'hazeco',    name:'Haz Eco',   color:'#2D9B6F', bg: isDark?'#071A0E':'#2D9B6F', fg: isDark?'#2D9B6F':'#071A0E' },
-    { key:'personal',  name:'Personal',  color:'#888888', bg: isDark?'#111111':'#777777', fg: isDark?'#666666':'#F0EBE0' }
-  ];
-  const total = Math.max(Object.values(allTasks).flat().length, 1);
-  row.innerHTML = projs.map(p => {
-    const count = (allTasks[p.key] || []).length;
-    const pct = Math.round(count / total * 100);
-    return `<div class="poster-proj-block" style="background:${p.bg};color:${p.fg};">
-      <div class="poster-proj-name">${p.name}</div>
-      <div class="poster-proj-num">${count || 0}</div>
-      <div class="poster-proj-sub">tareas activas</div>
-      <div class="poster-proj-bar"><div class="poster-proj-fill" style="width:${pct}%;background:${p.color};opacity:${isDark?1:0.35};"></div></div>
-    </div>`;
-  }).join('');
-  // Hero KPIs
-  const allFlat = Object.values(allTasks).flat();
-  const critical = allFlat.filter(t => isOverdue(t) || getSelect(t,'Prioridad') === '🔴 Hacer hoy').length;
-  const goalsLog = allGoals.filter(g => getSelect(g,'Estado') === 'Logrado').length;
-  const soon = allFlat.filter(t => { const d=getDate(t,'Fecha Límite')||getDate(t,'Fecha limite'); if(!d) return false; const diff=(new Date(d)-new Date())/86400000; return diff>=0&&diff<=7; }).length;
-  const el = id => document.getElementById(id);
-  if (el('poster-critical')) el('poster-critical').textContent = critical || 0;
-  if (el('poster-goals'))    el('poster-goals').textContent    = `${goalsLog}/${allGoals.length}`;
-  if (el('poster-week'))     el('poster-week').textContent     = soon || 0;
 }
 
 function updateThemeUI() {
